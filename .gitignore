@@ -3,34 +3,16 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# dq add
-proj.win32/
-Resources/
-cocos2d/
-*.lib
-*.dll
-*.tlog
-*.lastbuildstate
-*.idb
-*.exp
-*.sln
-*.filters
-*.vcxproj
+#dq add
 .cocos-project.json
 CMakeLists.txt
-build-cfg.json
-*.exe
-proj.android/
+Resources/
+cocos2d/
 proj.android-studio/
+proj.android/
 proj.ios_mac/
 proj.linux/
-proj.android/
-proj.win32/build-cfg.json
-proj.win32/game.rc
-proj.win32/main.cpp
-proj.win32/main.h
-proj.win32/resource.h
-proj.win32/Debug.win32/*
+proj.win32/
 
 # User-specific files
 *.suo
