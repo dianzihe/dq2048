@@ -4,6 +4,7 @@
 #include "Data.hpp"
 #include "Cell.hpp"
 #include "ScoreLabel.hpp"
+#include <stdexcept>
 
 NS_GAME_BEGIN
 class Field;
@@ -31,6 +32,7 @@ public:
     
     void debug1();
     void debug2();
+	
 private:
     int getTagValue(CellPos position);
     Vec2 posCoords(CellPos pos);
@@ -50,9 +52,14 @@ private:
     int _score = 0;
     int _best = 0;
     
-    static constexpr float startX = - Consts::FIELD_WIDTH  / 2 + Consts::CELL_WIDTH  / 2;
-    static constexpr float startY = + Consts::FIELD_HEIGHT / 2 - Consts::CELL_HEIGHT / 2;
-    
+	//-150
+	//150
+	//static const float startX = -Consts::FIELD_WIDTH / 2 + Consts::CELL_WIDTH / 2;
+	//static const float startY = +Consts::FIELD_HEIGHT / 2 - Consts::CELL_HEIGHT / 2;
+
+	static float startX ;
+	static float startY ;
+
     
 };
 NS_GAME_END

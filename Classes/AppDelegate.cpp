@@ -1,4 +1,4 @@
-#include "AppDelegate.h"
+  #include "AppDelegate.h"
 #include "GameScene.h"
 
 // #define USE_AUDIO_ENGINE 1
@@ -42,7 +42,7 @@ AppDelegate::~AppDelegate()
 void AppDelegate::initGLContextAttrs()
 {
     // set OpenGL context attributes: red,green,blue,alpha,depth,stencil,multisamplesCount
-    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
+    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
 
     GLView::setGLContextAttrs(glContextAttrs);
 }

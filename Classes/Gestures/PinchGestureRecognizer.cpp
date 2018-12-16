@@ -30,7 +30,7 @@ NS_CC_BEGIN
 PinchGestureRecognizer* PinchGestureRecognizer::create()
 {
     auto r = new PinchGestureRecognizer();
-    if (r and r->init())
+    if (r && r->init())
     {
         r->autorelease();
         return r;
@@ -111,7 +111,7 @@ void PinchGestureRecognizer::onTouchEnded(Touch* touch, Event* ev)
 {
     touches.erase(touch->getID());
     
-    if (status == GestureStatus::CHANGED and touches.empty()) // all fingers lifted
+    if (status == GestureStatus::CHANGED && touches.empty()) // all fingers lifted
     {
         status = GestureStatus::RECOGNIZED;
         if (onPinch)

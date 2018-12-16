@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <string>
+#include <utility>
 
 #define NS_GAME_BEGIN    namespace Game {
 #define NS_GAME_END      }

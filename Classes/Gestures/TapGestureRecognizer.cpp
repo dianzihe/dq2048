@@ -26,10 +26,10 @@ THE SOFTWARE.
 
 NS_CC_BEGIN
 
-TapGestureRecognizer* TapGestureRecognizer::create(uint fingerCount, uint tapNumber, float maxTime)
+TapGestureRecognizer* TapGestureRecognizer::create(unsigned int fingerCount, unsigned int tapNumber, float maxTime)
 {
     auto r = new TapGestureRecognizer(fingerCount, tapNumber, maxTime);
-    if (r and r->init())
+    if (r && r->init())
     {
         r->autorelease();
         return r;
@@ -38,7 +38,7 @@ TapGestureRecognizer* TapGestureRecognizer::create(uint fingerCount, uint tapNum
     return nullptr;
 }
 
-TapGestureRecognizer::TapGestureRecognizer(uint fingers, uint taps, float maxTime) : GestureRecognizer(fingers), tapNumber(taps)
+TapGestureRecognizer::TapGestureRecognizer(unsigned int fingers, unsigned int taps, float maxTime) : GestureRecognizer(fingers), tapNumber(taps)
 {
     //CCLOG("Constructor TapGestureRecognizer");
     timeoutSeconds = maxTime;
@@ -74,7 +74,7 @@ void TapGestureRecognizer::onTouchMoved(Touch* touch, Event* ev)
     if (status == GestureStatus::POSSIBLE)
     {
         int neighborIndex;
-        if (not existNeighbor(touch->getLocation(), neighborIndex)) // there isn't a neighobor of touched point
+        if (! existNeighbor(touch->getLocation(), neighborIndex)) // there isn't a neighobor of touched point
         { // finger moved here
             status = GestureStatus::FAILED;
             reset();
@@ -91,7 +91,7 @@ void TapGestureRecognizer::onTouchCancelled(Touch* touch, Event* ev)
 
 void TapGestureRecognizer::onTouchEnded(Touch* touch, Event* ev) 
 {
-    if (status == GestureStatus::POSSIBLE and touches.size() == fingerNumber)
+    if (status == GestureStatus::POSSIBLE && touches.size() == fingerNumber)
     {
         if ( touchEndCheck(touch) ) // all fingers lifted
             tapCount++;

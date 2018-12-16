@@ -33,11 +33,11 @@ NS_CC_BEGIN
 class LongPressGestureRecognizer : public GestureRecognizer
 {
 public:
-    static LongPressGestureRecognizer* create(float timeRequired = 0.5f, uint fingers = 1);    
+	static LongPressGestureRecognizer* create(float timeRequired = 0.5f, unsigned int fingers = 1);
     std::function<void(LongPressGestureRecognizer*)> onLongPress;
     
 private:
-    LongPressGestureRecognizer(float timeout, uint finger);
+	LongPressGestureRecognizer(float timeout, unsigned int finger);
     virtual ~LongPressGestureRecognizer();
     
     void timeout(float dt) override;

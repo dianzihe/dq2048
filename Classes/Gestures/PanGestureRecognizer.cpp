@@ -26,10 +26,10 @@ THE SOFTWARE.
 
 NS_CC_BEGIN
 
-PanGestureRecognizer* PanGestureRecognizer::create(uint fingerCount)
+PanGestureRecognizer* PanGestureRecognizer::create(unsigned int fingerCount)
 {
     auto r = new PanGestureRecognizer(fingerCount);
-    if (r and r->init())
+    if (r && r->init())
     {
         r->autorelease();
         return r;
@@ -38,7 +38,7 @@ PanGestureRecognizer* PanGestureRecognizer::create(uint fingerCount)
     return nullptr;
 }
 
-PanGestureRecognizer::PanGestureRecognizer(uint fingers) : GestureRecognizer(fingers)
+PanGestureRecognizer::PanGestureRecognizer(unsigned int fingers) : GestureRecognizer(fingers)
 {
     //CCLOG("Constructor PanGestureRecognizer");
 }
@@ -104,7 +104,7 @@ void PanGestureRecognizer::onTouchEnded(Touch* touch, Event* ev)
 {
     touches.erase(touch->getID());
     
-    if (status == GestureStatus::CHANGED and touches.empty()) // all fingers were lift
+    if (status == GestureStatus::CHANGED && touches.empty()) // all fingers were lift
     {
         status = GestureStatus::RECOGNIZED;
         if (onPan)

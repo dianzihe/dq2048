@@ -173,8 +173,12 @@ int FieldGUI::getTagValue(CellPos position) {
 }
 
 Vec2 FieldGUI::posCoords(CellPos pos) {
-    float toX = startX + pos.Col * Consts::CELL_WIDTH;
-    float toY = startY - pos.Row * Consts::CELL_HEIGHT;
+    //float toX = startX + pos.Col * Consts::CELL_WIDTH;
+    //float toY = startY - pos.Row * Consts::CELL_HEIGHT;
+
+	float toX = -150 + pos.Col * Consts::CELL_WIDTH;
+	float toY =  150 - pos.Row * Consts::CELL_HEIGHT;
+
     return Vec2(toX, toY);
 }
 

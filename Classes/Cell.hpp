@@ -3,7 +3,7 @@
 #include "Constants.h"
 #include "cocos2d.h"
 #include "RoundedRect.hpp"
-
+#include <stdexcept>
 USING_NS_CC;
 
 NS_GAME_BEGIN
@@ -35,7 +35,7 @@ private:
     
     std::string _hist;
     
-    static constexpr int WIDTH = Consts::CELL_WIDTH - Consts::CELL_OFFSET;
-    static constexpr int HEIGHT = Consts::CELL_HEIGHT - Consts::CELL_OFFSET;
+	static const int WIDTH = Consts::CELL_WIDTH - Consts::CELL_OFFSET;
+	static const int HEIGHT = Consts::CELL_HEIGHT - Consts::CELL_OFFSET;
 };
 NS_GAME_END

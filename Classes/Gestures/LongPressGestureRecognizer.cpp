@@ -26,10 +26,10 @@ THE SOFTWARE.
 
 NS_CC_BEGIN
 
-LongPressGestureRecognizer* LongPressGestureRecognizer::create(float timeout, uint fingers)
+LongPressGestureRecognizer* LongPressGestureRecognizer::create(float timeout, unsigned int fingers)
 {
     auto r = new LongPressGestureRecognizer(timeout, fingers);
-    if (r and r->init())
+    if (r && r->init())
     {
         r->autorelease();
         return r;
@@ -38,7 +38,7 @@ LongPressGestureRecognizer* LongPressGestureRecognizer::create(float timeout, ui
     return nullptr;
 }
 
-LongPressGestureRecognizer::LongPressGestureRecognizer(float timeout, uint fingers) : GestureRecognizer(fingers)
+LongPressGestureRecognizer::LongPressGestureRecognizer(float timeout, unsigned int fingers) : GestureRecognizer(fingers)
 {
     //CCLOG("Constructor LongPressGestureRecognizer");
     timeoutSeconds = timeout;
@@ -93,7 +93,7 @@ void LongPressGestureRecognizer::onTouchEnded(Touch* touch, Event* ev)
 {
     touches.erase(touch->getID());
     
-    if (status == GestureStatus::RECOGNIZED and touches.empty()) // release after recognition
+    if (status == GestureStatus::RECOGNIZED && touches.empty()) // release after recognition
     {
         status = GestureStatus::POSSIBLE; 
         if (onLongPress)
@@ -117,7 +117,7 @@ void LongPressGestureRecognizer::reset()
 void LongPressGestureRecognizer::timeout(float dt)
 {
     //CCLOG("Timeout Longpress");
-    if (status == GestureStatus::POSSIBLE and touches.size() == fingerNumber)
+    if (status == GestureStatus::POSSIBLE && touches.size() == fingerNumber)
     {
         //CCLOG("Long press detected with %d fingers", fingerNumber);
         status = GestureStatus::RECOGNIZED;

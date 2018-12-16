@@ -17,7 +17,7 @@ void RoundedRect::setSizeAndColor(const Vec2& size, const Color4F& color) {
     drawSolidRoundedRect(Vec2::ZERO, size, 5.0f, 20, color);
 }
 
-#if false
+#if 0
 void RoundedRect::drawSolidRoundedRect(const Vec2 &origin, const Vec2 &destination, float radius,
                                        unsigned int segments, const Color4F &color)
 {

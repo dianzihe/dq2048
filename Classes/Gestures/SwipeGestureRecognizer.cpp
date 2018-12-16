@@ -30,7 +30,7 @@ NS_CC_BEGIN
 SwipeGestureRecognizer* SwipeGestureRecognizer::create()
 {
     auto r = new SwipeGestureRecognizer;
-    if (r and r->init())
+    if (r && r->init())
     {
         r->autorelease();
         return r;
@@ -106,32 +106,32 @@ void SwipeGestureRecognizer::swipeCheck(Touch* touch)
         
         //CCLOG("delta (x:%f, y:%f)", xOffset, yOffset);
         
-        if (xOffset > SWIPE_X_DELTA and fabs(yOffset) < SWIPE_Y_TOLLERANCE)
+        if (xOffset > SWIPE_X_DELTA && fabs(yOffset) < SWIPE_Y_TOLLERANCE)
         {
             //CCLOG("swipe right");
             status = GestureStatus::RECOGNIZED;
             swipeDirection = SwipeStatus::SWIPE_RIGHT;
         }
-        else if (xOffset < -SWIPE_X_DELTA and fabs(yOffset) < SWIPE_Y_TOLLERANCE)
+        else if (xOffset < -SWIPE_X_DELTA && fabs(yOffset) < SWIPE_Y_TOLLERANCE)
         {
             //CCLOG("swipe left");
             status = GestureStatus::RECOGNIZED;
             swipeDirection = SwipeStatus::SWIPE_LEFT;
         }
-        else if (fabs(xOffset) < SWIPE_X_TOLLERANCE and yOffset > SWIPE_Y_DELTA)
+        else if (fabs(xOffset) < SWIPE_X_TOLLERANCE && yOffset > SWIPE_Y_DELTA)
         {
             //CCLOG("swipe up");
             status = GestureStatus::RECOGNIZED;
             swipeDirection = SwipeStatus::SWIPE_UP;
         }
-        else if (fabs(xOffset) < SWIPE_X_TOLLERANCE and yOffset < -SWIPE_Y_DELTA)
+        else if (fabs(xOffset) < SWIPE_X_TOLLERANCE && yOffset < -SWIPE_Y_DELTA)
         {
             //CCLOG("swipe down");
             status = GestureStatus::RECOGNIZED;
             swipeDirection = SwipeStatus::SWIPE_DOWN;
         }
         
-        if (status == GestureStatus::RECOGNIZED and onSwipe)
+        if (status == GestureStatus::RECOGNIZED && onSwipe)
             onSwipe(this);
         
         touches.at(id) = currPoint;

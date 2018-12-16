@@ -58,7 +58,7 @@ class GestureRecognizer : public Node
 public:
     static std::vector<Color4F> touchColors;
     
-    GestureRecognizer(uint fingers = 1);
+	GestureRecognizer(unsigned int fingers = 1);
     virtual ~GestureRecognizer();
     
     /**
@@ -66,7 +66,7 @@ public:
      * @param mode enable-disable debug mode
      * @param mask specify what informations will be drawn
      */
-    void setDebugMode(bool mode, uint mask = GESTURE_DEBUG_ALL);
+	void setDebugMode(bool mode, unsigned int mask = GESTURE_DEBUG_ALL);
     bool isDebugModeEnabled();
     
     // getters
@@ -94,7 +94,7 @@ protected:
     // Dati membro
     bool enabled {true}; // if false the recognizer does not receive the touches
     bool isFillParentEnabled {true};
-    const uint fingerNumber;
+	const unsigned int fingerNumber;
     Size visibleSize;
     EventListenerTouchOneByOne* listener {nullptr};
     Point gestureLocation {Point::ZERO};
@@ -103,7 +103,7 @@ protected:
     float timeoutSeconds {0}; // timeout for gesture recognition
     
     // Debug stuff
-    uint debugMask {0};
+	unsigned int debugMask{ 0 };
     DrawNode* debugNode {nullptr};
     
     bool isTouchInNode(Touch* t);

@@ -35,7 +35,7 @@ bool nodeContainsThePoint(cocos2d::Node* node, const cocos2d::Vec2& pt)
 float computeSignedAngle(const cocos2d::Vec2& v1, const cocos2d::Vec2& v2)
 {
     float result = 0;
-    if (not v1.isZero() and not v2.isZero())
+    if (! v1.isZero() && ! v2.isZero())
     {
         auto a = CC_RADIANS_TO_DEGREES(cocos2d::Vec2::angle(v1, v2));
         cocos2d::Vec3 normal;

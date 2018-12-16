@@ -31,14 +31,14 @@ NS_CC_BEGIN
 class PanGestureRecognizer : public GestureRecognizer
 {
 public:
-    static PanGestureRecognizer* create(uint fingers = 1);
+    static PanGestureRecognizer* create(unsigned int fingers = 1);
     std::function<void(PanGestureRecognizer* recognizer)> onPan;  // callback
     Vec2 getTraslation() const {return traslation;} // incremental traslation
     
 private:
     Vec2 traslation {Vec2::ZERO};
     
-    PanGestureRecognizer(uint fingers);
+    PanGestureRecognizer(unsigned int fingers);
     virtual ~PanGestureRecognizer();
     
     bool onTouchBegan(Touch* touch, Event* ev) override;

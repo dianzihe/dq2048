@@ -33,27 +33,27 @@ NS_CC_BEGIN
 
 struct TouchInfo
 {
-    TouchInfo(Point p, uint c = 0)
+	TouchInfo(Point p, unsigned int c = 0)
     {
         point = p;
         touchCount = c;
     }
     Point point {0, 0};
-    uint touchCount {0};
+	unsigned int touchCount{ 0 };
 };
 
 class TapGestureRecognizer : public GestureRecognizer
 {
 public:
-    static TapGestureRecognizer* create(uint fingerCount = 1, uint tapNumber = 1, float maxTime = TAP_MAX_BEETWEEN_TOUCHES);    
+	static TapGestureRecognizer* create(unsigned int fingerCount = 1, unsigned int tapNumber = 1, float maxTime = TAP_MAX_BEETWEEN_TOUCHES);
     std::function<void(TapGestureRecognizer*)> onTap;
     
 private:
     std::unordered_map<int, int> touchesCount; // for each id stores the tap count
-    const uint tapNumber;
-    uint tapCount {0};
+    const unsigned int tapNumber;
+	unsigned int tapCount{ 0 };
     
-    TapGestureRecognizer(uint fingerCount, uint tapNumber, float maxTime);
+	TapGestureRecognizer(unsigned int fingerCount, unsigned int tapNumber, float maxTime);
     virtual ~TapGestureRecognizer();
     
     // helper

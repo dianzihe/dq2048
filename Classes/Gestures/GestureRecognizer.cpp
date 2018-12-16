@@ -41,7 +41,7 @@ std::vector<Color4F> GestureRecognizer::touchColors = //10 colors
     {0.5f, 0.3f, 0.7f, 1}
 };
 
-GestureRecognizer::GestureRecognizer(uint fingers) : fingerNumber(fingers)
+GestureRecognizer::GestureRecognizer(unsigned int fingers) : fingerNumber(fingers)
 {
     //CCLOG("Constructor GestureRecognizer");
     visibleSize = Director::getInstance()->getVisibleSize();
@@ -71,7 +71,7 @@ void GestureRecognizer::addTouchListener()
 bool GestureRecognizer::isTouchInNode(Touch* t) 
 {
     // object contains point or touch started in the object and exited
-    return nodeContainsThePoint(this, t->getLocation()) or mapHasKey(touches, t->getID());
+    return nodeContainsThePoint(this, t->getLocation()) || mapHasKey(touches, t->getID());
 }
 
 void GestureRecognizer::setFillParentEnabled(bool enabled) 
@@ -86,12 +86,12 @@ void GestureRecognizer::setContentSize(const Size& contentSize)
     Node::setContentSize(contentSize);
 }
 
-void GestureRecognizer::setDebugMode(bool isDebugMode, uint mask)
+void GestureRecognizer::setDebugMode(bool isDebugMode, unsigned int mask)
 {
     if (isDebugMode)
     {
         debugMask = mask;
-        if (not debugNode)
+        if (! debugNode)
         {
             debugNode = DrawNode::create();
             addChild(debugNode);
@@ -125,7 +125,7 @@ void GestureRecognizer::setSwallowTouches(bool swallow)
 // Does not support rotation for now
 void GestureRecognizer::addDebugArea()
 {
-    if (debugNode and debugMask & GESTURE_DEBUG_AREA)
+    if (debugNode && debugMask & GESTURE_DEBUG_AREA)
     {
         auto origin = Vec2::ZERO;
         auto dest   = origin + getBoundingBox().size;
@@ -149,9 +149,9 @@ void GestureRecognizer::resetDebugNode()
 
 bool GestureRecognizer::_onTouchBegan(Touch* touch, Event* ev) 
 {
-    if (enabled and isTouchInNode(touch))
+    if (enabled && isTouchInNode(touch))
     {
-        if (debugNode and debugMask & GESTURE_DEBUG_POINTS) 
+        if (debugNode && debugMask & GESTURE_DEBUG_POINTS) 
             debugNode->drawPoint(convertToNodeSpace(touch->getLocation()), 4.0f, touchColors[touch->getID()]);
 
         return onTouchBegan(touch, ev);
@@ -161,9 +161,9 @@ bool GestureRecognizer::_onTouchBegan(Touch* touch, Event* ev)
 
 void GestureRecognizer::_onTouchMoved(Touch* touch, Event* ev) 
 {
-    if (enabled and isTouchInNode(touch))
+    if (enabled && isTouchInNode(touch))
     {
-        if (debugNode and debugMask & GESTURE_DEBUG_POINTS) 
+        if (debugNode && debugMask & GESTURE_DEBUG_POINTS) 
             debugNode->drawPoint(convertToNodeSpace(touch->getLocation()), 4.0f, touchColors[touch->getID()]);
 
         onTouchMoved(touch, ev);
@@ -172,7 +172,7 @@ void GestureRecognizer::_onTouchMoved(Touch* touch, Event* ev)
 
 void GestureRecognizer::_onTouchCancelled(Touch* touch, Event* ev) 
 {
-    if (enabled and isTouchInNode(touch))
+    if (enabled && isTouchInNode(touch))
     {
         if (debugNode)
             resetDebugNode();
@@ -183,7 +183,7 @@ void GestureRecognizer::_onTouchCancelled(Touch* touch, Event* ev)
 
 void GestureRecognizer::_onTouchEnded(Touch* touch, Event* ev) 
 {
-    if (enabled and isTouchInNode(touch))
+    if (enabled && isTouchInNode(touch))
     {
         if (debugNode)
             resetDebugNode();
@@ -197,7 +197,7 @@ void GestureRecognizer::_onTouchEnded(Touch* touch, Event* ev)
 Point GestureRecognizer::mean(const TouchesMap& map) const
 {
     Point result = Point::ZERO;
-    if ( not map.empty() )
+      if ( ! map.empty() )
     {
         float size = map.size();
         for (auto& pair : map)
@@ -222,7 +222,7 @@ void GestureRecognizer::update(float delta)
     if (isFillParentEnabled) 
     {
         auto parent = getParent();
-        if ( parent and not parent->getContentSize().equals(getContentSize()) ) 
+        if ( parent && ! parent->getContentSize().equals(getContentSize()) ) 
         {
             Node::setContentSize(parent->getContentSize());
             resetDebugNode();
