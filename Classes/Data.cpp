@@ -80,6 +80,9 @@ void Data::saveBest(int score) {
 }
 
 std::string& CellPos::desc(){
+	log("-%d-%d", Row, Col);
+	std::string dq = std::string("[").append(std::to_string(Row)).append(",").append(std::to_string(Col)).append("]");
+	log("result:%s", dq.c_str());
     return std::string("[").append(std::to_string(Row)).append(",").append(std::to_string(Col)).append("]");
 }
 
