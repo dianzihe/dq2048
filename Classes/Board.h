@@ -106,21 +106,21 @@ namespace PH { // tolua_export
         SKILL_FLAG_BONUS_ATTACK = 1 << 1,
     };
     
-    class BoardLayer : public CCLayer
+    class BoardLayer : public Layer
     {
     public:
         BoardControlPtr         mBoardControl;
         
-        std::vector<CCSprite*>  mDragHint;
+        std::vector<Sprite*>  mDragHint;
         bool                    mShowDragHintInTurn;
         
     private:
         GemPtr          mDragGem;
         Vec2           mDragGemPos;
-        CCSprite*       mShadowGem;
+        Sprite*       mShadowGem;
 
         bool                mIsDebugMode;
-        CCMenuItemLabel *   mDebugItem;
+        MenuItemLabel *   mDebugItem;
         
     protected:
         // constraint is only used in tutorial
@@ -138,13 +138,13 @@ namespace PH { // tolua_export
         //EnemyControlList mEnemyList;
         //EnemyControlList mDivisionEnemyList;
         LevelInfo        mLevel;
-        CCSprite*        mBoardMask;
+        Sprite*        mBoardMask;
 
-        CCSprite*        mRoundBg;
-        CCLabelBMFont*   mRoundText;
-        CCSprite*        mBossRound;
+        Sprite*        mRoundBg;
+		LabelBMFont*   mRoundText;
+        Sprite*        mBossRound;
         
-        CCSprite*        mElementGraph;
+        Sprite*        mElementGraph;
         
         int mRoundIndex;
         int mTurn;
@@ -157,13 +157,13 @@ namespace PH { // tolua_export
         int mTotalDropCount;
         int mTotalHeroDropCount;
         int mTotalSoulDropCount;
-        CCLabelBMFont* mDropCountLabel;
-        std::vector<CCSprite*> mDropList;
+		LabelBMFont* mDropCountLabel;
+        std::vector<Sprite*> mDropList;
         
         //EnemyControlPtr mManualTarget;
-        CCSprite* mTargetCross;
+        Sprite* mTargetCross;
         
-        CCMenu* mExitMenu;
+        Menu* mExitMenu;
         
         //BoardResultPtr mResult;
         
@@ -217,8 +217,7 @@ namespace PH { // tolua_export
         {
             BoardLayer* o = new BoardLayer(width, height);
             
-            if(o != NULL && o->init(/*team,*/ level))
-            {
+            if(o != NULL && o->init(/*team,*/ level)){
                 o->autorelease();
                 return o;
             }
@@ -362,8 +361,8 @@ namespace PH { // tolua_export
 
         
     protected:
-        friend class ActiveSkill;
-        friend class PassiveSkill;
-        friend class EnemySkill;
+        //friend class ActiveSkill;
+        //friend class PassiveSkill;
+        //friend class EnemySkill;
     };
 } // tolua_export

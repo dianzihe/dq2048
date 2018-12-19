@@ -84,13 +84,13 @@ namespace PH
 		Vec2 val = randomBand(min, max);
 		return val;
 	}
-	/*
+	
     inline Vec2 w2g(const Vec2& p)
     {
         return Vec2(floorf(p.x / skGemPixelWidth),
                      floorf(p.y / skGemPixelHeight));
     }
-
+	/*
 	template<class T> inline T norm2(const TVec2<T>& v) { 
 		return v * v; 
 	}

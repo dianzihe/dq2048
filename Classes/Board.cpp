@@ -94,25 +94,25 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
     // accidental touches before layer is displayed.
 //    this->scheduleOnce(schedule_selector(BoardLayer::delayedTouchEnable), 0.4);
 //
-
+	/**/
     this->scheduleUpdate();
     
     {
         std::string bgName = level.bg;
-        to_lower(bgName);
+        //to_lower(bgName);
         std::string bgPath = std::string("bg/") + bgName + ".jpg";
-        if(!resourcePresentForLoading(bgPath))
-            bgPath = "bg/misc.jpg";
+        //if(!resourcePresentForLoading(bgPath))
+        //    bgPath = "bg/misc.jpg";
         
-        CCSprite* bg = GemUtils::GetSprite(bgPath.c_str());
-        bg->setPosition(ccp(0, 560));
-        bg->setAnchorPoint(ccp(0, 0));
+        Sprite* bg = GemUtils::GetSprite(bgPath.c_str());
+        bg->setPosition(Vec2(0, 560));
+        bg->setAnchorPoint(Vec2(0, 0));
         this->addChild(bg, ORDER_BACKGROUND);
         
         {
-            CCSpriteBatchNode* bgBatch = CCSpriteBatchNode::create("battleMisc.png");
-            bgBatch->setAnchorPoint(ccp(0, 0));
-            bgBatch->setPosition(ccp(0, 0));
+            SpriteBatchNode* bgBatch = SpriteBatchNode::create("battleMisc.png");
+            bgBatch->setAnchorPoint(Vec2(0, 0));
+            bgBatch->setPosition(Vec2(0, 0));
             this->addChild(bgBatch, ORDER_BACKGROUND);
             
             // create board background
@@ -123,55 +123,56 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
                 int index = x * BOARD_HEIGHT + y;
                 int color = index % 2;  
                 
-                CCSprite* tile = color == 0 ? GemUtils::GetSprite("ui/qipan_qian.png") : GemUtils::GetSprite("ui/qipan_shen.png");
-                tile->setAnchorPoint(ccp(0, 0));
+                Sprite* tile = color == 0 ? GemUtils::GetSprite("ui/qipan_qian.png") : GemUtils::GetSprite("ui/qipan_shen.png");
+                tile->setAnchorPoint(Vec2(0, 0));
                 tile->setPosition(g2w(Vec2(x, y)));
                 bgBatch->addChild(tile);
             }
         }
 
         mBoardMask = GemUtils::GetSprite("ui/1x1_b.png");
-        mBoardMask->setAnchorPoint(ccp(0, 0));
-        mBoardMask->setScaleX(640 * contentScale());
-        mBoardMask->setScaleY(535 * contentScale());
-        mBoardMask->setPosition(ccp(0,0));
+        mBoardMask->setAnchorPoint(Vec2(0, 0));
+		mBoardMask->setScaleX(640 * Director::getInstance()->getContentScaleFactor());
+		mBoardMask->setScaleY(535 * Director::getInstance()->getContentScaleFactor());
+        mBoardMask->setPosition(Vec2(0,0));
         mBoardMask->setOpacity(150);
         mBoardMask->setVisible(false);
         this->addChild(mBoardMask, ORDER_MASK);
         
         mRoundBg = GemUtils::GetSprite("ui/round_bg.png");
-        mRoundBg->setAnchorPoint(ccp(0.5, 0.0));
-        mRoundBg->setPosition(ccp(1000, 730));
+        mRoundBg->setAnchorPoint(Vec2(0.5, 0.0));
+        mRoundBg->setPosition(Vec2(1000, 730));
         this->addChild(mRoundBg, ORDER_FLOAT);
         
         mElementGraph = GemUtils::GetSprite("ui/element_graph.png");
-        mElementGraph->setAnchorPoint(ccp(1.0, 1.0));
-        mElementGraph->setPosition(ccp(638, 956));
+        mElementGraph->setAnchorPoint(Vec2(1.0, 1.0));
+        mElementGraph->setPosition(Vec2(638, 956));
         this->addChild(mElementGraph);
         
-        if(!GameConfig::shared()->showAttrHint) this->mElementGraph->setVisible(false);
-        
+		//if(!GameConfig::shared()->showAttrHint) 
+		//	this->mElementGraph->setVisible(false);
+		/*
         mRoundText = CCLabelBMFont::create(toStr("3/5").c_str(), "bmfont/KTL_100_yellow.fnt");
-        mRoundText->setScale(contentScale());
-        mRoundText->setAnchorPoint(ccp(0, 0));
-        mRoundText->setPosition(ccp(210, 40));
+		mRoundText->setScale(Director::getInstance()->getContentScaleFactor());
+        mRoundText->setAnchorPoint(Vec2(0, 0));
+        mRoundText->setPosition(Vec2(210, 40));
         mRoundBg->addChild(mRoundText);
-        
+        */
         mBossRound = GemUtils::GetSprite("ui/shaqixilai_3.png");
-        mBossRound->setAnchorPoint(ccp(0.5, 0.5));
-        mBossRound->setPosition(ccp(1000, 730));
+        mBossRound->setAnchorPoint(Vec2(0.5, 0.5));
+        mBossRound->setPosition(Vec2(1000, 730));
         mBossRound->setVisible(false);
         this->addChild(mBossRound, ORDER_FLOAT);
         
-        CCSprite* dropChest = GemUtils::GetSprite("ui/diaoluoxiaoke_xiangzi.png");
-        dropChest->setAnchorPoint(ccp(0, 1));
-        dropChest->setPosition(ccp(8, 886));
+        Sprite* dropChest = GemUtils::GetSprite("ui/diaoluoxiaoke_xiangzi.png");
+        dropChest->setAnchorPoint(Vec2(0, 1));
+        dropChest->setPosition(Vec2(8, 886));
         this->addChild(dropChest);
         
         mDropCountLabel = CCLabelBMFont::create("0", "bmfont/Junegull_28_yellow.fnt");
-        mDropCountLabel->setAnchorPoint(ccp(0, 0));
+        mDropCountLabel->setAnchorPoint(Vec2(0, 0));
         mDropCountLabel->setPosition(32, -4);
-        mDropCountLabel->setScale(contentScale());
+		mDropCountLabel->setScale(Director::getInstance()->getContentScaleFactor());
         dropChest->addChild(mDropCountLabel);
     }
     
@@ -180,18 +181,18 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         CCMenuItem* item = CCMenuItemSprite::create(GemUtils::GetSprite("ui/zanting.png"),
                                                     GemUtils::GetSprite("ui/zanting.png"));
         item->setTarget(this, menu_selector(BoardLayer::promptForMenu));
-        item->setAnchorPoint(ccp(0, 1));
-        item->setPosition(ccp(5, 955));
+        item->setAnchorPoint(Vec2(0, 1));
+        item->setPosition(Vec2(5, 955));
         
-        menu->setPosition(ccp(0, 0));
+        menu->setPosition(Vec2(0, 0));
         menu->addChild(item);
 
 #if PH_DEBUG_BUILD == 1
         CCLabelTTF * debug_tips = CCLabelTTF::create("无敌模式", FONT_CN, 30);
         this->mDebugItem = CCMenuItemLabel::create(debug_tips);
         this->mDebugItem->setTarget(this, menu_selector(BoardLayer::promptForDebugMode));
-        this->mDebugItem->setAnchorPoint(ccp(0.5,0.5));
-        this->mDebugItem->setPosition(ccp(130,940));
+        this->mDebugItem->setAnchorPoint(Vec2(0.5,0.5));
+        this->mDebugItem->setPosition(Vec2(130,940));
         menu->addChild(this->mDebugItem);
 #endif
 
@@ -199,7 +200,7 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         
         mExitMenu = menu;
     }
-
+#if 0
     {
         mPlayer = createPlayerFromTeam(team);
         mResult = BoardResultPtr(new BoardResult(mPlayer->team));
@@ -218,7 +219,7 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         this->mStats.refMaxCombo = this->mLevel.maxCombo;
         this->mStats.refRound = this->mLevel.refRound;
     }
-    
+#endif    
     {
         mTargetCross = GemUtils::GetSprite("ui/baxin.png");
         mTargetCross->setOpacity(0);
@@ -234,7 +235,7 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         for(int si = 0; si < level.avoidGems.size() && si < 3; si++)
         {
             std::string lower = level.avoidGems[si];
-            algorithm::to_lower(lower);
+            //algorithm::to_lower(lower);
             if(lower == "random")
             {
                 // random color, including health
@@ -458,10 +459,10 @@ void BoardLayer::enableUI()
     //for(HeroControl* hc : mPlayer->team)
     //    hc->icon->setEnabled(true);
 }
-    
+#if 0 
 PlayerControlPtr BoardLayer::createPlayerFromTeam(const HeroList& team)
 {
-    CCPoint p = ccp(1, 560);
+    Vec2oint p = Vec2(1, 560);
     // Create and layout player related data and UI
     PlayerControlPtr player = make_shared<PlayerControl>(p, PlayerControl::PVE_PLAYER);
     
@@ -477,7 +478,7 @@ PlayerControlPtr BoardLayer::createPlayerFromTeam(const HeroList& team)
         
         float xbase = 1 + 106*i;
         float ybase = 560;
-        CCPoint p = ccp(xbase+4, ybase+4);
+        Vec2oint p = Vec2(xbase+4, ybase+4);
         
         HeroControl* hc = new HeroControl(h, p, false);
         hc->setOnClick([=](HeroIconItem* item)
@@ -492,7 +493,7 @@ PlayerControlPtr BoardLayer::createPlayerFromTeam(const HeroList& team)
                                                         skill.name,
                                                         skill.desc,
                                                         toStr(hc->maxEnergy),
-                                                        CCPoint(320, 300),
+                                                        Vec2oint(320, 300),
                                                         [=](){ castHeroSkill(item); },
                                                         [=](){ onAlertSkillCastCancelled(); } );
                            }
@@ -566,8 +567,8 @@ TaskPtr BoardLayer::loadRound(RoundInfo& round)
         
         // root node
         float leftx = step * (i+1) - moveLeft;
-        e->root->setPosition(ccp(leftx, 660));
-        e->root->setAnchorPoint(ccp(0.5f, 0.0f));
+        e->root->setPosition(Vec2(leftx, 660));
+        e->root->setAnchorPoint(Vec2(0.5f, 0.0f));
 
         this->addChild(e->root);
         
@@ -584,7 +585,7 @@ TaskPtr BoardLayer::loadRound(RoundInfo& round)
     return batch;
 }
 
-    
+
 void BoardLayer::castHeroSkill(CCObject* sender)
 {
     HeroControl* hc = ((HeroIconItem*)sender)->getHeroControl();
@@ -887,7 +888,7 @@ TaskPtr BoardLayer::applyComboModWithAnim(const BoardResult& result,
         
         if(i >= mPlayer->minComboCount)
         {
-            CCSprite* comboText = result.comboTextList[i - mPlayer->minComboCount];
+            Sprite* comboText = result.comboTextList[i - mPlayer->minComboCount];
             numberBatch << createComboTextFadeRemove(comboText, i);
         }
         
@@ -1093,7 +1094,7 @@ TaskPtr BoardLayer::calcDamageForTarget(const float attack,
         seq << createOrb(this, ec->center(), getHealthCenter(), false);
         seq << createFloatText(this,
                                -reflect,
-                               ccp(320,540),
+                               Vec2(320,540),
                                GemUtils::Health,
                                0.f)
             << TaskSound::make("sound/v/player_hit.mp3")
@@ -1173,8 +1174,8 @@ TaskPtr BoardLayer::removeDeadEnemies()
             {
                 int star = ec->info.drop->profile->star;
                 std::string iconPath = std::string("heroes/diaoluo") + toStr(star) + "_body.png";
-                CCSprite* drop = GemUtils::GetSprite(iconPath.c_str());
-                drop->setAnchorPoint(ccp(0.5, 0));
+                Sprite* drop = GemUtils::GetSprite(iconPath.c_str());
+                drop->setAnchorPoint(Vec2(0.5, 0));
                 drop->setPosition(ec->getPosition());
                 drop->setOpacity(0);
                 
@@ -1195,8 +1196,8 @@ TaskPtr BoardLayer::removeDeadEnemies()
             }
             else if(ec->info.soulDrop)
             {
-                CCSprite* drop = GemUtils::GetSprite("ui/hunpo.png");
-                drop->setAnchorPoint(ccp(0.5, 0));
+                Sprite* drop = GemUtils::GetSprite("ui/hunpo.png");
+                drop->setAnchorPoint(Vec2(0.5, 0));
                 drop->setPosition(ec->getPosition());
                 drop->setOpacity(0);
                 
@@ -1224,16 +1225,17 @@ TaskPtr BoardLayer::removeDeadEnemies()
     << seq
     << batch;
 }
-
+#endif
 void BoardLayer::finishWithVictory()
 {
+#if 0
     if(this->mStartPromptForRevival)
         return;
     
     // disable battle UI
     disableUI();
     
-    mTaskQueue.enqueue( createVictoryAnim(this, ccp(320, 800)) );
+    mTaskQueue.enqueue( createVictoryAnim(this, Vec2(320, 800)) );
     
     mTaskQueue.enqueue(TaskLambda::make([=]()
     {
@@ -1244,6 +1246,7 @@ void BoardLayer::finishWithVictory()
             mTaskQueue.enqueue(TaskLambda::make([=]{ this->exitScene(true); }));
         });
     }));
+#endif
 }
 
 void BoardLayer::returnToMainMenu()
@@ -1253,6 +1256,7 @@ void BoardLayer::returnToMainMenu()
     
 GemUtils::GemColor BoardLayer::randGemWeighted()
 {
+#if 0
     auto batch = TaskBatch::make();
     
     float gemWeights[GemUtils::AllColor];
@@ -1298,18 +1302,20 @@ GemUtils::GemColor BoardLayer::randGemWeighted()
     }
     
     phassert(false && "should never get here");
+#endif
     return GemUtils::Fire;
 }
     
 bool BoardLayer::isRoundDone()
 {
-    if(mEnemyList.size() != 0 || mDivisionEnemyList.size() != 0)
-        return false;
+    //if(mEnemyList.size() != 0 || mDivisionEnemyList.size() != 0)
+    //    return false;
     return true;
 }
 
 void BoardLayer::loadNextRoundIfDone()
 {
+#if 0
     if(!this->isRoundDone()) return;
     
     onLoadNextRound();
@@ -1325,13 +1331,13 @@ void BoardLayer::loadNextRoundIfDone()
     
     {
         TaskBatchPtr hideDrops = TaskBatch::make();
-        for(CCSprite* s : mDropList)
+        for(Sprite* s : mDropList)
             hideDrops << TaskAnim::make(s, CCFadeOut::create(0.5f));
         seq << hideDrops;
         
         seq << TaskLambda::make([=]()
         {
-            for(CCSprite* s : mDropList)
+            for(Sprite* s : mDropList)
                 s->removeAllChildrenWithCleanup(true);
             mDropList.clear();
         });
@@ -1343,13 +1349,13 @@ void BoardLayer::loadNextRoundIfDone()
     mRoundIndex++;
     
     CCFiniteTimeAction* splashAction =
-    CCSequence::create(CCEaseElasticOut::create(CCMoveTo::create(0.6, ccp(320, 730)), 0.8f),
-                       CCEaseElasticIn::create(CCMoveTo::create(0.6, ccp(-400, 730)), 0.8f),
+    CCSequence::create(CCEaseElasticOut::create(CCMoveTo::create(0.6, Vec2(320, 730)), 0.8f),
+                       CCEaseElasticIn::create(CCMoveTo::create(0.6, Vec2(-400, 730)), 0.8f),
                        NULL);
     
     if(mRoundIndex < mLevel.roundList.size())
     {
-        mRoundBg->setPosition(ccp(1000, 730));
+        mRoundBg->setPosition(Vec2(1000, 730));
         std::string roundNum = toStr(mRoundIndex) + "/" + toStr(mLevel.roundList.size());
         mRoundText->setString(roundNum.c_str());
         
@@ -1358,7 +1364,7 @@ void BoardLayer::loadNextRoundIfDone()
     else
     {
         mBossRound->setVisible(true);
-        mBossRound->setPosition(ccp(1000, 730));
+        mBossRound->setPosition(Vec2(1000, 730));
         seq << TaskLambda::make([](){ playBG("sound/bg/boss.mp3"); });
         seq << TaskAnim::make(mBossRound, splashAction);
     }
@@ -1373,19 +1379,23 @@ void BoardLayer::loadNextRoundIfDone()
     seq << debutBatch;
     
     mTaskQueue.enqueue(seq);
+#endif
 }
     
-static void promptScriptError(EnemyControlPtr ec, const std::string& errorMessage)
+static void promptScriptError(/*EnemyControlPtr ec,*/ const std::string& errorMessage)
 {
+	/*
     std::string error = ec->info.nameCN + "(" + toStr(ec->info.hid) + ")\n" + ec->info.script.c_str() + ":\n" + errorMessage;
     SystemInform::alertMessage(runningScene(),
                                error.c_str(),
                                "Script Error",
                                [](){});
+	*/
 }
     
 void BoardLayer::updateEnemyTurn(BoardResult& result)
 {
+#if 0
     {
         auto batch = TaskBatch::make();
         for(EnemyControlPtr ec : mEnemyList)
@@ -1415,7 +1425,7 @@ void BoardLayer::updateEnemyTurn(BoardResult& result)
     float totalDamage = 0.0f;
     float delay = 0.0f;
     
-    CCPoint playerCenter = getHealthCenter();
+    Vec2oint playerCenter = getHealthCenter();
     
     int enemyIndex = 0;
     for(EnemyControlPtr ec : mEnemyList)
@@ -1472,7 +1482,7 @@ void BoardLayer::updateEnemyTurn(BoardResult& result)
             {
                 damageBatch << createFloatText(this,
                                                -postDamage,
-                                               ccp(320, 540),
+                                               Vec2(320, 540),
                                                GemUtils::Health,
                                                0.15f);
             }
@@ -1545,11 +1555,13 @@ void BoardLayer::updateEnemyTurn(BoardResult& result)
             this->afterEnemyAttack();
         }));
     }
+#endif
 }
     
 TaskPtr BoardLayer::removeDeadPlayer()
 {
     TaskSequencePtr seq = TaskSequence::make();
+#if 0
     if(mPlayer->isDead())
     {
         // special handling of player death?
@@ -1560,20 +1572,21 @@ TaskPtr BoardLayer::removeDeadPlayer()
         {
             mStartPromptForRevival = true;
             // Player killed
-            seq << createDefeatAnim(this, ccp(320, 800));
+            seq << createDefeatAnim(this, Vec2(320, 800));
             seq << TaskLambda::make([=]()
             {
                 promptForRevival();
             });
         }
     }
+#endif
     return seq;
 }
 
 TaskPtr BoardLayer::updatePlayerPoison()
 {
     auto batch = TaskBatch::make();
-    
+#if 0
     //if(mPlayer->poison.has() && mPlayer->isAlive())
     if ( mPlayer->buffGroup.invokeBuffWhen("poison", batch,
         [=](BuffPtr){ return mPlayer->isAlive(); }))
@@ -1582,14 +1595,14 @@ TaskPtr BoardLayer::updatePlayerPoison()
         damage = std::min(damage, mPlayer->getHealth() - 1); // leave player with 1 health
         batch << mPlayer->hit(damage, NULL);
     }
-    
+#endif
     return batch;
 }
 
 TaskPtr BoardLayer::updatePlayerSuckBlood()
 {
     TaskSequencePtr seq = TaskSequence::make();
-
+#if 0 
     //if(this->mPlayer->isAlive())
     if( mPlayer->buffGroup.invokeBuffWhen("bloodSucker", seq,
         [=](BuffPtr){ return mPlayer->isAlive(); }))
@@ -1629,7 +1642,7 @@ TaskPtr BoardLayer::updatePlayerSuckBlood()
             << healWithAnim(this, mPlayer.get(), max)
             << removeDeadEnemies();
     }
-
+#endif
     return seq;
 }
     
@@ -1638,7 +1651,7 @@ TaskPtr BoardLayer::updatePlayerSuckBlood()
 TaskPtr BoardLayer::updatePlayerTurn(BoardResult& result)
 {
     TaskSequencePtr seq = TaskSequence::make();
-    
+#if 0
     if(mPlayer->passiveBleeding.isValid() && mPlayer->isAlive())
     {
         float damage = sumPP(mPlayer->passiveBleeding);
@@ -1678,14 +1691,14 @@ TaskPtr BoardLayer::updatePlayerTurn(BoardResult& result)
         
         seq << batch;
     }
-    
+#endif
     return seq;
 }
 
 TaskPtr BoardLayer::updateGemTurn()
 {
     auto ret = TaskSequence::make();
-    
+#if 0
     ret << TaskSound::make("sound/v/player_hit.mp3");
     ret << mBoardControl->updateGemGrid();
     
@@ -1702,13 +1715,13 @@ TaskPtr BoardLayer::updateGemTurn()
     }
     
     ret << mBoardControl->fillBoard([=](){ return randGemWeighted(); }, false);
-    
+#endif
     return ret;
 }
     
 void BoardLayer::update(float dt)
 {
-    mStats.gameTimeSinceLevelStart += dt;
+    //mStats.gameTimeSinceLevelStart += dt;
     mTaskQueue.update(dt);
 }
     
@@ -1716,6 +1729,7 @@ static std::set<CCNode*> nodeMap;
 
 static void _initRefMap(CCNode* root)
 {
+#if 0
     nodeMap.insert(root);
     
     CCArray* children = root->getChildren();
@@ -1724,6 +1738,7 @@ static void _initRefMap(CCNode* root)
         CCNode* node = (CCNode*)children->objectAtIndex(i);
         _initRefMap(node);
     }
+#endif
 }
     
 static void initRefMap(CCNode* root)
@@ -1757,7 +1772,7 @@ void BoardLayer::onTurn()
     mTaskQueue.enqueue(TaskLambda::make([=](){ this->onStartTurn(); }));
     
     this->disableUI();
-    
+#if 0
     fillSweepUntilDone(mResult);
     
     // if still got moves, simply reanble UI
@@ -1776,12 +1791,13 @@ void BoardLayer::onTurn()
     {
         this->startTurn();
     }
+#endif
 }
 
 void BoardLayer::startTurn()
 {
     mTaskQueue.enqueue( removeDeadPlayer() );
-    
+#if 0
     {
         if( mPlayer->passiveShiled.isValid() )
         {
@@ -1866,10 +1882,12 @@ void BoardLayer::startTurn()
         showDragHintWithDelay(0.f);
         this->onEndOfTurn();
     }));
+#endif
 }
     
 void BoardLayer::exitScene(bool isVictory)
 {
+#if 0
     // this is the end of all tasks, clear task queue.
     mTaskQueue.clear();
     
@@ -1884,10 +1902,12 @@ void BoardLayer::exitScene(bool isVictory)
     {
         transitionToGameScene(false, make_shared<Player>());
     }
+#endif
 }
     
 void BoardLayer::sendVictoryRequest()
 {
+#if 0
     std::string token = PlayerData::getInstance()->getToken();
     std::string levelId = mLevel.id;
     
@@ -1933,8 +1953,9 @@ void BoardLayer::sendVictoryRequest()
                                       levelId,
                                       opLevel,
                                       endLevel);
+#endif
 }
-    
+#if 0
 void BoardLayer::transitionToGameScene(bool isVictory, PlayerPtr newPlayer)
 {   
     for(auto& s : PlayerData::getInstance()->instanceStageList)
@@ -1993,9 +2014,10 @@ void BoardLayer::transitionToGameScene(bool isVictory, PlayerPtr newPlayer)
         });
     });
 }
-    
+#endif
 void BoardLayer::fillSweepUntilDone(BoardResultPtr result)
 {
+	/*
     for(;;)
     { 
         mTaskQueue.enqueue( mBoardControl->fillBoard([=](){ return randGemWeighted(); },
@@ -2027,22 +2049,24 @@ void BoardLayer::fillSweepUntilDone(BoardResultPtr result)
     
     // this awkward callback exists only for tutorial mode
     mTaskQueue.enqueue(TaskLambda::make([=]() { this->onEndOfFillSweepCycle(); }));
+	*/
 }
     
 void BoardLayer::showDragHintWithDelay(float delay)
 {
-    this->scheduleOnce(schedule_selector(BoardLayer::showDragHint), delay);
+    //this->scheduleOnce(schedule_selector(BoardLayer::showDragHint), delay);
 }
     
 void BoardLayer::showArrowPath(const std::vector<int> & path,
                                int opacity)
 {
+#if 0
     TaskBatchPtr batch = TaskBatch::make();
 
     this->clearArrowPath();
     for(int i=0; i<path.size(); i++)
     {
-        CCSprite * arrow = NULL;
+        Sprite * arrow = NULL;
         
         if(i != path.size() -1 && i!=0 &&
            path[i]-path[i-1] != path[i+1]-path[i])
@@ -2083,7 +2107,7 @@ void BoardLayer::showArrowPath(const std::vector<int> & path,
             if(delta == -skBoardWidth) arrow->setRotation(-90);
         }
     
-        arrow->setAnchorPoint(ccp(0.5f, 0.5f));
+        arrow->setAnchorPoint(Vec2(0.5f, 0.5f));
         Vec2 pos(path[i]% skBoardWidth , path[i] / skBoardWidth);
         arrow->setPosition(g2w_center(pos));
         
@@ -2097,17 +2121,21 @@ void BoardLayer::showArrowPath(const std::vector<int> & path,
     }
     //printf("\n");
     this->mTaskQueue.enqueue(batch);
+#endif
 }
     
 void BoardLayer::showDragHint()
 {
+#if 0
     if(!GameConfig::shared()->showDragHint || this->mIsTutorialMode || !this->mShowDragHintInTurn) return;
     std::vector<int> path = genReasonableFingerPath(mBoardControl->getGrid());
     this->showArrowPath(path);
+#endif
 }
     
 void BoardLayer::clearArrowPath()
 {
+#if 0
     TaskBatchPtr batch = TaskBatch::make();
     for(auto & item : this->mDragHint)
     {
@@ -2123,12 +2151,14 @@ void BoardLayer::clearArrowPath()
     this->mDragHint.clear();
     
     this->mTaskQueue.enqueue(batch);
+#endif
 }
 
 static bool moveStarted = false;
     
 void BoardLayer::endDrag()
 {
+#if 0
     this->clearArrowPath();
     
     mCurrTouch = NULL;
@@ -2137,7 +2167,7 @@ void BoardLayer::endDrag()
     
     if(mDragGem != NULL)
     {
-        mDragGem->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         mDragGem->root->setPosition(g2w_center(mDragGem->position));
         mDragGem.reset();
     
@@ -2161,17 +2191,19 @@ void BoardLayer::endDrag()
     disableUI();
     
     mTaskQueue.enqueue(TaskLambda::make([=](){ this->onTurn();} ));
+#endif
 }
 
 // default implements are used to call script callback if exist
-bool BoardLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
+bool BoardLayer::onTouchBegan(Touch* touch, Event* ev)
 {
+	/*
     if(mCurrTouch)
         return false;
     else
         mCurrTouch = touch;
     
-    CCPoint p = this->convertTouchToNodeSpace(touch);
+    Vec2oint p = this->convertTouchToNodeSpace(touch);
     
     Vec2 gp = w2g(p);
     mDragGem.reset();
@@ -2184,8 +2216,8 @@ bool BoardLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
         {
             mDragGem = pGem;
             
-            CCSprite* sprite = mDragGem->root;
-            sprite->setAnchorPoint(ccp(0.5, 0.25));
+            Sprite* sprite = mDragGem->root;
+            sprite->setAnchorPoint(Vec2(0.5, 0.25));
             
             // force this sprite on top of all others
             sprite->removeFromParentAndCleanup(false);
@@ -2198,12 +2230,14 @@ bool BoardLayer::ccTouchBegan(CCTouch* touch, CCEvent* event)
             return true;
         }
     }
+	*/
     return true;
 }
 
-void BoardLayer::ccTouchMoved(CCTouch *touch, CCEvent *event)
+void BoardLayer::onTouchMoved(Touch* touch, Event* ev)
 {
-    CCPoint p = this->convertTouchToNodeSpace(touch);
+	/*
+    Vec2oint p = this->convertTouchToNodeSpace(touch);
     
     mPlayer->moveTimer.setPosition(p);
     
@@ -2213,7 +2247,7 @@ void BoardLayer::ccTouchMoved(CCTouch *touch, CCEvent *event)
         p.x = clampx(p.x, 0.0f, 620.0f);
         p.y = clampx(p.y, 0.0f, 515.0f);
         
-        mDragGem->root->setAnchorPoint(ccp(0.5, 0.25));
+        mDragGem->root->setAnchorPoint(Vec2(0.5, 0.25));
         mDragGem->root->setPosition(p);
         Vec2 gp = w2g(p);
         
@@ -2253,10 +2287,12 @@ void BoardLayer::ccTouchMoved(CCTouch *touch, CCEvent *event)
             }
         }
     }
+	*/
 }
     
-void BoardLayer::ccTouchEnded(CCTouch *touch, CCEvent *event)
+void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
 {
+	/*
     mCurrTouch = NULL;
     
     // TODO: merge this ugliness to endDrag
@@ -2269,7 +2305,7 @@ void BoardLayer::ccTouchEnded(CCTouch *touch, CCEvent *event)
         {
             mTaskQueue.enqueue(batch);
             
-            mDragGem->root->setAnchorPoint(ccp(0.5f, 0.5f));
+            mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
             mDragGem->root->setPosition(g2w_center(mDragGem->position));
             mDragGem.reset();
             
@@ -2290,7 +2326,7 @@ void BoardLayer::ccTouchEnded(CCTouch *touch, CCEvent *event)
         {
             CCRect bound = ec->sprite->boundingBox();
             
-            CCPoint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
+            Vec2oint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
             
             if(bound.containsPoint(touchPointLocal))
             {
@@ -2309,12 +2345,13 @@ void BoardLayer::ccTouchEnded(CCTouch *touch, CCEvent *event)
             }
         }
     }
+	*/
 }
 
-void BoardLayer::ccTouchCancelled(CCTouch *touch, CCEvent *event)
+void BoardLayer::onTouchCancelled(Touch* touch, Event* ev)
 {
-    LOGD("touch cancelled\n");
-    ccTouchEnded(touch, event);
+    log("touch cancelled\n");
+    //ccTouchEnded(touch, event);
 }
     
 }

@@ -4,6 +4,7 @@
 #include "Gestures/GestureRecognizerUtils.h"
 #include "Gestures/SwipeGestureRecognizer.h"
 #include "Colors.h"
+#include "Board.h"
 
 USING_NS_CC;
 
@@ -35,6 +36,10 @@ void GameScene::initGui() {
     auto centerX = origin.x + visibleSize.width /2;
     auto centerY = origin.y + visibleSize.height/2;
     
+	PH::LevelInfo level;
+	PH::BoardLayer* layer = PH::BoardLayer::create(BOARD_WIDTH, BOARD_HEIGHT, level);
+	this->addChild(layer);
+
     _fieldGUI->setPosition(Vec2(centerX, centerY));
     this->addChild(_fieldGUI, 10);
 }
