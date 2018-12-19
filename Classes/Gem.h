@@ -10,8 +10,8 @@
 //#include "BuffGroup.h"
 
 #include "SerializationUtils.h"
-//#include "Task.h"
-//#include "GemUtils.h"
+#include "Task.h"
+#include "GemUtils.h"
 
 
 
@@ -39,50 +39,10 @@ struct GemUtils {  // tolua_export
 	// tolua_end
 };
 
-
-class Task
-{
-public:
-	enum Type
-	{
-		ANIM,
-		SOUND,
-		SEQUENCE,
-		BATCH,
-		LAMBDA,
-		EMPTY,
-		DQIGNORE,
-	};
-
-	Task(Type t, const std::string& tg) : type(t), tag(tg), done(false) {}
-	virtual ~Task() {}
-
-	virtual bool isDone() const { return done; }
-	Type getType() const { return type; }
-	std::string getTag() const { return tag; }
-
-	void setLocation(std::string l) { location = l; }
-
-	virtual void debugPrint(const std::string & prefix) {
-		std::string pattern = prefix + "%s\n";
-		printf(pattern.c_str(), tag.c_str());
-	}
-
-protected:
-	Type type;
-	const std::string tag;
-	bool done;
-
-	std::string location;
-};
-
-typedef shared_ptr<Task> TaskPtr;
-
-
 namespace PH { // tolua_export
     
     //class BoardControl;
-    
+
     class Gem;
     typedef std::shared_ptr<Gem> GemPtr;
     
@@ -122,7 +82,9 @@ namespace PH { // tolua_export
         
         virtual void vSerialize(rapidjson::Value& o, rapidjson::Document::AllocatorType& alloc) const;
         virtual void vDeserialize(rapidjson::Value& o);
-        
+
+		virtual bool init(GemUtils::GemColor color, int turn);
+
         static GemPtr make(GemUtils::GemColor col, int turn=-1)
         {
             GemPtr ret(new Gem);
@@ -130,7 +92,6 @@ namespace PH { // tolua_export
                 ret.reset();
             return ret;
         }
-        virtual bool init(GemUtils::GemColor color, int turn);
         
         // --- accessor ---
         virtual GemUtils::GemColor color() const { return mColor; }

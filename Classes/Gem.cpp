@@ -1,16 +1,16 @@
 ﻿#include "Gem.h"
 //#include "boost/algorithm/string.hpp"
 //#include "Utils.h"
-//#include "Task.h"
-//#include "Animation/CCCallLambda.h"
+#include "Task.h"
+#include "CCCallLambda.h"
 //#include "BoardControls.h"
 //#include "Board.h"
 //#include "PlayerControl.h"
 namespace PH
 {
     static const float kGemInterval = 0.5f;
-    //const size_t Gem::kGemWidthPixel = 107;
-    //const size_t Gem::kGemHeightPixel = 107;
+    const size_t Gem::kGemWidthPixel = 107;
+    const size_t Gem::kGemHeightPixel = 107;
     
 //    
 //    TaskPtr Gem::attachDarts(int turn,
@@ -63,8 +63,9 @@ namespace PH
         if(this->root == NULL) return;
         
         //float time = kGemInterval;
-        
-        this->mCountdown = CCLabelBMFont::create(toStr(mTurn).c_str(),
+		std::stringstream stream;
+		stream << mTurn;
+        this->mCountdown = CCLabelBMFont::create(stream.str(),
                                                 "bmfont/Molot_32_Energy.fnt");
         this->mCountdown->setAnchorPoint(ccp(0.5f, 0.5f));
         this->mCountdown->setPosition(Gem::kGemWidthPixel * 0.60f,
@@ -72,27 +73,30 @@ namespace PH
         
         this->root->addChild(this->mCountdown);
         this->mCountdown->setOpacity(255);
-        this->mCountdown->setScale(contentScale()*0.8f);
+        this->mCountdown->setScale(Director::getInstance()->getContentScaleFactor()*0.8f);
     }
     
     TaskPtr Gem::updateCountdown()
     {
         if(this->mCountdown == NULL ) return TaskIgnore::make();
         
-        auto pre = CCSpawn::create(CCScaleTo::create(0.25f, contentScale()*2),
+        auto pre = CCSpawn::create(CCScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()*2),
                                    CCFadeTo::create(0.25f, 155),
                                    NULL);
         
-        auto rev = CCSpawn::create(CCScaleTo::create(0.25f, contentScale()),
+        auto rev = CCSpawn::create(CCScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()),
                                    CCFadeTo::create(0.25f, 255),
                                    NULL);
         
+
         auto action = CCCallLambda::create([=]()
         {
-            this->mCountdown->setString(toStr(this->mTurn).c_str());
+			std::stringstream stream;
+			stream << mTurn;
+            this->mCountdown->setString(stream.str());
         });
         return TaskAnim::make(this->mCountdown,
-                              CCSequence::create(pre,rev,action,NULL), false);
+                              Sequence::create(pre,rev,action,NULL), false);
     }
     
     bool Gem::init(GemUtils::GemColor c, int turn)
@@ -100,7 +104,7 @@ namespace PH
         mColor  = c;
         mTurn   = turn;
     
-        this->root = GetSprite(GemUtils::res(c));
+        this->root = GemUtils::GetSprite(GemUtils::res(c));
         this->root->setAnchorPoint(ccp(0.5f, 0.5f));
         this->root->retain();
         
@@ -156,7 +160,7 @@ namespace PH
         this->mColor = col;
         seq << TaskLambda::make([=]()
                                 {
-                                    this->root->setDisplayFrame(GetSprite(res)->displayFrame());
+                                    this->root->setDisplayFrame(GemUtils::GetSprite(res)->displayFrame());
                                 });
         seq << this->fadeIn(time);
         return seq;
@@ -167,17 +171,17 @@ namespace PH
         return this->modifyDisplayFrameWithPatternAndColor("gem_%s.png", toColor);
     }
     
-    TaskPtr Gem::moveTo(const Vec2i &dst, float time)
+    TaskPtr Gem::moveTo(const Vec2 &dst, float time)
     {
         if(time <= 0.f) time = kGemInterval;
         
         CCFiniteTimeAction * act = NULL;
-        act = CCEaseElasticOut::create(CCMoveTo::create(time,
-                                                        g2w_center(this->position)),
+        act = CCEaseElasticOut::create(CCMoveTo::create(time, g2w_center(this->position)),
                                        1.2f);
         return TaskAnim::make(this->root, act, false);
     }
     
+	/*
     TaskPtr Gem::sweep(BoardControl* ctrl)
     {
         auto batch = TaskBatch::make();
@@ -192,12 +196,12 @@ namespace PH
     {
         return TaskIgnore::make();
     }
-    
+    */
     // if two gems are neighboring and same color
     bool isSameColorNeighbor(const GemPtr l, const GemPtr r)
     {
-        Vec2i dis = (l->position - r->position);
-        return ((std::abs(dis[0]) + std::abs(dis[1])) <= 1) && r->color() == l->color();
+        Vec2 dis = (l->position - r->position);
+        return ((std::abs(dis.x) + std::abs(dis.y)) <= 1) && r->color() == l->color();
     }
     
     // if a gem is in or neighboring a set with the same color
@@ -224,7 +228,7 @@ namespace PH
         return cross;
     }
     
-	/*
+#if 0
     // --- hand ---
     bool HandGem::init(GemUtils::GemColor col, int t, float d)
     {
@@ -630,5 +634,5 @@ namespace PH
     {
         return this->modifyDisplayFrameWithPatternAndColor("shield_%s_1.png", toColor);
     }
+#endif
 }
-*/

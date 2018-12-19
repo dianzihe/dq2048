@@ -8,12 +8,13 @@
 #pragma once
 
 #include <list>
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/function.hpp>
 #include <cocos2d.h>
 
 namespace PH
 {
+	using namespace std;
     USING_NS_CC;
     
     class Task
@@ -52,11 +53,11 @@ namespace PH
         std::string location;
     };
     
-    typedef boost::shared_ptr<Task> TaskPtr;
+    typedef shared_ptr<Task> TaskPtr;
 
     
     class TaskEmpty;
-    typedef boost::shared_ptr<TaskEmpty> TaskEmptyPtr;
+    typedef shared_ptr<TaskEmpty> TaskEmptyPtr;
     
     struct TaskEmpty : public Task
     {
@@ -69,11 +70,11 @@ namespace PH
     
     
     class TaskIgnore;
-    typedef boost::shared_ptr<TaskIgnore> TaskIgnorePtr;
+    typedef shared_ptr<TaskIgnore> TaskIgnorePtr;
     
     struct TaskIgnore : public Task
     {
-        TaskIgnore() : Task(IGNORE, "Ignore") {}
+        TaskIgnore() : Task(DQIGNORE, "Ignore") {}
         static TaskIgnorePtr make()
         {
             return TaskIgnorePtr(new TaskIgnore());
@@ -82,14 +83,14 @@ namespace PH
     
     
     class TaskLambda;
-    typedef boost::shared_ptr<TaskLambda> TaskLambdaPtr;
+    typedef shared_ptr<TaskLambda> TaskLambdaPtr;
     
     struct TaskLambda : public Task
     {
-        boost::function<void ()> func;
-        TaskLambda(boost::function<void ()> f) : Task(LAMBDA, "Lambda"), func(f) {}
+        function<void ()> func;
+        TaskLambda(function<void ()> f) : Task(LAMBDA, "Lambda"), func(f) {}
         
-        static TaskLambdaPtr make(boost::function<void()> f)
+        static TaskLambdaPtr make(function<void()> f)
         {
             return TaskLambdaPtr(new TaskLambda(f));
         }
@@ -97,7 +98,7 @@ namespace PH
     
     
     class TaskAnim;
-    typedef boost::shared_ptr<TaskAnim> TaskAnimPtr;
+    typedef shared_ptr<TaskAnim> TaskAnimPtr;
     
     struct TaskAnim : public Task
     {
@@ -162,7 +163,7 @@ namespace PH
     
     
     class TaskSound;
-    typedef boost::shared_ptr<TaskSound> TaskSoundPtr;
+    typedef shared_ptr<TaskSound> TaskSoundPtr;
     
     struct TaskSound : public Task
     {
@@ -179,7 +180,7 @@ namespace PH
     };
     
     class TaskBatch;
-    typedef boost::shared_ptr<TaskBatch> TaskBatchPtr;
+    typedef shared_ptr<TaskBatch> TaskBatchPtr;
     
     class TaskBatch : public Task
     {
@@ -192,7 +193,7 @@ namespace PH
         {
             assert(p != NULL && "task pointer is NULL");
             
-            if(p->getType() == Task::IGNORE)
+            if(p->getType() == Task::DQIGNORE)
                 return;
 
             list.push_back(p);
@@ -234,7 +235,7 @@ namespace PH
 
     
     class TaskSequence;
-    typedef boost::shared_ptr<TaskSequence> TaskSequencePtr;
+    typedef shared_ptr<TaskSequence> TaskSequencePtr;
     
     class TaskSequence : public Task
     {
@@ -247,7 +248,7 @@ namespace PH
         {
             assert(p != NULL && "task pointer is NULL");
             
-            if(p->getType() == Task::IGNORE)
+            if(p->getType() == Task::DQIGNORE)
                 return;
             
             list.push_back(p);

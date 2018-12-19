@@ -7,8 +7,8 @@
 //
 
 #include "Task.h"
-#include "Common.h"
-#include "extensions/utils.h"
+//#include "Common.h"
+//#include "extensions/utils.h"
 
 // execute at most 5 jobs in a sequence in one update,
 // this avoids slowing down current frame by too much.
@@ -18,7 +18,7 @@ namespace PH
 {
     void TaskSound::launch()
     {
-        ring(file.c_str());
+        //ring(file.c_str());
         done = true;
     }
     
@@ -54,7 +54,7 @@ namespace PH
         
         if(task->getType() == Task::BATCH)
         {
-            TaskBatchPtr t = boost::static_pointer_cast<TaskBatch>(task);
+            TaskBatchPtr t = static_pointer_cast<TaskBatch>(task);
             for(std::list<TaskPtr>::iterator i=t->list.begin(); i != t->list.end();)
             {
                 if(process(dt, *i))
@@ -67,7 +67,7 @@ namespace PH
         }
         else if(task->getType() == Task::SEQUENCE)
         {
-            TaskSequencePtr t = boost::static_pointer_cast<TaskSequence>(task);
+            TaskSequencePtr t = static_pointer_cast<TaskSequence>(task);
             for(int j=0; j< MAX_CURRENT_JOBS && !t->isDone(); j++)
             {
                 TaskPtr head = t->list.front();
@@ -84,7 +84,7 @@ namespace PH
         }
         else if(task->getType() == Task::ANIM)
         {
-            TaskAnimPtr anim = boost::static_pointer_cast<TaskAnim>(task);
+            TaskAnimPtr anim = static_pointer_cast<TaskAnim>(task);
             
             if(!anim->node->isRunning())
                 return true;
@@ -99,7 +99,7 @@ namespace PH
                 int ref = (int)anim->node->getUserData();
                 if(ref != anim->runningCount)
                 {
-                    LOGD("overwriting previous anmation %d %d\n", ref, anim->runningCount);
+                    log("overwriting previous anmation %d %d\n", ref, anim->runningCount);
                     return true;
                 }
             }
@@ -108,7 +108,7 @@ namespace PH
         }
         else if(task->getType() == Task::SOUND)
         {
-            TaskSoundPtr sound = boost::static_pointer_cast<TaskSound>(task);
+            TaskSoundPtr sound = static_pointer_cast<TaskSound>(task);
             
             if(!sound->isDone())
                 sound->launch();
@@ -116,18 +116,18 @@ namespace PH
         }
         else if(task->getType() == Task::LAMBDA)
         {
-            TaskLambdaPtr t = boost::static_pointer_cast<TaskLambda>(task);
+            TaskLambdaPtr t = static_pointer_cast<TaskLambda>(task);
             t->func();
             
             return true;
         }
-        else if(task->getType() == Task::EMPTY || task->getType() == Task::IGNORE)
+        else if(task->getType() == Task::EMPTY || task->getType() == Task::DQIGNORE)
         {
             return true;
         }
         
-        LOGD("unknown task %s\n", task->getTag().c_str());
-        phassert(false && "Unknown task occured");
+        log("unknown task %s\n", task->getTag().c_str());
+        assert(false && "Unknown task occured");
         
         return true;
     }
