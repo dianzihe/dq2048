@@ -175,7 +175,7 @@ namespace PH
         
         void addGem(const Vec2& pos, GemPtr gem);
     public:
-        CCNode*     root;
+        Node*     root;
         float       damageFromGems;
         
         // --- IObject ---

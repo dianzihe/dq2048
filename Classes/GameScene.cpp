@@ -41,7 +41,7 @@ void GameScene::initBG()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("battleMisc.plist");
 
 	background = PH::GemUtils::GetSprite("gameui/background.jpg");
-	background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
+	background->setPosition(winSize.width / 2, winSize.height / 2);
 	this->addChild(background);
 
 	//flowersDrop = FlowerDrop::create();

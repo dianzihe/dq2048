@@ -65,7 +65,7 @@ namespace PH
         //float time = kGemInterval;
 		std::stringstream stream;
 		stream << mTurn;
-        this->mCountdown = CCLabelBMFont::create(stream.str(),
+        this->mCountdown = LabelBMFont::create(stream.str(),
                                                 "bmfont/Molot_32_Energy.fnt");
         this->mCountdown->setAnchorPoint(ccp(0.5f, 0.5f));
         this->mCountdown->setPosition(Gem::kGemWidthPixel * 0.60f,
@@ -80,12 +80,12 @@ namespace PH
     {
         if(this->mCountdown == NULL ) return TaskIgnore::make();
         
-        auto pre = CCSpawn::create(CCScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()*2),
-                                   CCFadeTo::create(0.25f, 155),
+        auto pre = Spawn::create(ScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()*2),
+                                   FadeTo::create(0.25f, 155),
                                    NULL);
         
-        auto rev = CCSpawn::create(CCScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()),
-                                   CCFadeTo::create(0.25f, 255),
+        auto rev = Spawn::create(ScaleTo::create(0.25f, Director::getInstance()->getContentScaleFactor()),
+                                   FadeTo::create(0.25f, 255),
                                    NULL);
         
 
@@ -116,8 +116,8 @@ namespace PH
     TaskPtr Gem::fadeOut(float time)
     {
         if(time <= 0.f) time = kGemInterval;
-        CCFiniteTimeAction * act = NULL;//, * act2 = NULL;
-        act = CCSpawn::create(CCScaleTo::create(time, 0.90f),
+        FiniteTimeAction * act = NULL;//, * act2 = NULL;
+        act = Spawn::create(ScaleTo::create(time, 0.90f),
                               CCFadeOut::create(time),
                               NULL);
         
@@ -133,7 +133,7 @@ namespace PH
     {
         if(time <= 0.f) time = kGemInterval;
         
-        auto act = CCSpawn::create(CCEaseBounceOut::create(CCScaleTo::create(time, 1.f)),
+        auto act = Spawn::create(CCEaseBounceOut::create(ScaleTo::create(time, 1.f)),
                                    CCFadeIn::create(time), NULL);
         
         return TaskSequence::make()
@@ -175,8 +175,8 @@ namespace PH
     {
         if(time <= 0.f) time = kGemInterval;
         
-        CCFiniteTimeAction * act = NULL;
-        act = CCEaseElasticOut::create(CCMoveTo::create(time, g2w_center(this->position)),
+        FiniteTimeAction * act = NULL;
+        act = EaseElasticOut::create(MoveTo::create(time, g2w_center(this->position)),
                                        1.2f);
         return TaskAnim::make(this->root, act, false);
     }
@@ -236,11 +236,11 @@ namespace PH
         this->mTurn = t;
         this->mDamage = d;
         
-        auto scale = CCSequence::create(CCScaleTo::create(.5f, 1.025f),
-                                        CCScaleTo::create(.5f, 1.f), NULL);
-        auto blink = CCSequence::create(CCFadeTo::create(.5f, 255),
-                                        CCFadeTo::create(.5f, 235), NULL);
-        auto spawn = CCSpawn::create(scale, blink, NULL);
+        auto scale = CCSequence::create(ScaleTo::create(.5f, 1.025f),
+                                        ScaleTo::create(.5f, 1.f), NULL);
+        auto blink = CCSequence::create(FadeTo::create(.5f, 255),
+                                        FadeTo::create(.5f, 235), NULL);
+        auto spawn = Spawn::create(scale, blink, NULL);
         auto repeated = CCRepeatForever::create(spawn);
         
         this->root = GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", col));
@@ -292,7 +292,7 @@ namespace PH
             if(!parent) return TaskIgnore::make();
             
             auto medium = GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", this->mColor));
-            auto act = CCSpawn::create(CCScaleTo::create(0.5f, 2.0f),
+            auto act = Spawn::create(ScaleTo::create(0.5f, 2.0f),
                                        CCFadeOut::create(0.5f), NULL);
             medium->setAnchorPoint(ccp(0.5f, 0.5f));
             medium->setPosition(this->root->getPosition());
@@ -401,8 +401,8 @@ namespace PH
         
         chain->setOpacity(255);
         chain->setScale(0.75f);
-        CCFiniteTimeAction * act = NULL;//, * act2 = NULL;
-        act = CCSpawn::create(CCEaseBounceOut::create(CCScaleTo::create(kGemInterval, 1.f)),
+        FiniteTimeAction * act = NULL;//, * act2 = NULL;
+        act = Spawn::create(CCEaseBounceOut::create(ScaleTo::create(kGemInterval, 1.f)),
                               CCFadeIn::create(kGemInterval),
                               NULL);
         
@@ -494,7 +494,7 @@ namespace PH
     {
         if(time <= 0.f) time = kGemInterval;
         
-        auto act = CCSpawn::create(CCEaseBounceOut::create(CCScaleTo::create(time, 1.f)),
+        auto act = Spawn::create(CCEaseBounceOut::create(ScaleTo::create(time, 1.f)),
                                    CCFadeIn::create(time), NULL);
         
         return TaskSequence::make()
