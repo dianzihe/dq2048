@@ -9,8 +9,13 @@ NS_GAME_BEGIN
 class GameScene : public cocos2d::Scene
 {
 public:
+	Sprite* background;
+	Size winSize;
+
     static cocos2d::Scene* createScene();
-    
+	void loadPersistentTextureCache();
+	void loadTextureCache();
+	void initBG();
     CREATE_FUNC(GameScene);
     
 private:

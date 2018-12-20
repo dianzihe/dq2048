@@ -41,13 +41,13 @@ namespace PH
     // grid to world and vice versa
     inline Vec2 g2w(const Vec2& p)
     {
-        return ccp(p.x * skGemPixelWidth,
+        return Vec2(p.x * skGemPixelWidth,
                    p.y * skGemPixelHeight);
     }
     
     inline Vec2 g2w_center(const Vec2 & p)
     {
-        return ccp(p.x * skGemPixelWidth + skGemPixelWidth/2,
+        return Vec2(p.x * skGemPixelWidth + skGemPixelWidth/2,
                    p.y * skGemPixelHeight + skGemPixelHeight/2);
     }
 
@@ -90,6 +90,11 @@ namespace PH
         return Vec2(floorf(p.x / skGemPixelWidth),
                      floorf(p.y / skGemPixelHeight));
     }
+	inline bool resourcePresentForLoading(const std::string& filename)
+	{
+		std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filename.c_str());
+		return FileUtils::getInstance()->isFileExist(fullPath);
+	}
 	/*
 	template<class T> inline T norm2(const TVec2<T>& v) { 
 		return v * v; 

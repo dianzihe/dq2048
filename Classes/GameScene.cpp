@@ -5,6 +5,7 @@
 #include "Gestures/SwipeGestureRecognizer.h"
 #include "Colors.h"
 #include "Board.h"
+#include "GemUtils.h"
 
 USING_NS_CC;
 
@@ -17,6 +18,14 @@ Scene* GameScene::createScene() {
 bool GameScene::init() {
     if (!Scene::init()) return false;
 
+	loadPersistentTextureCache();
+	loadTextureCache();
+
+	winSize = CCDirector::sharedDirector()->getVisibleSize();
+
+	initBG();
+
+
     _fieldGUI = FieldGUI::create();
     _fieldGUI->setField(&_field);
     _field.init(_fieldGUI);
@@ -26,6 +35,59 @@ bool GameScene::init() {
 
     return true;
 }
+
+void GameScene::initBG()
+{
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("battleMisc.plist");
+
+	background = PH::GemUtils::GetSprite("gameui/background.jpg");
+	background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
+	this->addChild(background);
+
+	//flowersDrop = FlowerDrop::create();
+	//flowersDrop->setPosition(ccp(-50, winSize.height + 50));
+	//this->addChild(flowersDrop);
+
+	//    CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+	//playBG("sound/bg/ui.mp3");
+
+}
+
+void GameScene::loadPersistentTextureCache()
+{
+	log("load persistent texture\n");
+	for (int i = 0; i < 100; i++)
+	{
+		stringstream s;
+		s << "icons" << i << ".plist";
+
+		log("load plist %s\n", s.str());
+		if (PH::resourcePresentForLoading(s.str()))
+			SpriteFrameCache::getInstance()->addSpriteFramesWithFile(s.str());
+		else
+			break;
+	}
+
+	log("load plist alert.plist\n");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("alert.plist");
+	log("load plist gems.plist\n");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gems.plist");
+	log("load plist tutorialMisc.plist\n");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("tutorialMisc.plist");
+	//CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("sound/bg/ui.mp3");
+	log("done loading persistent texture\n");
+}
+
+void GameScene::loadTextureCache()
+{
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameuiBase.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameui.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameui1.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameui2.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameui3.plist");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameuiQiuAnim.plist");
+}
+
 
 void GameScene::initGui() {
     auto background = LayerColor::create(Colors::MainBack);

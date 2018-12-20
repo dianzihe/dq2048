@@ -9,9 +9,6 @@
 #pragma once
 
 #include "cocos2d.h"
-
-//#include "boost/function.hpp"
-//#include "boost/lexical_cast.hpp"
 #include <string>
 
 using namespace std;
@@ -33,10 +30,10 @@ public:
     virtual void execute();
     //super methods
     virtual void update(float time);
-    CCObject * copyWithZone(CCZone *pZone);
+    Ref * copyWithZone(CCZone *pZone);
 };
 
-class CCCountBMTextNumber : public CCActionInterval
+class CCCountBMTextNumber : public ActionInterval
 {
 private:
     float from;
@@ -44,8 +41,8 @@ private:
     float duration;
     float accTime;
     
-    CCNode* label;
-    CCLabelProtocol* labelAsProtocol;
+    Node* label;
+    LabelProtocol* labelAsProtocol;
     
     std::string postStr;
     
@@ -74,7 +71,7 @@ public:
     {
         assert(d != 0 && "duration cannot be NULL");
         
-        CCActionInterval::initWithDuration(d);
+        ActionInterval::initWithDuration(d);
         
         from = f;
         to = t;
@@ -86,7 +83,7 @@ public:
     
     virtual CCObject* copyWithZone (CCZone *pZone)
     {
-        CCZone* pNewZone = NULL;
+        void* pNewZone = NULL;
         CCCountBMTextNumber* pCopy = NULL;
         
 		/*
@@ -110,14 +107,14 @@ public:
         return pCopy;
     }
     
-    virtual void startWithTarget (CCNode *target)
+    virtual void startWithTarget (Node *target)
     {
-        CCActionInterval::startWithTarget(target);
+        ActionInterval::startWithTarget(target);
 
         label = target;
         label->retain();
         
-        labelAsProtocol = dynamic_cast<CCLabelProtocol*>(label);
+        labelAsProtocol = dynamic_cast<LabelProtocol*>(label);
     }
     
     virtual void update(float fraction)
@@ -165,7 +162,7 @@ public:
     
     virtual CCObject* copyWithZone (CCZone *pZone);
 
-    virtual void startWithTarget(CCNode *target);
+    virtual void startWithTarget(Node *target);
     virtual void update(float fraction);
 };
 #endif

@@ -139,7 +139,7 @@ namespace PH
 			return list;
 		}
 
-		void add(const GemSet& combo, CCSprite* comboText)
+		void add(const GemSet& combo, Sprite* comboText)
 		{
 			comboList.push_back(std::make_pair(combo.size(), (*combo.begin())->color()));
 			comboTextList.push_back(comboText);

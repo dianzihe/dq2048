@@ -70,7 +70,7 @@ namespace PH
         gemSets.push_back(merged);
     }
     
-    static CCPoint computeGemSetCenter(GemSet& set)
+    static Vec2 computeGemSetCenter(GemSet& set)
     {
         std::vector<GemPtr> sorted;
         sorted.insert(sorted.end(), set.begin(), set.end());
@@ -82,7 +82,7 @@ namespace PH
                   } );
         
         Vec2 c = sorted[sorted.size() / 2]->position;
-        CCPoint p = g2w_center(c);
+        Vec2 p = g2w_center(c);
         
         return p;
     }
@@ -129,24 +129,24 @@ namespace PH
     
     bool BoardControl::init()
     {
-        this->root = CCLayer::create();
+        this->root = Layer::create();
         if(this->root == NULL)
             return false;
         
         this->root->retain();
-        this->root->setPosition(ccp(0, 0));
+        this->root->setPosition(Vec2(0, 0));
         
         return true;
     }
     
     bool BoardControl::init(ColorGenerator gen)
     {
-        this->root = CCLayer::create();
+        this->root = Layer::create();
         if(this->root == NULL)
             return false;
         
         this->root->retain();
-        this->root->setPosition(ccp(0, 0));
+        this->root->setPosition(Vec2(0, 0));
         this->fillBoardFirstTime(gen);
         
         return true;
@@ -401,14 +401,14 @@ namespace PH
             
             //sweepSeq << createDelay(parent, 0.05f);
             
-            CCPoint setCenter = computeGemSetCenter(set);
+            Vec2 setCenter = computeGemSetCenter(set);
             
             // if this is not the first iteration.
             if(result->comboCount() + player->minComboCount)
             {
                 // Result MUST be used additively because it may carry stuff from
                 // previous fill sweep iterations.
-                CCSprite* comboText = createComboTextLabel(result->comboCount() + player->minComboCount + 1,
+                Sprite* comboText = createComboTextLabel(result->comboCount() + player->minComboCount + 1,
                                                            setCenter);
                 comboText->setVisible(false);
                 comboText->setScale(0);
@@ -663,7 +663,7 @@ namespace PH
         return false;
     }
 //
-//    TaskPtr calcDamagePvP(CCLayer* layer,
+//    TaskPtr calcDamagePvP(Layer* layer,
 //                          const float attack,
 //                          const GemUtils::GemColor color,
 //                          const PlayerControlPtr defender,
@@ -683,7 +683,7 @@ namespace PH
 //        return batch;
 //    }
 //    
-    TaskPtr healWithAnim(CCLayer* layer,
+    TaskPtr healWithAnim(Layer* layer,
                          //PlayerControl* player,
                          float healthToHeal,
                          bool isRevival,

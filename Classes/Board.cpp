@@ -86,7 +86,7 @@ void LuaGlobal::free()
 //--------------------
 bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
 {
-    if(!CCLayer::init())
+    if(!Layer::init())
         return false;
 
     // --------------------------------------------
@@ -94,15 +94,14 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
     // accidental touches before layer is displayed.
 //    this->scheduleOnce(schedule_selector(BoardLayer::delayedTouchEnable), 0.4);
 //
-	/**/
     this->scheduleUpdate();
     
     {
         std::string bgName = level.bg;
         //to_lower(bgName);
         std::string bgPath = std::string("bg/") + bgName + ".jpg";
-        //if(!resourcePresentForLoading(bgPath))
-        //    bgPath = "bg/misc.jpg";
+        if(!resourcePresentForLoading(bgPath))
+            bgPath = "bg/misc.jpg";
         
         Sprite* bg = GemUtils::GetSprite(bgPath.c_str());
         bg->setPosition(Vec2(0, 560));
@@ -169,7 +168,7 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         dropChest->setPosition(Vec2(8, 886));
         this->addChild(dropChest);
         
-        mDropCountLabel = CCLabelBMFont::create("0", "bmfont/Junegull_28_yellow.fnt");
+        mDropCountLabel = LabelBMFont::create("0", "bmfont/Junegull_28_yellow.fnt");
         mDropCountLabel->setAnchorPoint(Vec2(0, 0));
         mDropCountLabel->setPosition(32, -4);
 		mDropCountLabel->setScale(Director::getInstance()->getContentScaleFactor());
@@ -177,8 +176,8 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
     }
     
     {
-        CCMenu* menu = CCMenu::create();
-        CCMenuItem* item = CCMenuItemSprite::create(GemUtils::GetSprite("ui/zanting.png"),
+        Menu* menu = Menu::create();
+        MenuItem* item = MenuItemSprite::create(GemUtils::GetSprite("ui/zanting.png"),
                                                     GemUtils::GetSprite("ui/zanting.png"));
         item->setTarget(this, menu_selector(BoardLayer::promptForMenu));
         item->setAnchorPoint(Vec2(0, 1));
@@ -186,15 +185,6 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
         
         menu->setPosition(Vec2(0, 0));
         menu->addChild(item);
-
-#if PH_DEBUG_BUILD == 1
-        CCLabelTTF * debug_tips = CCLabelTTF::create("无敌模式", FONT_CN, 30);
-        this->mDebugItem = CCMenuItemLabel::create(debug_tips);
-        this->mDebugItem->setTarget(this, menu_selector(BoardLayer::promptForDebugMode));
-        this->mDebugItem->setAnchorPoint(Vec2(0.5,0.5));
-        this->mDebugItem->setPosition(Vec2(130,940));
-        menu->addChild(this->mDebugItem);
-#endif
 
         this->addChild(menu);
         
@@ -223,7 +213,7 @@ bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
     {
         mTargetCross = GemUtils::GetSprite("ui/baxin.png");
         mTargetCross->setOpacity(0);
-        mTargetCross->runAction(CCRepeatForever::create(CCRotateBy::create(2, 360)));
+        mTargetCross->runAction(RepeatForever::create(RotateBy::create(2, 360)));
         this->addChild(mTargetCross, ORDER_FLOAT);
     }
     

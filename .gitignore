@@ -6,7 +6,6 @@
 #dq add
 .cocos-project.json
 CMakeLists.txt
-Resources/
 cocos2d/
 proj.android-studio/
 proj.android/
