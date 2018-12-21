@@ -25,12 +25,12 @@ cocos2d::Sprite * GemUtils::GetSprite(const std::string& filename)
 
 	// Search in the cache, first
 	SpriteFrameCache *sfc = SpriteFrameCache::getInstance();
-	SpriteFrame *psf = sfc->spriteFrameByName(filename.c_str());
+	SpriteFrame *psf = sfc->getSpriteFrameByName(filename.c_str());
 
 	std::string::size_type pos;
 	if (!psf && (pos = filename.find_last_of('/')) != filename.npos) {
 		std::string lastPart(filename.begin() + pos + 1, filename.end());
-		psf = sfc->spriteFrameByName(lastPart.c_str());
+		psf = sfc->getSpriteFrameByName(lastPart.c_str());
 	}
 
 	if (psf) {
@@ -261,7 +261,7 @@ const char* GemUtils::name(GemColor c)
     return "Unknown Gem Color";
 }
 
-CCSpriteFrame* GemUtils::energy(GemColor c, int i)
+SpriteFrame* GemUtils::energy(GemColor c, int i)
 {
     std::string n = name(c);
     //boost::to_lower(n);
@@ -269,7 +269,7 @@ CCSpriteFrame* GemUtils::energy(GemColor c, int i)
 	stream << n << "_energy_" << i << ".png";
     std::string path = stream.str();
     
-    return CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(path.c_str());
+    return SpriteFrameCache::getInstance()->getSpriteFrameByName(path.c_str());
 }
 
 const char* GemUtils::attackSound(GemColor c)
@@ -342,22 +342,22 @@ const char * GemUtils::colorToStr(PH::GemUtils::GemColor c)
     return NULL;
 }
 
-ccColor3B GemUtils::colorToCCColor(PH::GemUtils::GemColor c)
+Color3B GemUtils::colorToCCColor(PH::GemUtils::GemColor c)
 {
     switch(c)
     {
-        case Fire: return ccc3(250,10,20);
-        case Water: return ccc3(45, 175, 204);
-        case Wood: return ccc3(48, 205, 58);
-        case Dark: return ccc3(150,30,250);
-        case Light: return ccc3(220,200,20);
-        case Health: return ccc3(240,0,250);
+        case Fire: return Color3B(250,10,20);
+        case Water: return Color3B(45, 175, 204);
+        case Wood: return Color3B(48, 205, 58);
+        case Dark: return Color3B(150,30,250);
+        case Light: return Color3B(220,200,20);
+        case Health: return Color3B(240,0,250);
         case AllColor:
         case GemColorMax:
             handleUnknownColor();
             break;
     }
-    return ccc3(0,0,0);
+    return Color3B(0,0,0);
 }
 
 GemUtils::GemColor GemUtils::weak(PH::GemUtils::GemColor l)

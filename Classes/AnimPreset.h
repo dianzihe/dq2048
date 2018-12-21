@@ -50,7 +50,7 @@ namespace PH
     
     Sprite* createShadowGem(GemUtils::GemColor c);
     
-    TaskPtr createAttackAnim(CCLayer* parent, Vec2 p, GemUtils::GemColor c);
+    TaskPtr createAttackAnim(Layer* parent, Vec2 p, GemUtils::GemColor c);
     
     FiniteTimeAction* createNumberAnimSeq(float from,
                                             float to,

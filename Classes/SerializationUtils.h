@@ -99,7 +99,7 @@ public: \
     typedef GenericObjectFactory<std::string, IObject> StrObjectFactory;
     
     // --- usefull macro ---
-    inline static void safeRelease(cocos2d::CCNode * parent)
+    inline static void safeRelease(cocos2d::Node * parent)
     {
         if(!parent) return;
         if(parent->getParent() != NULL) parent->removeFromParent();

@@ -54,7 +54,7 @@ void Field::restartGame() {
 }
 
 bool Field::addRandom(int cnt){
-    std::vector<int> idxs; // массив доступных индексов
+    std::vector<int> idxs; 
     std::cout << "avail cell: ";
     for (int r = 0; r < Consts::ROWS; ++r)
         for (int c = 0; c < Consts::COLS; ++c)
@@ -69,7 +69,7 @@ bool Field::addRandom(int cnt){
         
         int rnd = RandomHelper::random_int(0, (int)idxs.size() - 1);
         int rndInd = idxs[rnd];
-        idxs.erase(idxs.begin() + rnd); // чтобы не выбрать этот индекс еще раз, удаляем его из массива доступных индексов
+        idxs.erase(idxs.begin() + rnd); 
         
         int rndVal = RandomHelper::random_int(1, 100);
         int curSum = 0;

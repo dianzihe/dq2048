@@ -174,22 +174,59 @@ namespace PH
     
     void BoardControl::fillBoardFirstTime(ColorGenerator gemGen)
     {
-        for(int x=0; x<mGrid.Width; ++x)
+
+		std::vector<int> idxs;
+		/*
+		std::cout << "avail cell: ";
+		for (int r = 0; r < Consts::ROWS; ++r)
+			for (int c = 0; c < Consts::COLS; ++c)
+				if (_data[r][c] == 0) {
+					idxs.push_back(r * Consts::COLS + c);
+					std::cout << "[" << r << "," << c << "]=" << (r * Consts::COLS + c) << " ";
+				}   
+		std::cout << std::endl;
+		*/
+		/*
+		for (int i = 0; i < 2; ++i) {
+			if (idxs.size() == 0) break;
+
+			int rnd = RandomHelper::random_int(0, (int)idxs.size() - 1);
+			int rndInd = idxs[rnd];
+			idxs.erase(idxs.begin() + rnd);
+
+			int rndVal = RandomHelper::random_int(1, 100);
+			int curSum = 0;
+			for (auto& cur : Consts::VAL_PROBS) {
+				curSum += curSum + cur.second;
+				if (rndVal <= curSum) {
+					int r = rndInd / Consts::COLS;
+					int c = rndInd % Consts::COLS;
+					log("add random to: [%d,%d] = %d", r, c, cur.first);
+					_data[r][c] = cur.first;
+					_fieldGui->addCell(_data[r][c], CellPos(r, c));
+					break;
+				}
+			}
+		}
+		*/
+
+        for(int x=0; x < mGrid.Width; ++x)
         {
             // count empty cells in row
-            for(int y=0; y<mGrid.Height; ++y)
+            for(int y=0; y < mGrid.Height; ++y)
             {
-                assert( mGrid(x,y) == NULL && "mGemGrid is not empty");
+                //assert( mGrid(x,y) == NULL && "mGemGrid is not empty");
                 
-                GemUtils::GemColor left = x-1 >= 0 ? mGrid(x-1,y)->color(): GemUtils::GemColorMax;
-                GemUtils::GemColor bottom = y-1 >= 0 ? mGrid(x,y-1)->color() : GemUtils::GemColorMax;
+                //GemUtils::GemColor left = x-1 >= 0 ? mGrid(x-1,y)->color(): GemUtils::GemColorMax;
+                //GemUtils::GemColor bottom = y-1 >= 0 ? mGrid(x,y-1)->color() : GemUtils::GemColorMax;
                 
                 // randomize a color that is not the same as left and bottom gems
                 GemUtils::GemColor rc;
                 while(true)
                 {
                     rc = gemGen();
-                    if(rc != left && rc != bottom)
+					log("-->%d", rc);
+                    //if(rc != left && rc != bottom)
                         break;
                 }
                 GemPtr gem = Gem::make(rc);
@@ -687,7 +724,7 @@ namespace PH
                          //PlayerControl* player,
                          float healthToHeal,
                          bool isRevival,
-                         CCLabelBMFont* healLabel,
+                         LabelBMFont* healLabel,
                          bool doPassiveHeal)
     {
         // Handle health gems. Also accounts for passive healing skills.

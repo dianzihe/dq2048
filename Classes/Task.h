@@ -103,20 +103,20 @@ namespace PH
     struct TaskAnim : public Task
     {
     public:
-        CCNode* node;
-        CCFiniteTimeAction* action;
+        Node* node;
+        FiniteTimeAction* action;
         bool wait;
         bool started;
         int runningCount;
         
         // do not use this directly
-        TaskAnim(CCNode* n, CCFiniteTimeAction* a, bool w = true) : Task(ANIM, "Anim"), node(n), action(a), wait(w), started(false), runningCount(0)
+        TaskAnim(Node* n, FiniteTimeAction* a, bool w = true) : Task(ANIM, "Anim"), node(n), action(a), wait(w), started(false), runningCount(0)
         {
             node->retain();
             action->retain();
         }
         
-        TaskAnim(CCNode *n, CCFiniteTimeAction *a, std::string l, bool w = true) :
+        TaskAnim(Node *n, FiniteTimeAction *a, std::string l, bool w = true) :
             Task(ANIM, "Anim"), node(n), action(a), wait(w), started(false), runningCount(0)
         {
             node->retain();
@@ -150,12 +150,12 @@ namespace PH
             return started;
         }
         
-        static TaskAnimPtr make(CCNode* n, CCFiniteTimeAction* a, bool w = true)
+        static TaskAnimPtr make(Node* n, FiniteTimeAction* a, bool w = true)
         {
             return TaskAnimPtr(new TaskAnim(n, a, w));
         }
         
-        static TaskAnimPtr make(CCNode *n, CCFiniteTimeAction *a, std::string l, bool w = true)
+        static TaskAnimPtr make(Node *n, FiniteTimeAction *a, std::string l, bool w = true)
         {
             return TaskAnimPtr(new TaskAnim(n,a,l,w));
         }

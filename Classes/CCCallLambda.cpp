@@ -32,9 +32,9 @@ bool CCCallLambda::initWithTarget(function<void ()> lambda)
     return true;
 }
 
-CCObject * CCCallLambda::copyWithZone(CCZone *pZone)
+Ref * CCCallLambda::copyWithZone(void* *pZone)
 {
-    CCZone* pNewZone = NULL;
+    void ** pNewZone = NULL;
     CCCallLambda* pRet = NULL;
     /*
     if (pZone && pZone->m_pCopyObject) {

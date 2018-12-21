@@ -12,7 +12,7 @@
 #include "SerializationUtils.h"
 #include "Task.h"
 #include "GemUtils.h"
-
+//#include "BoardControls.h"
 
 
 USING_NS_CC;
@@ -55,13 +55,13 @@ namespace PH { // tolua_export
         GemUtils::GemColor  mColor;
         int                 mTurn;
         
-        CCLabelBMFont*      mCountdown;
+        LabelBMFont*      mCountdown;
         virtual void        attachCountdown();
         virtual TaskPtr     updateCountdown();
         
     public:
         static const size_t kGemWidthPixel, kGemHeightPixel;
-        CCSprite*           root;
+        Sprite*           root;
         Vec2               position;
         
         // --- IObject ---
@@ -120,16 +120,16 @@ namespace PH { // tolua_export
     bool isSameColorNeighbor(const GemPtr l, const GemPtr r);
     bool isInOrNeighborSameColorGemSet(const GemSet& set, const GemPtr gem);
     GemSet intersectGemSet(const GemSet& l, const GemSet& r);
-    
-    // --- special gems ---
-    //class HandGem;
-    //typedef shared_ptr<HandGem> HandGemPtr;
-    
 	/*
+    // --- special gems ---
+    class HandGem;
+    typedef shared_ptr<HandGem> HandGemPtr;
+    
+	
     class HandGem : public Gem
     {
     protected:
-        CCSprite*   mBackground;
+        Sprite*   mBackground;
         float       mDamage;
         
         //
@@ -165,12 +165,12 @@ namespace PH { // tolua_export
     };
     
     class BombGem;
-    typedef boost::shared_ptr<BombGem> BombGemPtr;
+    typedef shared_ptr<BombGem> BombGemPtr;
     
     class BombGem : public Gem
     {
     protected:
-        CCSprite*   mFuze;
+        Sprite*   mFuze;
         float       mDamage;
         
         virtual TaskPtr explosion();
@@ -202,7 +202,7 @@ namespace PH { // tolua_export
         virtual TaskPtr transformColor(GemUtils::GemColor toColor, float time=0.f);
         virtual bool isModifiable() const { return false; }
     };
-    
+
     class LockedGem;
     typedef boost::shared_ptr<LockedGem> LockedGemPtr;
     

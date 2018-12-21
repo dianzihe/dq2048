@@ -33,7 +33,7 @@ namespace PH
 //        << TaskAnim::make(this->root, CCRepeatForever::create(CCRotateBy::create(2.0f, 360.f)), false);
 //    }
 //    
-//    TaskPtr Gem::sendDarts(const cocos2d::CCPoint &dst)
+//    TaskPtr Gem::sendDarts(const cocos2d::Vec2oint &dst)
 //    {
 //    }
     
@@ -65,9 +65,8 @@ namespace PH
         //float time = kGemInterval;
 		std::stringstream stream;
 		stream << mTurn;
-        this->mCountdown = LabelBMFont::create(stream.str(),
-                                                "bmfont/Molot_32_Energy.fnt");
-        this->mCountdown->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->mCountdown = LabelBMFont::create(stream.str(), "bmfont/Molot_32_Energy.fnt");
+        this->mCountdown->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->mCountdown->setPosition(Gem::kGemWidthPixel * 0.60f,
                                       Gem::kGemHeightPixel * 0.25f);
         
@@ -105,7 +104,7 @@ namespace PH
         mTurn   = turn;
     
         this->root = GemUtils::GetSprite(GemUtils::res(c));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
         
         //this->attachCountdown();
@@ -118,7 +117,7 @@ namespace PH
         if(time <= 0.f) time = kGemInterval;
         FiniteTimeAction * act = NULL;//, * act2 = NULL;
         act = Spawn::create(ScaleTo::create(time, 0.90f),
-                              CCFadeOut::create(time),
+                              FadeOut::create(time),
                               NULL);
         
         return TaskAnim::make(this->root, act);
@@ -133,8 +132,8 @@ namespace PH
     {
         if(time <= 0.f) time = kGemInterval;
         
-        auto act = Spawn::create(CCEaseBounceOut::create(ScaleTo::create(time, 1.f)),
-                                   CCFadeIn::create(time), NULL);
+        auto act = Spawn::create(EaseBounceOut::create(ScaleTo::create(time, 1.f)),
+                                   FadeIn::create(time), NULL);
         
         return TaskSequence::make()
         << TaskLambda::make([=]()
@@ -227,8 +226,8 @@ namespace PH
         }
         return cross;
     }
-    
 #if 0
+
     // --- hand ---
     bool HandGem::init(GemUtils::GemColor col, int t, float d)
     {
@@ -236,23 +235,23 @@ namespace PH
         this->mTurn = t;
         this->mDamage = d;
         
-        auto scale = CCSequence::create(ScaleTo::create(.5f, 1.025f),
+        auto scale = Sequence::create(ScaleTo::create(.5f, 1.025f),
                                         ScaleTo::create(.5f, 1.f), NULL);
-        auto blink = CCSequence::create(FadeTo::create(.5f, 255),
+        auto blink = Sequence::create(FadeTo::create(.5f, 255),
                                         FadeTo::create(.5f, 235), NULL);
         auto spawn = Spawn::create(scale, blink, NULL);
         auto repeated = CCRepeatForever::create(spawn);
         
-        this->root = GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", col));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root = GemUtils::GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", col));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->runAction(repeated);
         this->root->retain();
         
-        mBackground = GetSprite(GemUtils::getNameWithPatternAndColor("zhang_bg_%s.png", col));
+        mBackground = GemUtils::GetSprite(GemUtils::getNameWithPatternAndColor("zhang_bg_%s.png", col));
         auto size = this->root->getContentSize();
-        mBackground->setAnchorPoint(ccp(0.5f, 0.5f));
-        mBackground->setPosition(ccp(skGemPixelHeight/2, skGemPixelWidth/2));
-        mBackground->runAction(CCRepeatForever::create(CCRotateBy::create(2.0f, 360.f)));
+        mBackground->setAnchorPoint(Vec2(0.5f, 0.5f));
+        mBackground->setPosition(Vec2(skGemPixelHeight/2, skGemPixelWidth/2));
+        mBackground->runAction(RepeatForever::create(RotateBy::create(2.0f, 360.f)));
         mBackground->setOpacity(0);
         mBackground->setScale(0.95);
         this->root->addChild(mBackground,-1);
@@ -291,10 +290,9 @@ namespace PH
             auto parent = this->root->getParent();
             if(!parent) return TaskIgnore::make();
             
-            auto medium = GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", this->mColor));
-            auto act = Spawn::create(ScaleTo::create(0.5f, 2.0f),
-                                       CCFadeOut::create(0.5f), NULL);
-            medium->setAnchorPoint(ccp(0.5f, 0.5f));
+            auto medium = GemUtils::GetSprite(GemUtils::getNameWithPatternAndColor("zhang_%s.png", this->mColor));
+            auto act = Spawn::create(ScaleTo::create(0.5f, 2.0f), FadeOut::create(0.5f), NULL);
+            medium->setAnchorPoint(Vec2(0.5f, 0.5f));
             medium->setPosition(this->root->getPosition());
             medium->runAction(act);
             
@@ -311,20 +309,20 @@ namespace PH
         mTurn   = turn;
         mDamage = damage;
         
-        this->root = GetSprite(GemUtils::getNameWithPatternAndColor("bomb_%s.png", col));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root = GemUtils::GetSprite(GemUtils::getNameWithPatternAndColor("bomb_%s.png", col));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
         
-        CCSprite* medium = GetSprite("fuze_1.png");
+        CCSprite* medium = GemUtils::GetSprite("fuze_1.png");
         auto size = this->root->getContentSize();
-        medium->setAnchorPoint(ccp(0.5f, 0.5f));
-        //CCPoint pos = g2w_center(this->position);
-        medium->setPosition(ccp(Gem::kGemWidthPixel-15, Gem::kGemHeightPixel-30));
+        medium->setAnchorPoint(Vec2(0.5f, 0.5f));
+        //Vec2oint pos = g2w_center(this->position);
+        medium->setPosition(Vec2(Gem::kGemWidthPixel-15, Gem::kGemHeightPixel-30));
         medium->setScale(0.5);
         
         auto anim =
-        CCAnimationCache::sharedAnimationCache()->animationByName("skill_bomb_fuze");
-        auto repeated = CCRepeatForever::create(CCAnimate::create(anim));
+        AnimationCache::getInstance()->animationByName("skill_bomb_fuze");
+        auto repeated = RepeatForever::create(Animate::create(anim));
         
         medium->runAction(repeated);
         medium->setOpacity(255);
@@ -356,16 +354,15 @@ namespace PH
     
     TaskPtr BombGem::explosion()
     {
-        CCSprite* medium = GetSprite("fuze_1.png");
+        Sprite* medium = GemUtils::GetSprite("fuze_1.png");
         auto size = this->root->getContentSize();
-        medium->setAnchorPoint(ccp(0.5f, 0.5f));
-        //CCPoint pos = g2w_center(this->position);
-        medium->setPosition(ccp(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2));
+        medium->setAnchorPoint(Vec2(0.5f, 0.5f));
+        //Vec2oint pos = g2w_center(this->position);
+        medium->setPosition(Vec2(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2));
         medium->setOpacity(0);
         this->root->addChild(medium);
         
-        auto anim =
-        CCAnimationCache::sharedAnimationCache()->animationByName("skill_explosion");
+        auto anim = AnimationCache::getInstance()->animationByName("skill_explosion");
         
         auto hack = this->shared_from_this();
         TaskSequencePtr seq = TaskSequence::make();
@@ -373,10 +370,8 @@ namespace PH
                                 {
                                     medium->setOpacity(255);
                                 })
-        << TaskBatch::make(TaskAnim::make(medium,
-                                          CCAnimate::create(anim)),
-                           TaskAnim::make(this->root,
-                                          CCFadeOut::create(0.3f)))
+        << TaskBatch::make(TaskAnim::make(medium, Animate::create(anim)),
+                           TaskAnim::make(this->root, FadeOut::create(0.3f)))
         << TaskLambda::make([=]()
                             {
                                 auto self = hack;
@@ -384,19 +379,19 @@ namespace PH
         
         return seq;
     }
-    
+
     bool LockedGem::init(GemUtils::GemColor col, int turn)
     {
         mColor  = col;
         mTurn   = turn;
         
         this->root = GetSprite(GemUtils::res(col));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
         
         CCSprite * chain = GetSprite("chain_1.png");
-        chain->setAnchorPoint(ccp(0.5f, 0.5f));
-        chain->setPosition(ccp(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2-10));
+        chain->setAnchorPoint(Vec2(0.5f, 0.5f));
+        chain->setPosition(Vec2(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2-10));
         this->root->addChild(chain);
         
         chain->setOpacity(255);
@@ -439,8 +434,8 @@ namespace PH
     TaskPtr LockedGem::detachChain(CCNode* node)
     {
         CCSprite* medium = GetSprite("chain_1.png");
-        medium->setAnchorPoint(ccp(0.5f, 0.5f));
-        medium->setPosition(ccp(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2-10));
+        medium->setAnchorPoint(Vec2(0.5f, 0.5f));
+        medium->setPosition(Vec2(Gem::kGemWidthPixel/2, Gem::kGemHeightPixel/2-10));
         
         node->addChild(medium);
         
@@ -467,14 +462,14 @@ namespace PH
         mLocalLimits        = localLimits;
         
         this->root = GetSprite(GemUtils::getNameWithPatternAndColor("wenyi_%s.png", col));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
         
         CCSprite* medium = GetSprite("wenyiguang1.png");
         auto size = this->root->getContentSize();
-        medium->setAnchorPoint(ccp(0.5f, 0.5f));
-        //CCPoint pos = g2w_center(this->position);
-        medium->setPosition(ccp(-10+Gem::kGemWidthPixel/2,
+        medium->setAnchorPoint(Vec2(0.5f, 0.5f));
+        //Vec2oint pos = g2w_center(this->position);
+        medium->setPosition(Vec2(-10+Gem::kGemWidthPixel/2,
                                 -10+Gem::kGemHeightPixel/2));
         
         auto anim =
@@ -588,7 +583,7 @@ namespace PH
         mTurn   = turn;
         
         this->root = GetSprite(GemUtils::getNameWithPatternAndColor("shield_%s_1.png", color));
-        this->root->setAnchorPoint(ccp(0.5f, 0.5f));
+        this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
         
         this->attachCountdown();
@@ -598,8 +593,8 @@ namespace PH
     TaskPtr ShieldGem::detachShield(cocos2d::CCNode *node)
     {
         CCSprite* medium = GetSprite("broken_shield_1.png");
-        medium->setAnchorPoint(ccp(0.5f, 0.5f));
-        medium->setPosition(ccp(Gem::kGemWidthPixel/2-10, Gem::kGemHeightPixel/2));
+        medium->setAnchorPoint(Vec2(0.5f, 0.5f));
+        medium->setPosition(Vec2(Gem::kGemWidthPixel/2-10, Gem::kGemHeightPixel/2));
 
         this->root->removeAllChildren();
         this->root->addChild(medium);

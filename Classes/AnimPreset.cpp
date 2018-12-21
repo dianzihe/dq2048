@@ -147,8 +147,7 @@ namespace PH
         // damage counter animation
 		std::stringstream stream;
 		stream << val;
-        CCLabelBMFont* text = CCLabelBMFont::create(stream.str(),
-                                                    GemUtils::numberFont(color));
+        LabelBMFont* text = LabelBMFont::create(stream.str(), GemUtils::numberFont(color));
         text->setOpacity(0);
         // use content scale. BM font is not automatically scaled
         text->setScale(Director::getInstance()->getContentScaleFactor());
@@ -530,7 +529,7 @@ namespace PH
     
     Animation* createLoadingCharacter()
     {
-        Animation* anim = AnimationCache::getInstance()->animationByName("loading_anim");
+        Animation* anim = AnimationCache::getInstance()->getAnimation("loading_anim");
         if(anim == NULL)
         {
             anim = Animation::create();
@@ -540,7 +539,7 @@ namespace PH
             {
                 char name[128];
                 sprintf(name, "loading_anim%d.png", i);
-                SpriteFrame* frame = SpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(name);
+                SpriteFrame* frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(name);
                 
                 assert(frame != NULL && "cannot find frames");
                 
@@ -549,7 +548,7 @@ namespace PH
             
             anim->setDelayPerUnit(0.18);
             
-            AnimationCache::sharedAnimationCache()->addAnimation(anim, "loading_anim");
+            AnimationCache::getInstance()->addAnimation(anim, "loading_anim");
         }
         
         return anim;

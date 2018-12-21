@@ -1225,10 +1225,11 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	GemUtils::GemColor BoardLayer::randGemWeighted()
 	{
-#if 0
+
 		auto batch = TaskBatch::make();
 
 		float gemWeights[GemUtils::AllColor];
+#if 0
 		for(int i=0; i<GemUtils::AllColor; i++)
 		{
 			gemWeights[i] = mPlayer->mGemWeights[i];
@@ -1249,7 +1250,7 @@ luacall("FreeGlobals", make_tuple(), error);
 				mTaskQueue.enqueue(batch);
 			}
 		}
-
+#endif
 		float sum = 0.0f;
 		for(int i=0; i<GemUtils::AllColor; i++)
 		{
@@ -1260,6 +1261,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 
 		float number = randf(sum);
+		log("GemUtils::GemColor BoardLayer::randGemWeighted()-randf->%.2f", number);
 		for(int i=0; i<GemUtils::AllColor; i++)
 		{
 			if(mGemAllowed[i])
@@ -1270,8 +1272,8 @@ luacall("FreeGlobals", make_tuple(), error);
 			}
 		}
 
-		phassert(false && "should never get here");
-#endif
+		//assert(false && "should never get here");
+
 		return GemUtils::Fire;
 	}
 

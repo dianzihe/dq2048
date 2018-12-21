@@ -30,7 +30,7 @@ public:
     virtual void execute();
     //super methods
     virtual void update(float time);
-    Ref * copyWithZone(CCZone *pZone);
+    Ref * copyWithZone(void* *pZone);
 };
 
 class CCCountBMTextNumber : public ActionInterval
@@ -81,7 +81,7 @@ public:
         return true;
     }
     
-    virtual CCObject* copyWithZone (CCZone *pZone)
+    virtual Ref* copyWithZone (void* *pZone)
     {
         void* pNewZone = NULL;
         CCCountBMTextNumber* pCopy = NULL;

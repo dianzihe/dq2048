@@ -163,10 +163,10 @@ namespace PH
         static const char* attackSound(GemColor c);
         static GemUtils::GemColor strToColor(std::string str);
         static const char* colorToStr(GemColor c);
-        static CCSpriteFrame* energy(GemColor c, int val);
+        static SpriteFrame* energy(GemColor c, int val);
         static const char* attackAnim(GemColor c);
         static const char* stageColorRes(GemColor c);
-        static ccColor3B colorToCCColor(GemColor c);
+        static Color3B colorToCCColor(GemColor c);
 
 		static cocos2d::Sprite * GetSprite(const std::string& filename);
 
