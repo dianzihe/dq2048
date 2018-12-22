@@ -99,6 +99,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		{
 			std::string bgName = level.bg;
 			//to_lower(bgName);
+			/*
 			std::string bgPath = std::string("bg/") + bgName + ".jpg";
 			if (!resourcePresentForLoading(bgPath))
 				bgPath = "bg/misc.jpg";
@@ -107,7 +108,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			bg->setPosition(Vec2(0, 560));
 			bg->setAnchorPoint(Vec2(0, 0));
 			this->addChild(bg, ORDER_BACKGROUND);
-
+			*/
 			{
 				SpriteBatchNode* bgBatch = SpriteBatchNode::create("battleMisc.png");
 				bgBatch->setAnchorPoint(Vec2(0, 0));
@@ -125,7 +126,7 @@ luacall("FreeGlobals", make_tuple(), error);
 						Sprite* tile = color == 0 ? GemUtils::GetSprite("ui/qipan_qian.png") : GemUtils::GetSprite("ui/qipan_shen.png");
 						tile->setAnchorPoint(Vec2(0, 0));
 						tile->setPosition(g2w(Vec2(x, y)));
-						bgBatch->addChild(tile);
+						//bgBatch->addChild(tile);
 					}
 			}
 
@@ -2168,6 +2169,7 @@ luacall("FreeGlobals", make_tuple(), error);
 	// default implements are used to call script callback if exist
 	bool BoardLayer::onTouchBegan(Touch* touch, Event* ev)
 	{
+		log("BoardLayer::onTouchBegan");
 		/*
 		if(mCurrTouch)
 		return false;

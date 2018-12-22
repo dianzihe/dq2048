@@ -231,7 +231,7 @@ namespace PH { // tolua_export
         void loadPlayerPassiveSkills();
         
         // a selector callback
-        void menuCloseCallback(CCObject* pSender);
+        void menuCloseCallback(Ref* pSender);
         
 		/*
         virtual void registerWithTouchDispatcher(void)
@@ -311,7 +311,7 @@ namespace PH { // tolua_export
         TaskPtr updatePlayerPoison();
         TaskPtr updatePlayerSuckBlood();
         
-        void castHeroSkill(CCObject* sender);
+        void castHeroSkill(Ref* sender);
         
         bool isRoundDone();
         //TaskPtr loadRound(RoundInfo& round);
@@ -322,7 +322,7 @@ namespace PH { // tolua_export
         void returnToMainMenu();
         void promptForDebugMode();
         void promptForRevival();
-        void promptForMenu(CCObject* o);
+        void promptForMenu(Ref* o);
         
         void exitScene(bool isVictory);
         void sendVictoryRequest();

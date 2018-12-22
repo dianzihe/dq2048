@@ -21,14 +21,14 @@ bool GameScene::init() {
 	loadPersistentTextureCache();
 	loadTextureCache();
 
-	winSize = CCDirector::sharedDirector()->getVisibleSize();
+	winSize = Director::getInstance()->getVisibleSize();
 
 	initBG();
 
 
-    _fieldGUI = FieldGUI::create();
-    _fieldGUI->setField(&_field);
-    _field.init(_fieldGUI);
+    //_fieldGUI = FieldGUI::create();
+    //_fieldGUI->setField(&_field);
+    //_field.init(_fieldGUI);
     
     initGui();
     addGestureRecognizers();
@@ -90,8 +90,8 @@ void GameScene::loadTextureCache()
 
 
 void GameScene::initGui() {
-    auto background = LayerColor::create(Colors::MainBack);
-    this->addChild(background, -1);
+    //auto background = LayerColor::create(Colors::MainBack);
+    //this->addChild(background, -1);
     
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -99,11 +99,38 @@ void GameScene::initGui() {
     auto centerY = origin.y + visibleSize.height/2;
     
 	PH::LevelInfo level;
+	Vec2 layerPosition;
 	PH::BoardLayer* layer = PH::BoardLayer::create(BOARD_WIDTH, BOARD_HEIGHT, level);
+	//caculate the layer position
+	//取中间值
+	/*去除两边边框，边框有最小值20，无最大值*/
+	/*横向分布：边框 + BOARD_WIDTH * gem's width + (BOARD_WIDTH - 1) * gap + 边框*/
+	/*边框的最大值为10， gem的最大值为106*/
+	/*纵向分布：*/
+	/*20% 最大的值为500*/
+	/*70% 最大的值为*/
+	/*10% */
+	float layerWidth = 10 * 2 + BOARD_WIDTH * 106 + (BOARD_WIDTH - 1) * 10;
+	float layerHeight = 10 * 2 + BOARD_HEIGHT * 106 + (BOARD_HEIGHT - 1) * 10;
+	if (visibleSize.width > layerWidth){
+		layerPosition.x = visibleSize.width / 2 - layerWidth / 2;
+	} else{
+		layerPosition.x = visibleSize.width / 2 - layerWidth / 2;
+	}
+
+	if (visibleSize.width > layerWidth){
+		layerPosition.y = visibleSize.height * 0.45 - layerHeight / 2;
+	}
+	else{
+		layerPosition.y = visibleSize.height * 0.45 - layerHeight / 2;
+	}
+	float midX = visibleSize.width - 100 * 2;
+	
+	layer->setPosition(layerPosition);
 	this->addChild(layer);
 
-    _fieldGUI->setPosition(Vec2(centerX, centerY));
-    this->addChild(_fieldGUI, 10);
+    //_fieldGUI->setPosition(Vec2(centerX, centerY));
+    //this->addChild(_fieldGUI, 10);
 }
 
 void GameScene::addGestureRecognizers() {
@@ -139,7 +166,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
         case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
             _field.onSwipe(Consts::Move::Down);
             break;
-            
+             
         case EventKeyboard::KeyCode::KEY_1:
             _fieldGUI->debug1();
             break;
