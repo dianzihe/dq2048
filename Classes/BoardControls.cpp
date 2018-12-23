@@ -171,7 +171,12 @@ namespace PH
     {
         assert(false && "not implemented");
     }
-    
+	Vec2 BoardControl::caculatePosition(int x, int y){
+		float toX = 10 + x * (106 + 10);
+		float toY = 10 + y * (106 + 10);;
+		log("-->[%.2f, %.2f]", toX, toY);
+		return Vec2(toX, toY);
+	}
     void BoardControl::fillBoardFirstTime(ColorGenerator gemGen)
     {
 
@@ -231,7 +236,8 @@ namespace PH
                 }
                 GemPtr gem = Gem::make(rc);
                 
-                this->addGem(Vec2(x, y), gem);
+				//this->addGem(caculatePosition(x, y), gem);
+				this->addGem(Vec2(x, y), gem);
             }
         }
     }
@@ -296,8 +302,7 @@ namespace PH
         return removeGemFromGrid(gem);
     }
     
-    TaskPtr BoardControl::fillBoard(ColorGenerator gemGen,
-                                    bool forceNoStacking)
+    TaskPtr BoardControl::fillBoard(ColorGenerator gemGen, bool forceNoStacking)
     {
         TaskBatchPtr batch = TaskBatch::make();
         

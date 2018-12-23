@@ -175,8 +175,7 @@ namespace PH
         if(time <= 0.f) time = kGemInterval;
         
         FiniteTimeAction * act = NULL;
-        act = EaseElasticOut::create(MoveTo::create(time, g2w_center(this->position)),
-                                       1.2f);
+        act = EaseElasticOut::create(MoveTo::create(time, g2w_center(this->position)), 1.2f);
         return TaskAnim::make(this->root, act, false);
     }
     

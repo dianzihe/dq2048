@@ -187,7 +187,8 @@ namespace PH
         
         virtual void vSerialize(rapidjson::Value& o, rapidjson::Document::AllocatorType& alloc) const override;
         virtual void vDeserialize(rapidjson::Value& o) override;
-        
+
+		Vec2 caculatePosition(int x , int y);
         
         static BoardControlPtr make(ColorGenerator gen)
         {
