@@ -412,7 +412,240 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 #endif
 	}
+	TaskPtr BoardLayer::updateGemTurn()
+	{
+		auto ret = TaskSequence::make();
+#if 0
+		ret << TaskSound::make("sound/v/player_hit.mp3");
+		ret << mBoardControl->updateGemGrid();
 
+		if (mBoardControl->damageFromGems > 0.f)
+		{
+			ret << TaskSound::make("sound/v/player_hit.mp3");
+			ret << createFloatText(this,
+				-mBoardControl->damageFromGems,
+				mPlayer->center(),
+				GemUtils::Health,
+				0.0f);
+			ret << mPlayer->hit(mBoardControl->damageFromGems, this);
+			mBoardControl->damageFromGems = 0.f;
+		}
+
+		ret << mBoardControl->fillBoard([=]() { return randGemWeighted(); }, false);
+#endif
+		return ret;
+	}
+
+	// default implements are used to call script callback if exist
+	bool BoardLayer::onTouchBegan(Touch* touch, Event* ev)
+	{
+		log("BoardLayer::onTouchBegan");
+
+		//得到触摸时坐标
+		beginPostion = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
+
+		return true;
+
+
+		if (mCurrTouch)
+			return false;
+		else
+			mCurrTouch = touch;
+
+		Vec2 p = this->convertTouchToNodeSpace(touch);
+
+		Vec2 gp = w2g(p);
+		mDragGem.reset();
+
+		if (mBoardControl->getGrid().isInside(gp))
+		{
+			mShowDragHintInTurn = false;
+			GemPtr pGem = mBoardControl->get(gp);
+			if (pGem && pGem->isMoveable())
+			{
+				mDragGem = pGem;
+
+				Sprite* sprite = mDragGem->root;
+				sprite->setAnchorPoint(Vec2(0.5, 0.25));
+
+				// force this sprite on top of all others
+				sprite->removeFromParentAndCleanup(false);
+				mBoardControl->root->addChild(sprite);
+
+				mShadowGem = createShadowGem(mDragGem->color());
+				mShadowGem->setPosition(sprite->getPosition());
+				mBoardControl->root->addChild(mShadowGem, -1);
+
+				return true;
+			}
+		}
+
+		return true;
+	}
+
+	bool BoardLayer::doLeft() {
+		return true;
+	}
+	bool BoardLayer::doRight() {
+		return true;
+	}
+	bool BoardLayer::doUp() {
+		return true;
+	}
+	bool BoardLayer::doDown() {
+		return true;
+	}
+	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
+	{
+		//得到触摸结束时坐标
+		endPosition = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
+		//计算手指在X，Y移动的距离
+		float endX = beginPostion.x - endPosition.x;
+		float endY = beginPostion.y - endPosition.y;
+		if (abs(endX) > abs(endY)) {
+			//如果X轴移动的距离大于Y轴，则是左右移动
+			if (endX + 5 > 0) {
+				//向左移动
+				doLeft();
+				/*
+				createCardNumber();
+				doCheck();
+				setScore(score);
+				*/
+			} else {
+				//向右移动
+				doRight();
+			}
+		} else {//否则是上下移动
+			if (endY + 5 > 0) {
+				//向下移动
+				doDown();
+			} else {
+				//向上移动
+				doUp();
+			}
+		}
+		/*
+		mCurrTouch = NULL;
+
+		// TODO: merge this ugliness to endDrag
+		if(mDragGem)
+		{
+		// player started dragging but no swapping has happened yet
+		// do not count this as a move.
+		auto batch = TaskBatch::make();
+		if(!moveStarted || mPlayer->buffGroup.invokeBuff("disableSweep", batch) )
+		{
+		mTaskQueue.enqueue(batch);
+
+		mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+		mDragGem->root->setPosition(g2w_center(mDragGem->position));
+		mDragGem.reset();
+
+		mShadowGem->removeFromParentAndCleanup(true);
+		return;
+		}
+		else
+		{
+		endDrag();
+		}
+		}
+		else
+		{
+		//------------------------------------------------------
+		// When no gem is dragged, assuming this is a touch event
+		// in enemy area. Handle targeting on enemies.
+		for(EnemyControlPtr ec : mEnemyList)
+		{
+		CCRect bound = ec->sprite->boundingBox();
+
+		Vec2oint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
+
+		if(bound.containsPoint(touchPointLocal))
+		{
+		if(mManualTarget == ec)
+		{
+		mManualTarget.reset();
+		mTargetCross->setOpacity(0);
+		}
+		else
+		{
+		mManualTarget = ec;
+		mTargetCross->setPosition(ec->center());
+		mTargetCross->setOpacity(255);
+		}
+		break;
+		}
+		}
+		}
+		*/
+	}
+	void BoardLayer::onTouchMoved(Touch* touch, Event* ev)
+	{
+		/*
+		Vec2oint p = this->convertTouchToNodeSpace(touch);
+
+		mPlayer->moveTimer.setPosition(p);
+
+		// if dragging a gem
+		if(mDragGem != NULL)
+		{
+		p.x = clampx(p.x, 0.0f, 620.0f);
+		p.y = clampx(p.y, 0.0f, 515.0f);
+
+		mDragGem->root->setAnchorPoint(Vec2(0.5, 0.25));
+		mDragGem->root->setPosition(p);
+		Vec2 gp = w2g(p);
+
+		if(mBoardControl->getGrid().isInside(gp))
+		{
+		GemPtr dstGem = mBoardControl->get(gp);
+
+		if(dstGem != mDragGem)
+		{
+		if(moveStarted)
+		;
+		else
+		{
+		auto task = mPlayer->startTicking(mTurn, [=]()
+		{
+		this->endDrag();
+		this->mTaskQueue.enqueue( mPlayer->buffGroup.updateBuff("disableSweep") );
+		});
+		mTaskQueue.enqueue(task);
+		moveStarted = true;
+		}
+
+		TaskBatchPtr batch = TaskBatch::make();
+
+		TaskPtr moveDstGem = moveGemAnim(dstGem->root, mDragGem->position);
+		TaskPtr moveShadowGem = moveGemAnim(mShadowGem, dstGem->position);
+
+		// swap grid item
+		std::swap(mBoardControl->getGrid()(mDragGem->position),
+		mBoardControl->getGrid()(dstGem->position));
+		// swap position of the two gems
+		std::swap(dstGem->position, mDragGem->position);
+
+		mTaskQueue.enqueue(TaskBatch::make(moveDstGem, moveShadowGem));
+
+		ring("sound/v/drag_gem.mp3");
+		}
+		}
+		}
+		*/
+	}
+
+	void BoardLayer::onTouchCancelled(Touch* touch, Event* ev)
+	{
+		log("touch cancelled\n");
+		//ccTouchEnded(touch, event);
+	}
+	void BoardLayer::update(float dt)
+	{
+		//mStats.gameTimeSinceLevelStart += dt;
+		mTaskQueue.update(dt);
+	}
 	void BoardLayer::disableUI()
 	{
 		mExitMenu->setTouchEnabled(false);
@@ -1219,6 +1452,180 @@ luacall("FreeGlobals", make_tuple(), error);
 #endif
 	}
 
+	void BoardLayer::onTurn()
+	{
+		// For tutorial purpose only
+		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onStartTurn(); }));
+
+		this->disableUI();
+#if 0
+		fillSweepUntilDone(mResult);
+
+		// if still got moves, simply reanble UI
+		auto batch = TaskBatch::make();
+		if (mPlayer->buffGroup.invokeBuff("moveAgain", batch))
+		{
+			batch << mPlayer->buffGroup.updateBuff("moveAgain");
+			mTaskQueue.enqueue(batch);
+			mTaskQueue.enqueue(TaskLambda::make([=]
+			{
+				this->enableUI();
+				this->mBoardMask->setVisible(false);
+			}));
+		}
+		else
+		{
+			this->startTurn();
+		}
+#endif
+	}
+
+	void BoardLayer::fillSweepUntilDone(BoardResultPtr result)
+	{
+		/*
+		for(;;)
+		{
+		mTaskQueue.enqueue( mBoardControl->fillBoard([=](){ return randGemWeighted(); },
+		mForceGemNoStacking)
+		);
+		mTaskQueue.enqueue( mBoardControl->sweepBoard(mPlayer,
+		result) );
+
+		if(!mBoardControl->hasEmptyCell())
+		break;
+		}
+
+		mStats.maxCombo = std::max(mStats.maxCombo, result->comboCount());
+		mStats.totalCombo += result->comboCount();
+
+		int index = this->mRoundIndex - 1;
+		mStats.maxComboPerLevel[index] = std::max(mStats.maxComboPerLevel[index], result->comboCount());
+		mStats.roundPerLevel[index] ++;
+
+		mStats.maxGemCount = std::max(mStats.maxGemCount, result->totalGemCount());
+
+		auto batch = TaskBatch::make();
+		for(auto enemy : this->mEnemyList)
+		{
+		batch << enemy->onAfterSweep(this, result->comboCount());
+		}
+		mTaskQueue.enqueue(batch);
+		mTaskQueue.enqueue( mPlayer->onAfterSweep() );
+
+		// this awkward callback exists only for tutorial mode
+		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onEndOfFillSweepCycle(); }));
+		*/
+	}
+	void BoardLayer::startTurn()
+	{
+		mTaskQueue.enqueue(removeDeadPlayer());
+#if 0
+		{
+			if (mPlayer->passiveShiled.isValid())
+			{
+				auto i = mPlayer->passiveShiled.map().begin();
+				if (mResult->comboCount() >= i->second.comboCount &&
+					!mPlayer->buffGroup.isBuffActive("passive.shield.sentinel"))
+				{
+					auto batch = TaskBatch::make();
+					//printf("%d\n", i->second.lastRound);
+					auto buff = FloatIntBuff::make(i->first->getColor(),
+						i->second.lastRound,
+						"护盾",
+						i->second.reflectFactor,
+						i->second.shieldCount);
+
+					batch << mPlayer->buffGroup.attachBuff(PlayerControl::kGroup_PostTurn, "passive.shield.invoke", this, buff);
+					auto sentinel = IBuff::make(GemUtils::AllColor, i->second.gapRound, "");
+					batch << mPlayer->buffGroup.attachBuff(PlayerControl::kGroup_PostTurn,
+						"passive.shield.sentinel", this, sentinel);
+					mTaskQueue.enqueue(batch);
+
+					batch = TaskBatch::make();
+					mPlayer->buffGroup.invokeBuff("passive.shield.invoke", batch);
+					mTaskQueue.enqueue(batch);
+				}
+			}
+		}
+
+		attack(*mResult);
+		// clear result
+		mResult = BoardResultPtr(new BoardResult(mPlayer->team));
+
+		mTaskQueue.enqueue(updatePlayerPoison());
+		mTaskQueue.enqueue(updatePlayerSuckBlood());
+		mTaskQueue.enqueue(this->updateGemTurn());
+
+		//----------------------------
+		// update player status turns
+		{
+			TaskBatchPtr batch = TaskBatch::make();
+			for (HeroControl* hc : mPlayer->team)
+				batch << hc->updateStatusTurn();
+			batch << mPlayer->updateStatusTurn();
+
+			mTaskQueue.enqueue(batch);
+		}
+		mTaskQueue.enqueue(TaskLambda::make([=]()
+		{
+			//                initRefMap(this);
+			mBoardMask->setVisible(true);
+		}));
+		if (mEnemyList.size() == 0)
+		{
+			loadNextRoundIfDone();
+			mTaskQueue.enqueue(removeDeadPlayer());
+			mTaskQueue.enqueue(mPlayer->updateStatusTurnPostEnemy());
+		}
+		else
+		{
+			updateEnemyTurn(*mResult);
+			mTaskQueue.enqueue(mPlayer->updateStatusTurnPostEnemy());
+		}
+
+		mTurn++;
+
+		TaskPtr playerTask = updatePlayerTurn(*mResult);
+
+		TaskSequencePtr endSeq = TaskSequence::make();
+		endSeq << playerTask;
+		endSeq << TaskLambda::make([=]
+		{
+			this->enableUI();
+			this->mBoardMask->setVisible(false);
+			//                compareRefMap(this);
+		});
+
+		mTaskQueue.enqueue(endSeq);
+
+		mTaskQueue.enqueue(TaskLambda::make([=]() {
+			//mTaskQueue.enqueue(this->showDragHint());
+			mShowDragHintInTurn = true;
+			showDragHintWithDelay(0.f);
+			this->onEndOfTurn();
+		}));
+#endif
+	}
+
+	void BoardLayer::exitScene(bool isVictory)
+	{
+#if 0
+		// this is the end of all tasks, clear task queue.
+		mTaskQueue.clear();
+
+		mStats.turnCount = mTurn;
+		mStats.endRound = this->mRoundIndex;
+
+		if (isVictory)
+		{
+			sendVictoryRequest();
+		}
+		else
+		{
+			transitionToGameScene(false, make_shared<Player>());
+		}
+#endif
+	}
 	void BoardLayer::returnToMainMenu()
 	{
 		mTaskQueue.enqueue(TaskLambda::make([=]{ this->exitScene(false); }));
@@ -1667,35 +2074,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		return seq;
 	}
 
-	TaskPtr BoardLayer::updateGemTurn()
-	{
-		auto ret = TaskSequence::make();
-#if 0
-		ret << TaskSound::make("sound/v/player_hit.mp3");
-		ret << mBoardControl->updateGemGrid();
 
-		if(mBoardControl->damageFromGems > 0.f)
-		{
-			ret << TaskSound::make("sound/v/player_hit.mp3");
-			ret << createFloatText(this,
-				-mBoardControl->damageFromGems,
-				mPlayer->center(),
-				GemUtils::Health,
-				0.0f);
-			ret << mPlayer->hit(mBoardControl->damageFromGems, this);
-			mBoardControl->damageFromGems = 0.f;
-		}
-
-		ret << mBoardControl->fillBoard([=](){ return randGemWeighted(); }, false);
-#endif
-		return ret;
-	}
-
-	void BoardLayer::update(float dt)
-	{
-		//mStats.gameTimeSinceLevelStart += dt;
-		mTaskQueue.update(dt);
-	}
 
 	static std::set<CCNode*> nodeMap;
 
@@ -1738,144 +2117,6 @@ luacall("FreeGlobals", make_tuple(), error);
 #endif
 	}
 
-	void BoardLayer::onTurn()
-	{
-		// For tutorial purpose only
-		mTaskQueue.enqueue(TaskLambda::make([=](){ this->onStartTurn(); }));
-
-		this->disableUI();
-#if 0
-		fillSweepUntilDone(mResult);
-
-		// if still got moves, simply reanble UI
-		auto batch = TaskBatch::make();
-		if( mPlayer->buffGroup.invokeBuff("moveAgain", batch) )
-		{
-			batch << mPlayer->buffGroup.updateBuff("moveAgain");
-			mTaskQueue.enqueue(batch);
-			mTaskQueue.enqueue(TaskLambda::make([=]
-			{
-				this->enableUI();
-				this->mBoardMask->setVisible(false);
-			}));
-		}
-		else
-		{
-			this->startTurn();
-		}
-#endif
-	}
-
-	void BoardLayer::startTurn()
-	{
-		mTaskQueue.enqueue(removeDeadPlayer());
-#if 0
-		{
-			if( mPlayer->passiveShiled.isValid() )
-			{
-				auto i = mPlayer->passiveShiled.map().begin();
-				if( mResult->comboCount() >= i->second.comboCount &&
-					!mPlayer->buffGroup.isBuffActive("passive.shield.sentinel"))
-				{
-					auto batch = TaskBatch::make();
-					//printf("%d\n", i->second.lastRound);
-					auto buff = FloatIntBuff::make(i->first->getColor(),
-						i->second.lastRound,
-						"护盾",
-						i->second.reflectFactor,
-						i->second.shieldCount);
-
-					batch << mPlayer->buffGroup.attachBuff(PlayerControl::kGroup_PostTurn, "passive.shield.invoke", this, buff);
-					auto sentinel = IBuff::make(GemUtils::AllColor, i->second.gapRound, "");
-					batch << mPlayer->buffGroup.attachBuff(PlayerControl::kGroup_PostTurn,
-						"passive.shield.sentinel", this, sentinel);
-					mTaskQueue.enqueue(batch);
-
-					batch = TaskBatch::make();
-					mPlayer->buffGroup.invokeBuff("passive.shield.invoke", batch);
-					mTaskQueue.enqueue(batch);
-				}
-			}
-		}
-
-		attack(*mResult);
-		// clear result
-		mResult = BoardResultPtr(new BoardResult(mPlayer->team));
-
-		mTaskQueue.enqueue( updatePlayerPoison() );
-		mTaskQueue.enqueue( updatePlayerSuckBlood() );
-		mTaskQueue.enqueue( this->updateGemTurn() );
-
-		//----------------------------
-		// update player status turns
-		{
-			TaskBatchPtr batch = TaskBatch::make();
-			for(HeroControl* hc : mPlayer->team)
-				batch << hc->updateStatusTurn();
-			batch << mPlayer->updateStatusTurn();
-
-			mTaskQueue.enqueue(batch);
-		}
-		mTaskQueue.enqueue(TaskLambda::make([=]()
-		{
-			//                initRefMap(this);
-			mBoardMask->setVisible(true);
-		}));
-		if(mEnemyList.size() == 0)
-		{
-			loadNextRoundIfDone();
-			mTaskQueue.enqueue( removeDeadPlayer() );
-			mTaskQueue.enqueue( mPlayer->updateStatusTurnPostEnemy() );
-		}
-		else
-		{
-			updateEnemyTurn(*mResult);
-			mTaskQueue.enqueue( mPlayer->updateStatusTurnPostEnemy() );
-		}
-
-		mTurn++;
-
-		TaskPtr playerTask = updatePlayerTurn(*mResult);
-
-		TaskSequencePtr endSeq = TaskSequence::make();
-		endSeq << playerTask;
-		endSeq << TaskLambda::make([=]
-		{
-			this->enableUI();
-			this->mBoardMask->setVisible(false);
-			//                compareRefMap(this);
-		});
-
-		mTaskQueue.enqueue(endSeq);
-
-		mTaskQueue.enqueue(TaskLambda::make([=](){
-			//mTaskQueue.enqueue(this->showDragHint());
-			mShowDragHintInTurn = true;
-			showDragHintWithDelay(0.f);
-			this->onEndOfTurn();
-		}));
-#endif
-	}
-
-	void BoardLayer::exitScene(bool isVictory)
-	{
-#if 0
-		// this is the end of all tasks, clear task queue.
-		mTaskQueue.clear();
-
-		mStats.turnCount = mTurn;
-		mStats.endRound = this->mRoundIndex;
-
-		if(isVictory)
-		{
-			sendVictoryRequest();
-		}
-		else
-		{
-			transitionToGameScene(false, make_shared<Player>());
-		}
-#endif
-	}
 
 	void BoardLayer::sendVictoryRequest()
 	{
@@ -1987,42 +2228,6 @@ luacall("FreeGlobals", make_tuple(), error);
 		});
 	}
 #endif
-	void BoardLayer::fillSweepUntilDone(BoardResultPtr result)
-	{
-		/*
-		for(;;)
-		{
-		mTaskQueue.enqueue( mBoardControl->fillBoard([=](){ return randGemWeighted(); },
-		mForceGemNoStacking)
-		);
-		mTaskQueue.enqueue( mBoardControl->sweepBoard(mPlayer,
-		result) );
-
-		if(!mBoardControl->hasEmptyCell())
-		break;
-		}
-
-		mStats.maxCombo = std::max(mStats.maxCombo, result->comboCount());
-		mStats.totalCombo += result->comboCount();
-
-		int index = this->mRoundIndex - 1;
-		mStats.maxComboPerLevel[index] = std::max(mStats.maxComboPerLevel[index], result->comboCount());
-		mStats.roundPerLevel[index] ++;
-
-		mStats.maxGemCount = std::max(mStats.maxGemCount, result->totalGemCount());
-
-		auto batch = TaskBatch::make();
-		for(auto enemy : this->mEnemyList)
-		{
-		batch << enemy->onAfterSweep(this, result->comboCount());
-		}
-		mTaskQueue.enqueue(batch);
-		mTaskQueue.enqueue( mPlayer->onAfterSweep() );
-
-		// this awkward callback exists only for tutorial mode
-		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onEndOfFillSweepCycle(); }));
-		*/
-	}
 
 	void BoardLayer::showDragHintWithDelay(float delay)
 	{
@@ -2166,165 +2371,5 @@ luacall("FreeGlobals", make_tuple(), error);
 #endif
 	}
 
-	// default implements are used to call script callback if exist
-	bool BoardLayer::onTouchBegan(Touch* touch, Event* ev)
-	{
-		log("BoardLayer::onTouchBegan");
-		/*
-		if(mCurrTouch)
-		return false;
-		else
-		mCurrTouch = touch;
-
-		Vec2oint p = this->convertTouchToNodeSpace(touch);
-
-		Vec2 gp = w2g(p);
-		mDragGem.reset();
-
-		if(mBoardControl->getGrid().isInside(gp))
-		{
-		mShowDragHintInTurn = false;
-		GemPtr pGem = mBoardControl->get(gp);
-		if(pGem && pGem->isMoveable())
-		{
-		mDragGem = pGem;
-
-		Sprite* sprite = mDragGem->root;
-		sprite->setAnchorPoint(Vec2(0.5, 0.25));
-
-		// force this sprite on top of all others
-		sprite->removeFromParentAndCleanup(false);
-		mBoardControl->root->addChild(sprite);
-
-		mShadowGem = createShadowGem(mDragGem->color());
-		mShadowGem->setPosition(sprite->getPosition());
-		mBoardControl->root->addChild(mShadowGem, -1);
-
-		return true;
-		}
-		}
-		*/
-		return true;
-	}
-
-	void BoardLayer::onTouchMoved(Touch* touch, Event* ev)
-	{
-		/*
-		Vec2oint p = this->convertTouchToNodeSpace(touch);
-
-		mPlayer->moveTimer.setPosition(p);
-
-		// if dragging a gem
-		if(mDragGem != NULL)
-		{
-		p.x = clampx(p.x, 0.0f, 620.0f);
-		p.y = clampx(p.y, 0.0f, 515.0f);
-
-		mDragGem->root->setAnchorPoint(Vec2(0.5, 0.25));
-		mDragGem->root->setPosition(p);
-		Vec2 gp = w2g(p);
-
-		if(mBoardControl->getGrid().isInside(gp))
-		{
-		GemPtr dstGem = mBoardControl->get(gp);
-
-		if(dstGem != mDragGem)
-		{
-		if(moveStarted)
-		;
-		else
-		{
-		auto task = mPlayer->startTicking(mTurn, [=]()
-		{
-		this->endDrag();
-		this->mTaskQueue.enqueue( mPlayer->buffGroup.updateBuff("disableSweep") );
-		});
-		mTaskQueue.enqueue(task);
-		moveStarted = true;
-		}
-
-		TaskBatchPtr batch = TaskBatch::make();
-
-		TaskPtr moveDstGem = moveGemAnim(dstGem->root, mDragGem->position);
-		TaskPtr moveShadowGem = moveGemAnim(mShadowGem, dstGem->position);
-
-		// swap grid item
-		std::swap(mBoardControl->getGrid()(mDragGem->position),
-		mBoardControl->getGrid()(dstGem->position));
-		// swap position of the two gems
-		std::swap(dstGem->position, mDragGem->position);
-
-		mTaskQueue.enqueue(TaskBatch::make(moveDstGem, moveShadowGem));
-
-		ring("sound/v/drag_gem.mp3");
-		}
-		}
-		}
-		*/
-	}
-
-	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
-	{
-		/*
-		mCurrTouch = NULL;
-
-		// TODO: merge this ugliness to endDrag
-		if(mDragGem)
-		{
-		// player started dragging but no swapping has happened yet
-		// do not count this as a move.
-		auto batch = TaskBatch::make();
-		if(!moveStarted || mPlayer->buffGroup.invokeBuff("disableSweep", batch) )
-		{
-		mTaskQueue.enqueue(batch);
-
-		mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
-		mDragGem->root->setPosition(g2w_center(mDragGem->position));
-		mDragGem.reset();
-
-		mShadowGem->removeFromParentAndCleanup(true);
-		return;
-		}
-		else
-		{
-		endDrag();
-		}
-		}
-		else
-		{
-		//------------------------------------------------------
-		// When no gem is dragged, assuming this is a touch event
-		// in enemy area. Handle targeting on enemies.
-		for(EnemyControlPtr ec : mEnemyList)
-		{
-		CCRect bound = ec->sprite->boundingBox();
-
-		Vec2oint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
-
-		if(bound.containsPoint(touchPointLocal))
-		{
-		if(mManualTarget == ec)
-		{
-		mManualTarget.reset();
-		mTargetCross->setOpacity(0);
-		}
-		else
-		{
-		mManualTarget = ec;
-		mTargetCross->setPosition(ec->center());
-		mTargetCross->setOpacity(255);
-		}
-		break;
-		}
-		}
-		}
-		*/
-	}
-
-	void BoardLayer::onTouchCancelled(Touch* touch, Event* ev)
-	{
-		log("touch cancelled\n");
-		//ccTouchEnded(touch, event);
-	}
 
 }

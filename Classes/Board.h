@@ -117,6 +117,8 @@ namespace PH { // tolua_export
     private:
         GemPtr          mDragGem;
         Vec2           mDragGemPos;
+		Vec2			beginPostion;
+		Vect			endPosition;
         Sprite*       mShadowGem;
 
         bool                mIsDebugMode;
@@ -246,7 +248,12 @@ namespace PH { // tolua_export
 		void onTouchMoved(Touch* touch, Event* ev) override;
 		void onTouchCancelled(Touch* touch, Event* ev) override;
 		void onTouchEnded(Touch* touch, Event* ev) override;
-        
+		//×ó»¬¶¯
+		bool doLeft();
+		bool doRight();
+		bool doUp();
+		bool doDown();
+
         float isAreaAttack(const BoardResult& result, PH::GemUtils::GemColor c) const
         {
 			bool flag = false;
