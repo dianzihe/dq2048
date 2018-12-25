@@ -173,7 +173,7 @@ namespace PH { // tolua_export
         
         // --------- [HACK] -----------
         int     mInfectedGemsOnBoard;
- 
+		EventListenerTouchOneByOne* _touchListener;
     public:
         BoardLayer(int w, int h) :
             mTurn(0),

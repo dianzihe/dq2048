@@ -96,6 +96,18 @@ luacall("FreeGlobals", make_tuple(), error);
 		//
 		this->scheduleUpdate();
 
+		// Adds touch event listener
+		auto listener = EventListenerTouchOneByOne::create();
+		listener->setSwallowTouches(true);
+
+		listener->onTouchBegan = CC_CALLBACK_2(BoardLayer::onTouchBegan, this);
+		listener->onTouchEnded = CC_CALLBACK_2(BoardLayer::onTouchEnded, this);
+
+		_eventDispatcher->addEventListenerWithFixedPriority(listener, 1);
+
+		_touchListener = listener;
+
+
 		{
 			std::string bgName = level.bg;
 			//to_lower(bgName);
@@ -484,15 +496,19 @@ luacall("FreeGlobals", make_tuple(), error);
 	}
 
 	bool BoardLayer::doLeft() {
+		log("BoardLayer::doLeft()");
 		return true;
 	}
 	bool BoardLayer::doRight() {
+		log("BoardLayer::doRight()");
 		return true;
 	}
 	bool BoardLayer::doUp() {
+		log("BoardLayer::doUp()");
 		return true;
 	}
 	bool BoardLayer::doDown() {
+		log("BoardLayer::doDown()");
 		return true;
 	}
 	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)

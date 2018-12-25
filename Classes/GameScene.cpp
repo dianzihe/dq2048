@@ -31,7 +31,7 @@ bool GameScene::init() {
     //_field.init(_fieldGUI);
     
     initGui();
-    addGestureRecognizers();
+    //addGestureRecognizers();
 
     return true;
 }
