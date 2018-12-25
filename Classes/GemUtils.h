@@ -20,6 +20,9 @@ namespace PH
 
 #define BOARD_WIDTH 6
 #define BOARD_HEIGHT 5
+#define BOARD_FRAME 10
+#define GAME_MAX_WIDTH 640
+#define GAME_MAX_HEIGHT 960
 
 	enum BattleUIOrder
 	{
@@ -47,8 +50,10 @@ namespace PH
     
     inline Vec2 g2w_center(const Vec2 & p)
     {
-        return Vec2(p.x * skGemPixelWidth + skGemPixelWidth/2,
-                   p.y * skGemPixelHeight + skGemPixelHeight/2);
+		//return Vec2(p.x * (skGemPixelWidth + 9) ,
+		//	p.y * (skGemPixelHeight + 9) );
+		return Vec2(p.x * (skGemPixelWidth + 9) + skGemPixelWidth/2,
+					p.y * (skGemPixelHeight + 9) + skGemPixelHeight/2);
     }
 
 	// Random number generators

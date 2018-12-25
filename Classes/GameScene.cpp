@@ -107,11 +107,16 @@ void GameScene::initGui() {
 	/*横向分布：边框 + BOARD_WIDTH * gem's width + (BOARD_WIDTH - 1) * gap + 边框*/
 	/*边框的最大值为10， gem的最大值为106*/
 	/*纵向分布：*/
-	/*20% 最大的值为500*/
-	/*70% 最大的值为*/
-	/*10% */
-	float layerWidth = 10 * 2 + BOARD_WIDTH * 106 + (BOARD_WIDTH - 1) * 10;
-	float layerHeight = 10 * 2 + BOARD_HEIGHT * 106 + (BOARD_HEIGHT - 1) * 10;
+	/*TOP:20% 最大的值为500*/
+	/*CON:70% 最大的值为*/
+	/*BOT:10% */
+
+	/*确定游戏区域，主要是确定在可变屏幕尺寸下的游戏尺寸
+	最小值，最大值
+	*/
+	
+	float layerWidth = BOARD_FRAME * 2 + BOARD_WIDTH * 106 + (BOARD_WIDTH - 1) * 10;
+	float layerHeight = BOARD_FRAME * 2 + BOARD_HEIGHT * 106 + (BOARD_HEIGHT - 1) * 10;
 	if (visibleSize.width > layerWidth){
 		layerPosition.x = visibleSize.width / 2 - layerWidth / 2;
 	} else{
@@ -119,15 +124,28 @@ void GameScene::initGui() {
 	}
 
 	if (visibleSize.width > layerWidth){
-		layerPosition.y = visibleSize.height * 0.45 - layerHeight / 2;
+		layerPosition.y = visibleSize.height * (0.1 + 0.35) - layerHeight / 2;
 	}
 	else{
-		layerPosition.y = visibleSize.height * 0.45 - layerHeight / 2;
+		layerPosition.y = visibleSize.height * (0.1 + 0.35) - layerHeight / 2;
 	}
 	float midX = visibleSize.width - 100 * 2;
 	
 	layer->setPosition(layerPosition);
 	this->addChild(layer);
+
+	//test create top 
+	auto topLayer = LayerColor::create(Color4B(0xff, 0x00, 0x00, 0x80), layerWidth, 200);
+	//topLayer->ignoreAnchorPointForPosition(false);
+	topLayer->setPosition(visibleSize.width / 2 - layerWidth / 2,
+		visibleSize.height * (0.1 + 0.7) + BOARD_FRAME);
+	this->addChild(topLayer, 1, topLayer->getTag());
+
+	//test create bottom 
+	auto bottomLayer = LayerColor::create(Color4B(0xff, 0x00, 0x00, 0x80), layerWidth, 10);
+	//topLayer->ignoreAnchorPointForPosition(false);
+	bottomLayer->setPosition(visibleSize.width / 2 - layerWidth / 2, BOARD_FRAME);
+	this->addChild(bottomLayer, 1, bottomLayer->getTag());
 
     //_fieldGUI->setPosition(Vec2(centerX, centerY));
     //this->addChild(_fieldGUI, 10);
