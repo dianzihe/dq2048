@@ -1,8 +1,8 @@
 #include <string>
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
-#include "Gestures/GestureRecognizerUtils.h"
-#include "Gestures/SwipeGestureRecognizer.h"
+//#include "Gestures/GestureRecognizerUtils.h"
+//#include "Gestures/SwipeGestureRecognizer.h"
 #include "Colors.h"
 #include "Board.h"
 #include "GemUtils.h"
@@ -61,7 +61,7 @@ void GameScene::loadPersistentTextureCache()
 		stringstream s;
 		s << "icons" << i << ".plist";
 
-		log("load plist %s\n", s.str());
+		//log("load plist %s\n", s.str());
 		if (PH::resourcePresentForLoading(s.str()))
 			SpriteFrameCache::getInstance()->addSpriteFramesWithFile(s.str());
 		else
@@ -102,17 +102,17 @@ void GameScene::initGui() {
 	Vec2 layerPosition;
 	PH::BoardLayer* layer = PH::BoardLayer::create(BOARD_WIDTH, BOARD_HEIGHT, level);
 	//caculate the layer position
-	//È¡ÖÐ¼äÖµ
-	/*È¥³ýÁ½±ß±ß¿ò£¬±ß¿òÓÐ×îÐ¡Öµ20£¬ÎÞ×î´óÖµ*/
-	/*ºáÏò·Ö²¼£º±ß¿ò + BOARD_WIDTH * gem's width + (BOARD_WIDTH - 1) * gap + ±ß¿ò*/
-	/*±ß¿òµÄ×î´óÖµÎª10£¬ gemµÄ×î´óÖµÎª106*/
-	/*×ÝÏò·Ö²¼£º*/
-	/*TOP:20% ×î´óµÄÖµÎª500*/
-	/*CON:70% ×î´óµÄÖµÎª*/
+	//È¡ï¿½Ð¼ï¿½Öµ
+	/*È¥ï¿½ï¿½ï¿½ï¿½ï¿½ß±ß¿ò£¬±ß¿ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡Öµ20ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ*/
+	/*ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ + BOARD_WIDTH * gem's width + (BOARD_WIDTH - 1) * gap + ï¿½ß¿ï¿½*/
+	/*ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎª10ï¿½ï¿½ gemï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎª106*/
+	/*ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½*/
+	/*TOP:20% ï¿½ï¿½ï¿½ï¿½ÖµÎª500*/
+	/*CON:70% ï¿½ï¿½ï¿½ï¿½ÖµÎª*/
 	/*BOT:10% */
 
-	/*È·¶¨ÓÎÏ·ÇøÓò£¬Ö÷ÒªÊÇÈ·¶¨ÔÚ¿É±äÆÁÄ»³ß´çÏÂµÄÓÎÏ·³ß´ç
-	×îÐ¡Öµ£¬×î´óÖµ
+	/*È·ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½È·ï¿½ï¿½ï¿½Ú¿É±ï¿½ï¿½ï¿½Ä»ï¿½ß´ï¿½ï¿½Âµï¿½ï¿½ï¿½Ï·ï¿½ß´ï¿½
+	ï¿½ï¿½Ð¡Öµï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 	*/
 	
 	float layerWidth = BOARD_FRAME * 2 + BOARD_WIDTH * 106 + (BOARD_WIDTH - 1) * 10;
@@ -154,9 +154,9 @@ void GameScene::initGui() {
 void GameScene::addGestureRecognizers() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     log("init for ios/android");
-    auto swipe = SwipeGestureRecognizer::create();
-    swipe->onSwipe = CC_CALLBACK_1(GameScene::onSwipe, this);
-    addChild(swipe);
+    //auto swipe = SwipeGestureRecognizer::create();
+    //swipe->onSwipe = CC_CALLBACK_1(GameScene::onSwipe, this);
+    //addChild(swipe);
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     log("init for mac");
     auto listener = EventListenerKeyboard::create();

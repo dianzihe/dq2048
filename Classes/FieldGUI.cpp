@@ -103,7 +103,7 @@ void FieldGUI::addCell(int value, CellPos position) {
     cell->setTag(getTagValue(position));
     cell->setPosition(posCoords(position));
     cell->show(value);
-	log("-->%s", position.desc());
+	//log("-->%s", position.desc());
     //cell->setHistory(std::string("cr(").append(position.desc()).append("=").append(std::to_string(value)).append(")"));
     _cellLayer->addChild(cell, 1);
 }
