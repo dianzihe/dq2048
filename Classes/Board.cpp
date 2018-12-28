@@ -1649,7 +1649,10 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	GemUtils::GemColor BoardLayer::randGemWeighted()
 	{
-
+		//生成 0 到 9 之间（包含）均匀分布的随机数
+		uniform_int_distribution<unsigned> u(0, 6);
+		default_random_engine e;    // 生成无符号随机整数
+		return (GemUtils::GemColor)u(e);
 		auto batch = TaskBatch::make();
 
 		float gemWeights[GemUtils::AllColor];
@@ -1676,20 +1679,16 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 #endif
 		float sum = 0.0f;
-		for(int i=0; i<GemUtils::AllColor; i++)
-		{
-			if(mGemAllowed[i])
-			{
+		for(int i = 0; i < GemUtils::AllColor; i++) {
+			if(mGemAllowed[i]) {
 				sum += gemWeights[i];
 			}
 		}
 
 		float number = randf(sum);
 		log("GemUtils::GemColor BoardLayer::randGemWeighted()-randf->%.2f", number);
-		for(int i=0; i<GemUtils::AllColor; i++)
-		{
-			if(mGemAllowed[i])
-			{
+		for(int i = 0; i < GemUtils::AllColor; i++) {
+			if(mGemAllowed[i]) {
 				if(number < gemWeights[i])
 					return (GemUtils::GemColor)i;
 				number -= gemWeights[i];
