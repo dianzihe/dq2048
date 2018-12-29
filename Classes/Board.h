@@ -109,6 +109,9 @@ namespace PH { // tolua_export
     class BoardLayer : public Layer
     {
     public:
+		int dqWidth;
+		int dqHeight;
+
         BoardControlPtr         mBoardControl;
         
         std::vector<Sprite*>  mDragHint;
@@ -143,7 +146,7 @@ namespace PH { // tolua_export
         Sprite*        mBoardMask;
 
         Sprite*        mRoundBg;
-		LabelBMFont*   mRoundText;
+		Label*   mRoundText;
         Sprite*        mBossRound;
         
         Sprite*        mElementGraph;
@@ -159,7 +162,7 @@ namespace PH { // tolua_export
         int mTotalDropCount;
         int mTotalHeroDropCount;
         int mTotalSoulDropCount;
-		LabelBMFont* mDropCountLabel;
+		Label* mDropCountLabel;
         std::vector<Sprite*> mDropList;
         
         //EnemyControlPtr mManualTarget;
@@ -167,7 +170,7 @@ namespace PH { // tolua_export
         
         Menu* mExitMenu;
         
-        //BoardResultPtr mResult;
+        BoardResultPtr mResult;
         
         void* mCurrTouch;
         
@@ -186,6 +189,8 @@ namespace PH { // tolua_export
             mStartPromptForRevival(false),
             mInfectedGemsOnBoard(0)
         {
+			this->dqWidth = w;
+			this->dqHeight = h;
             this->mIsDebugMode = false;
             
             finalStateConstraint.call = [](GemGrid&) {return false;};

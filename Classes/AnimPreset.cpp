@@ -450,9 +450,9 @@ namespace PH
                                       {
                                           comboText->getParent()->reorderChild(comboText, ORDER_FLOAT);
                                       }),
-										Sequence::create(ScaleBy::create(0.2, 1.3), ScaleBy::create(0.2, 1.3)->reverse(), NULL),
-                                      Spawn::create(ScaleTo::create(0.15, 1.5),
-                                                      FadeOut::create(0.15),
+									  Sequence::create(ScaleBy::create(0.2f, 1.3f), ScaleBy::create(0.2f, 1.3f)->reverse(), NULL),
+                                      Spawn::create(ScaleTo::create(0.15f, 1.5f),
+                                                      FadeOut::create(0.15f),
                                                       NULL),
                                       CCCallLambda::create([comboText]()
                                       {
@@ -467,12 +467,10 @@ namespace PH
         const int GEM_MOVE_TAG = 0x1011;
         
         TaskSequencePtr seq = TaskSequence::make();
-        FiniteTimeAction* moveTo = CCEaseElasticOut::create(MoveTo::create(0.6f,
-                                                                               g2w_center(gridP)),
-                                                              1.2f);
+        FiniteTimeAction* moveTo = EaseElasticOut::create(MoveTo::create(0.6f, g2w_center(gridP)), 1.2f);
     
-        FiniteTimeAction* breath = Sequence::create(CCFadeTo::create(0.2, 190),
-                                                        CCFadeTo::create(0.2, 255),
+        FiniteTimeAction* breath = Sequence::create(FadeTo::create(0.2f, 190.f),
+                                                        FadeTo::create(0.2f, 255.f),
                                                         NULL);
         FiniteTimeAction* both = Spawn::create(moveTo, breath, NULL);
 
@@ -480,7 +478,7 @@ namespace PH
         
         seq << TaskLambda::make([=]()
         {
-            CCAction* x = sprite->getActionByTag(GEM_MOVE_TAG);
+            Action* x = sprite->getActionByTag(GEM_MOVE_TAG);
             if(x)
                 sprite->stopAction(x);
         });
@@ -493,14 +491,12 @@ namespace PH
         const int GEM_MOVE_TAG = 0x1011;
         
         TaskSequencePtr seq = TaskSequence::make();
-        FiniteTimeAction* moveTo = CCEaseElasticOut::create(MoveTo::create(0.2f,
-                                                                               g2w_center(gridP)),
-                                                              1.2f);
+        FiniteTimeAction* moveTo = EaseElasticOut::create(MoveTo::create(0.2f, g2w_center(gridP)), 1.2f);
         
         moveTo->setTag(GEM_MOVE_TAG);
         seq << TaskLambda::make([=]()
                                 {
-                                    CCAction* x = sprite->getActionByTag(GEM_MOVE_TAG);
+                                    Action* x = sprite->getActionByTag(GEM_MOVE_TAG);
                                     if(x)
                                         sprite->stopAction(x);
                                 });
@@ -591,11 +587,11 @@ namespace PH
                                                          NULL));
         
         TaskBatchPtr batch = TaskBatch::make();
-        batch << TaskAnim::make(swordLeft, Spawn::create(FadeIn::create(0.1),
-                                                           RotateBy::create(0.3, 45),
+        batch << TaskAnim::make(swordLeft, Spawn::create(FadeIn::create(0.1f),
+                                                           RotateBy::create(0.3f, 45.f),
                                                            NULL));
-        batch << TaskAnim::make(swordRight, Spawn::create(FadeIn::create(0.1),
-                                                            RotateBy::create(0.3, -45),
+        batch << TaskAnim::make(swordRight, Spawn::create(FadeIn::create(0.1f),
+                                                            RotateBy::create(0.3f, -45.f),
                                                             NULL));
         seq << batch;
         return seq;

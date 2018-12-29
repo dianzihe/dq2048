@@ -181,11 +181,13 @@ luacall("FreeGlobals", make_tuple(), error);
 			dropChest->setPosition(Vec2(8, 886));
 			this->addChild(dropChest);
 
+			/*
 			mDropCountLabel = LabelBMFont::create("0", "bmfont/Junegull_28_yellow.fnt");
 			mDropCountLabel->setAnchorPoint(Vec2(0, 0));
 			mDropCountLabel->setPosition(32, -4);
 			mDropCountLabel->setScale(Director::getInstance()->getContentScaleFactor());
 			dropChest->addChild(mDropCountLabel);
+			*/
 		}
 
 	{
@@ -203,6 +205,7 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		mExitMenu = menu;
 	}
+	mResult = BoardResultPtr(new BoardResult());
 #if 0
 	{
 		mPlayer = createPlayerFromTeam(team);
@@ -299,154 +302,6 @@ luacall("FreeGlobals", make_tuple(), error);
 	return true;
 	}
 
-	void BoardLayer::promptForMenu(Ref* o)
-	{
-		std::string levelId = mLevel.id;
-#if 0
-		PlayerData* playerData = PlayerData::getInstance();
-		std::vector<shared_ptr<Stage>> stageList = playerData->normalStageList;
-		// merge stage lists
-		stageList.insert(stageList.end(),
-			playerData->instanceStageList.begin(),
-			playerData->instanceStageList.end());
-
-		std::string stageName = "";
-		std::string levelName = "";
-
-		for(auto& stage : stageList)
-		{
-			const Level* level = stage->findLevelById(levelId);
-			if(level != NULL)
-			{
-				stageName = stage->name;
-				levelName = level->name;
-				break;
-			}
-		}
-
-		BattleExitMenu::create(this,
-			stageName,
-			levelName,
-			mRoundIndex,
-			mLevel.roundList.size(),
-			mTotalHeroDropCount,
-			mTotalSoulDropCount,
-			[=]{
-			SystemInform::alertConfirmPanel(this,
-				"确定逃跑吗？会丢失已经获得全部奖励噢！",
-				"逃跑",
-				[=](){ returnToMainMenu(); },
-				[](){});
-		},
-			[=]
-		{
-			this->mElementGraph->setVisible(GameConfig::shared()->showAttrHint);
-			if(!GameConfig::shared()->showDragHint){
-				this->clearArrowPath();
-			}else
-			{
-				if( this->mDragHint.size() == 0 )
-					this->showDragHint();
-			}
-		});
-#endif
-	}
-
-	void BoardLayer::promptForRevival()
-	{
-#if 0
-		mStartPromptForRevival = false;
-		mStats.deathCount++;
-		int golds = PlayerData::getInstance()->player->golds;
-
-
-		if(golds < 60)
-		{
-			SystemInform::alertMessage(this,
-				"复活需要60元宝，您的元宝不足，无法复活，点击确定离开战场.",
-				"复活",
-				[=]() { returnToMainMenu(); });
-		}
-		else
-		{
-			auto confirm = [=]()
-			{
-				SystemInform* alert = SystemInform::alertLoading(this);
-
-				PuzzleRPC::getInstance()->revive(PlayerData::getInstance()->getToken(),
-					[=](std::auto_ptr<Player> player,
-					std::auto_ptr<Error> e)
-				{
-					alert->cancel();
-
-					if(e.get())
-					{
-						SystemInform::alertConfirmPanel(this,
-							"无法连接到服务器，请检查网络后重试。取消会丢失本关进度噢。",
-							"连接失败",
-							[=](){ promptForRevival(); },
-							[=](){ returnToMainMenu(); });
-						return;
-					}
-
-					mBoardMask->setVisible(true);
-					this->disableUI();
-
-					this->getChildByTag(DEFEAT_ANIM_TAG)->removeFromParentAndCleanup(true);
-
-					TaskPtr anim = healWithAnim(this, mPlayer.get(), mPlayer->getMaxHealth(), true);
-					mTaskQueue.enqueue(anim);
-					mTaskQueue.enqueue(TaskLambda::make([=]()
-					{
-						mBoardMask->setVisible(false);
-						this->enableUI();
-					}));
-
-					PlayerData::getInstance()->updatePlayer(player.get());
-
-					mStats.reviveCount++;
-
-					if(mRoundIndex >= mLevel.roundList.size() &&
-						isRoundDone() )
-					{
-						finishWithVictory();
-						return;
-					}
-				});
-			};
-
-			SystemInform::alertConfirmPanel(this,
-				("使用60个元宝可以复活,\n您现在有" + toStr(golds) +"个元宝！\n是否使用？\n战败会丢失已经获得的物品和侠客噢.\n").c_str(),
-				"复活",
-				confirm,
-				// cancel button
-				[=]() {  returnToMainMenu(); });
-		}
-#endif
-	}
-	TaskPtr BoardLayer::updateGemTurn()
-	{
-		auto ret = TaskSequence::make();
-#if 0
-		ret << TaskSound::make("sound/v/player_hit.mp3");
-		ret << mBoardControl->updateGemGrid();
-
-		if (mBoardControl->damageFromGems > 0.f)
-		{
-			ret << TaskSound::make("sound/v/player_hit.mp3");
-			ret << createFloatText(this,
-				-mBoardControl->damageFromGems,
-				mPlayer->center(),
-				GemUtils::Health,
-				0.0f);
-			ret << mPlayer->hit(mBoardControl->damageFromGems, this);
-			mBoardControl->damageFromGems = 0.f;
-		}
-
-		ret << mBoardControl->fillBoard([=]() { return randGemWeighted(); }, false);
-#endif
-		return ret;
-	}
 
 	// default implements are used to call script callback if exist
 	bool BoardLayer::onTouchBegan(Touch* touch, Event* ev)
@@ -497,6 +352,35 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	bool BoardLayer::doLeft() {
 		log("BoardLayer::doLeft()");
+		BoardResultPtr mResult;
+		mTaskQueue.enqueue(mBoardControl->sweepBoard(/*mPlayer,*/ mResult));
+		//mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
+		//判断有没有发生移动
+		bool isMove = false;
+		for (int y = 0; y < dqHeight; y++) {
+			for (int x = 0; x < dqWidth; x++) {
+				for (int x1 = x + 1; x1 < dqWidth; x1++) {
+					if (cardArr[x1][y]->getNumber() > 0) {
+						if (cardArr[x][ y]->getNumber() <= 0) {
+							cardArr[x][y]->setNumber(cardArr[x1][y]->getNumber());
+							cardArr[x1][y]->setNumber(0);
+							x--;
+							isMove = true;
+						} else if (cardArr[x][y]->getNumber() == cardArr[x1][y]->getNumber()) {
+							cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
+							cardArr[x1][y]->setNumber(0);
+
+							//改变分数
+							score += cardArr[x][y]->getNumber();
+							isMove = true;
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		return isMove;
 		return true;
 	}
 	bool BoardLayer::doRight() {
@@ -1774,6 +1658,155 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		mTaskQueue.enqueue(seq);
 #endif
+	}
+	void BoardLayer::promptForMenu(Ref* o)
+	{
+		std::string levelId = mLevel.id;
+#if 0
+		PlayerData* playerData = PlayerData::getInstance();
+		std::vector<shared_ptr<Stage>> stageList = playerData->normalStageList;
+		// merge stage lists
+		stageList.insert(stageList.end(),
+			playerData->instanceStageList.begin(),
+			playerData->instanceStageList.end());
+
+		std::string stageName = "";
+		std::string levelName = "";
+
+		for (auto& stage : stageList)
+		{
+			const Level* level = stage->findLevelById(levelId);
+			if (level != NULL)
+			{
+				stageName = stage->name;
+				levelName = level->name;
+				break;
+			}
+		}
+
+		BattleExitMenu::create(this,
+			stageName,
+			levelName,
+			mRoundIndex,
+			mLevel.roundList.size(),
+			mTotalHeroDropCount,
+			mTotalSoulDropCount,
+			[=] {
+			SystemInform::alertConfirmPanel(this,
+				"确定逃跑吗？会丢失已经获得全部奖励噢！",
+				"逃跑",
+				[=]() { returnToMainMenu(); },
+				[]() {});
+		},
+			[=]
+		{
+			this->mElementGraph->setVisible(GameConfig::shared()->showAttrHint);
+			if (!GameConfig::shared()->showDragHint) {
+				this->clearArrowPath();
+			}
+			else
+			{
+				if (this->mDragHint.size() == 0)
+					this->showDragHint();
+			}
+		});
+#endif
+	}
+
+	void BoardLayer::promptForRevival()
+	{
+#if 0
+		mStartPromptForRevival = false;
+		mStats.deathCount++;
+		int golds = PlayerData::getInstance()->player->golds;
+
+
+		if (golds < 60)
+		{
+			SystemInform::alertMessage(this,
+				"复活需要60元宝，您的元宝不足，无法复活，点击确定离开战场.",
+				"复活",
+				[=]() { returnToMainMenu(); });
+		}
+		else
+		{
+			auto confirm = [=]()
+			{
+				SystemInform* alert = SystemInform::alertLoading(this);
+
+				PuzzleRPC::getInstance()->revive(PlayerData::getInstance()->getToken(),
+					[=](std::auto_ptr<Player> player,
+						std::auto_ptr<Error> e)
+				{
+					alert->cancel();
+
+					if (e.get())
+					{
+						SystemInform::alertConfirmPanel(this,
+							"无法连接到服务器，请检查网络后重试。取消会丢失本关进度噢。",
+							"连接失败",
+							[=]() { promptForRevival(); },
+							[=]() { returnToMainMenu(); });
+						return;
+					}
+
+					mBoardMask->setVisible(true);
+					this->disableUI();
+
+					this->getChildByTag(DEFEAT_ANIM_TAG)->removeFromParentAndCleanup(true);
+
+					TaskPtr anim = healWithAnim(this, mPlayer.get(), mPlayer->getMaxHealth(), true);
+					mTaskQueue.enqueue(anim);
+					mTaskQueue.enqueue(TaskLambda::make([=]()
+					{
+						mBoardMask->setVisible(false);
+						this->enableUI();
+					}));
+
+					PlayerData::getInstance()->updatePlayer(player.get());
+
+					mStats.reviveCount++;
+
+					if (mRoundIndex >= mLevel.roundList.size() &&
+						isRoundDone())
+					{
+						finishWithVictory();
+						return;
+					}
+				});
+			};
+
+			SystemInform::alertConfirmPanel(this,
+				("使用60个元宝可以复活,\n您现在有" + toStr(golds) + "个元宝！\n是否使用？\n战败会丢失已经获得的物品和侠客噢.\n").c_str(),
+				"复活",
+				confirm,
+				// cancel button
+				[=]() {  returnToMainMenu(); });
+		}
+#endif
+	}
+	TaskPtr BoardLayer::updateGemTurn()
+	{
+		auto ret = TaskSequence::make();
+#if 0
+		ret << TaskSound::make("sound/v/player_hit.mp3");
+		ret << mBoardControl->updateGemGrid();
+
+		if (mBoardControl->damageFromGems > 0.f)
+		{
+			ret << TaskSound::make("sound/v/player_hit.mp3");
+			ret << createFloatText(this,
+				-mBoardControl->damageFromGems,
+				mPlayer->center(),
+				GemUtils::Health,
+				0.0f);
+			ret << mPlayer->hit(mBoardControl->damageFromGems, this);
+			mBoardControl->damageFromGems = 0.f;
+		}
+
+		ret << mBoardControl->fillBoard([=]() { return randGemWeighted(); }, false);
+#endif
+		return ret;
 	}
 
 	static void promptScriptError(/*EnemyControlPtr ec,*/ const std::string& errorMessage)

@@ -215,6 +215,21 @@ namespace PH
 		}
 		*/
 
+		//load map
+		{
+		}
+		//load
+		{
+			GemUtils::GemColor rc = GemUtils::GemColor::Fire;
+			GemPtr gem = Gem::make(rc);
+			this->addGem(Vec2(1.0, 4.0), gem);
+
+			rc = GemUtils::GemColor::Water;
+			gem = Gem::make(rc);
+			this->addGem(Vec2(4.0, 3.0), gem);
+
+		}
+		return;
         for(int x=0; x < mGrid.Width; ++x)
         {
             // count empty cells in row
