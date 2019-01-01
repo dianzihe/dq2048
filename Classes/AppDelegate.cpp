@@ -1,5 +1,6 @@
   #include "AppDelegate.h"
 #include "GameScene.h"
+#include "behaviac\behaviac.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -17,7 +18,7 @@ using namespace CocosDenshion;
 #endif
 
 USING_NS_CC;
-using namespace Game;
+//using namespace Game;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(512, 384);
@@ -45,6 +46,10 @@ void AppDelegate::initGLContextAttrs()
     GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
 
     GLView::setGLContextAttrs(glContextAttrs);
+
+	behaviac::Workspace::GetInstance()->SetFilePath("./exported");
+	behaviac::Workspace::GetInstance()->SetFileFormat(behaviac::Workspace::EFF_xml);
+
 }
 
 // if you want to use the package manager to install more packages,  

@@ -4,7 +4,7 @@
 
 USING_NS_CC;
 
-NS_GAME_BEGIN
+//NS_GAME_BEGIN
 bool RoundedRect::init() {
     if (!DrawNode::init()){
         return false;
@@ -104,4 +104,4 @@ void RoundedRect::drawSolidRoundedRect(const Vec2 &origin, const Vec2 &destinati
 }
 #endif
 
-NS_GAME_END
+//NS_GAME_END

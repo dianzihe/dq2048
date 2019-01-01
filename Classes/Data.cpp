@@ -14,13 +14,13 @@ static std::string getPath() {
     return path;
 }
 
-void Data::clearSave() {
+void clearSave() {
     auto fileUtils = FileUtils::getInstance();
     fileUtils->removeFile(getPath());
     log("Clear save!");
 }
 
-int Data::getSavedData(Consts::ArrType& data) {
+int getSavedData(Consts::ArrType& data) {
     if (Consts::USE_TEST_DATA) {
         Consts::ArrType t = {
             {0, 2, 2, 4},
@@ -54,7 +54,7 @@ int Data::getSavedData(Consts::ArrType& data) {
     return def->getIntegerForKey("curScore", 0);
 }
 
-void Data::saveData(const Consts::ArrType& arr, int score) {
+void saveData(const Consts::ArrType& arr, int score) {
     auto fileUtils = FileUtils::getInstance();
     std::string path = fileUtils->getWritablePath() + Consts::SAVE_PATH;
 
@@ -68,12 +68,12 @@ void Data::saveData(const Consts::ArrType& arr, int score) {
     def->flush();
 }
 
-int Data::getBest() {
+int getBest() {
     auto def = UserDefault::getInstance();
     return def->getIntegerForKey("bestScore", 0);
 }
 
-void Data::saveBest(int score) {
+void saveBest(int score) {
     auto def = UserDefault::getInstance();
     def->setIntegerForKey("bestScore", score);
     def->flush();

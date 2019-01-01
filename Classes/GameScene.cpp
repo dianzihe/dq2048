@@ -132,6 +132,7 @@ void GameScene::initGui() {
 	float midX = visibleSize.width - 100 * 2;
 	
 	layer->setPosition(layerPosition);
+	layer->setContentSize(Size(layerWidth, layerHeight));
 	this->addChild(layer);
 
 	//test create top 

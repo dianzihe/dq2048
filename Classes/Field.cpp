@@ -9,16 +9,17 @@ NS_GAME_BEGIN
 void Field::onWin(CellPos position){
     _gameOver = true;
     _fieldGui->onWin(position);
-    Data::clearSave();
+    //clearSave();
 }
 
 void Field::onLoose(){
     _gameOver = true;
     _fieldGui->onLoose();
-    Data::clearSave();
+   // clearSave();
 }
 
 void Field::init(FieldGUI* fieldGui) {
+	/*
     _fieldGui = fieldGui;
     
     auto savedScore = Data::getSavedData(_data);
@@ -37,12 +38,13 @@ void Field::init(FieldGUI* fieldGui) {
     
     _best = Data::getBest();
     _fieldGui->setBest(_best);
+	*/
 }
 
 void Field::restartGame() {
     _gameOver = false;
     _fieldGui->clearAll();
-    Data::clearSave();
+    //Data::clearSave();
     _score = 0;
     _fieldGui->setScore(_score);
     
@@ -120,7 +122,7 @@ void Field::addScore(int score){
     if (_score > _best) {
         _best = _score;
         _fieldGui->setBest(_best);
-        Data::saveBest(_best);
+        //Data::saveBest(_best);
     }
     _fieldGui->setScore(_score);
 }
@@ -183,7 +185,7 @@ void Field::onSwipe(Consts::Move dir) {
         bool hasEmptyCells = addRandom();
         if (!hasEmptyCells) checkLoose();
         if (!_gameOver) {
-            Data::saveData(_data, _score); // todo: save once on app close
+            //Data::saveData(_data, _score); // todo: save once on app close
         }
     }
 }

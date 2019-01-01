@@ -178,6 +178,7 @@ namespace PH
         Node*     root;
         float       damageFromGems;
         
+		TaskPtr sweepLeftBoard(BoardResultPtr result);
         // --- IObject ---
         BoardControl() : root(NULL), mGrid(skBoardWidth, skBoardHeight), damageFromGems(0) {}
         ~BoardControl();

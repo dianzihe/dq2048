@@ -16,7 +16,8 @@
 
 #include "CCCallLambda.h"
 //#include "CCScale9Sprite.h"
-
+#include "behaviac\behaviac_generated\types\behaviac_types.h"
+#include "behaviac\behaviac_generated\types\internal\FirstAgent.h"
 namespace PH
 {
     USING_NS_CC;
@@ -28,12 +29,10 @@ namespace PH
         GemSet gemSet;
         gemSet.insert(l(0));
         
-        for(int i=1; i<l.size(); ++i)
-        {
+        for(int i = 1; i < l.size(); ++i) {
             GemPtr gem = l(i);
-            if(gem->color() != lastGemColor)
-            {
-                sets.push_back(gemSet);
+            if(gem->color() != lastGemColor) {
+                sets.push_back(gemSet); 
                 gemSet.clear();
                 lastGemColor = gem->color();
             }
@@ -219,6 +218,7 @@ namespace PH
 		{
 		}
 		//load
+		if (0)
 		{
 			GemUtils::GemColor rc = GemUtils::GemColor::Fire;
 			GemPtr gem = Gem::make(rc);
@@ -227,9 +227,9 @@ namespace PH
 			rc = GemUtils::GemColor::Water;
 			gem = Gem::make(rc);
 			this->addGem(Vec2(4.0, 3.0), gem);
-
+			return;
 		}
-		return;
+		
         for(int x=0; x < mGrid.Width; ++x)
         {
             // count empty cells in row
@@ -381,9 +381,220 @@ namespace PH
         
         return batch;
     }
-    
-    TaskPtr BoardControl::sweepBoard(/*PlayerControlPtr player,*/
-                                     BoardResultPtr result)
+	TaskPtr BoardControl::sweepLeftBoard( BoardResultPtr result)
+	{
+		FirstAgent* g_FirstAgent = NULL;
+		g_FirstAgent = behaviac::Agent::Create<FirstAgent>();
+
+		bool bRet = g_FirstAgent->btload("test");
+
+		g_FirstAgent->btsetcurrent("test");
+
+		auto sweepBatch = TaskBatch::make();
+		GemComboList combos;
+
+		//find horizonal sets
+		for (int y = 0; y < mGrid.Height; ++y) {
+			std::vector<GemSet> sets;
+			GemGrid::Array row = mGrid.row(y);
+			findSets(row, sets);
+
+			for (GemSet set : sets)
+				insertDisjointGemSet(combos, set);
+		}
+		/*
+		//find vertical sets
+		for (int x = 0; x<mGrid.Width; ++x) {
+			std::vector<GemSet> sets;
+			GemGrid::Array col = mGrid.column(x);
+			findSets(col, sets);
+
+			for (GemSet set : sets)
+				insertDisjointGemSet(combos, set);
+		}
+		*/
+
+#if 0
+
+		int     boostEnergyCount = 0;
+		float   boostEnergy = 1.f;
+		auto    boostEnergyColor = GemUtils::AllColor;
+
+		//if( player->buffGroup.invokeBuff("active.boost.energy.by.factor", sweepBatch) )
+		if (player->buffGroup.isBuffActive("active.boost.energy.by.factor"))
+		{
+			auto buff = player->buffGroup.getBuffContent<FloatBuff>("active.boost.energy.by.factor");
+			boostEnergy = buff->d1;
+			boostEnergyColor = buff->getColor();
+		}
+
+		float delay = 0.f;
+		// compute results and animate gems
+		for (GemSet& set : combos)
+		{
+			auto comboBatch = TaskBatch::make();
+			auto comboSeq = TaskSequence::make();
+			comboSeq << createDelay(runningScene(), delay);
+			delay += 0.325f;
+
+			// clear each combo set
+			bool still = true;
+			for (GemPtr gem : set)
+			{
+				TaskSequencePtr localSeq = TaskSequence::make();
+				localSeq << gem->sweep(this);
+
+				// gem->sweep might interrupt this procedure
+				if (mGrid(gem->position)) still = false;
+
+				// count all gem sweeps
+				player->mTotalGemCount[gem->color()]++;
+				comboBatch << localSeq;
+			}
+			comboBatch << TaskSound::make("sound/v/gem_sweep.mp3");
+
+			if (!still) {
+				comboSeq << comboBatch;
+				sweepBatch << comboSeq;
+				continue;
+			}
+
+			//sweepSeq << createDelay(parent, 0.05f);
+
+			Vec2 setCenter = computeGemSetCenter(set);
+
+			// if this is not the first iteration.
+			if (result->comboCount() + player->minComboCount)
+			{
+				// Result MUST be used additively because it may carry stuff from
+				// previous fill sweep iterations.
+				Sprite* comboText = createComboTextLabel(result->comboCount() + player->minComboCount + 1,
+					setCenter);
+				comboText->setVisible(false);
+				comboText->setScale(0);
+				this->root->addChild(comboText, ORDER_MASK);
+
+				comboBatch << TaskLambda::make([=](){ comboText->setVisible(true); });
+				comboBatch << TaskAnim::make(comboText,
+					CCEaseElasticOut::create(CCScaleTo::create(0.3, 1.0)));
+
+				result->add(set, comboText);
+			}
+			else
+				result->add(set, NULL);
+
+			GemUtils::GemColor setColor = (*set.begin())->color();
+
+			// Handle energy bonus. Only handle exact gem count.
+			float totalBonus = 0.0f;
+			if (player->passiveEnergyBonusByGemCount[setColor].isValid())
+			{
+				for (auto p : player->passiveEnergyBonusByGemCount[setColor].map())
+				{
+					int count = (int)p.second.first;
+					float bonus = p.second.second;
+					totalBonus += set.size() >= count ? bonus : 0.0f;
+				}
+			}
+
+			bool flag = false;
+			if (GemUtils::Health == setColor) flag = true;
+			if (player->buffGroup.invokeBuffWhen("superRegen", comboBatch, setColor))
+			{
+				flag = true;
+			}
+
+			if (flag && player->isHurt())
+			{
+				float prevHeal = result->baseAttack.heal;
+
+				float extraGemFactor = 0.25f;
+				comboBatch << player->getExtraGemsFactor(extraGemFactor);
+				result->baseAttack.heal += player->totalRegen() * (1 + (set.size() - 3) * extraGemFactor);
+
+				CCFiniteTimeAction* numberSeq = createNumberAnimSeq(prevHeal,
+					result->baseAttack.heal,
+					NUMBER_DURATION);
+				if (!result->baseAttack.healLabel)
+				{
+					//                    result->baseAttack.healLabel = player->createHealLabel(this->root);
+					result->baseAttack.healLabel = player->createHealLabel(this->root->getParent());
+				}
+
+
+				comboBatch << TaskAnim::make(result->baseAttack.healLabel, CCShow::create())
+					<< TaskAnim::make(result->baseAttack.healLabel, numberSeq, false);
+			}
+
+			auto buff = player->buffGroup.getBuffContent<BoolBuff>("superRegen");
+			if (flag && buff && !buff->d1)
+			{
+				comboSeq << comboBatch;
+				sweepBatch << comboSeq;
+				continue;
+			}
+
+			for (HeroControl* hc : player->team)
+			{
+				GemUtils::GemColor heroColor = hc->info.profile->color;
+
+				// if hero color is not the same as gem color, ignore this hero
+				if (setColor == heroColor)
+				{
+					comboBatch << createOrb(this->root, setCenter, hc->center(), false);
+
+					float prevAttack = result->baseAttack(hc).attack;
+
+					float extraGemFactor = 0.25f;
+					comboBatch << player->getExtraGemsFactor(extraGemFactor);
+					result->baseAttack(hc).attack += hc->attack * (1 + (set.size() - 3) * extraGemFactor);
+
+					CCFiniteTimeAction* numberSeq = createNumberAnimSeq(prevAttack,
+						result->baseAttack(hc).attack,
+						NUMBER_DURATION);
+					if (!result->baseAttack(hc).attackLabel)
+					{
+						result->baseAttack(hc).attackLabel = hc->createAttackLabel();
+						comboBatch << TaskAnim::make(result->baseAttack(hc).attackLabel,
+							CCSpawn::create(CCFadeIn::create(0.1),
+							numberSeq,
+							NULL),
+							false);
+					}
+					else
+					{
+						comboBatch << TaskAnim::make(result->baseAttack(hc).attackLabel,
+							numberSeq,
+							false);
+					}
+
+					float energy = set.size() * std::max(player->mEnergyFactor[hc->getColor()],
+						player->mEnergyFactor[GemUtils::AllColor]);
+					energy += totalBonus;
+
+					if ((boostEnergyColor == GemUtils::AllColor || boostEnergyColor == hc->getColor()) &&
+						boostEnergy != 1.f)
+					{
+						boostEnergyCount++;
+						if (boostEnergyCount == 1)
+						{
+							player->buffGroup.invokeBuff("active.boost.energy.by.factor", sweepBatch);
+						}
+						energy *= boostEnergy;
+					}
+
+					comboBatch << hc->addEnergy(energy);
+				}
+			}
+			comboSeq << comboBatch;
+			sweepBatch << comboSeq;
+		}
+#endif
+		return sweepBatch;
+		return NULL;
+	}
+
+    TaskPtr BoardControl::sweepBoard(/*PlayerControlPtr player,*/ BoardResultPtr result)
     {
 		auto sweepBatch = TaskBatch::make();
 #if 0
@@ -637,8 +848,7 @@ namespace PH
     void BoardControl::addGem(const Vec2& pos, GemPtr gem)
     {
         if(pos.x < 0 || pos.x >= mGrid.Width ||
-           pos.y < 0 || pos.y >= mGrid.Height || !gem)
-        {
+           pos.y < 0 || pos.y >= mGrid.Height || !gem) {
             return;
         }
         

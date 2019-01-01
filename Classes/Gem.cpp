@@ -1,11 +1,11 @@
 ﻿#include "Gem.h"
-//#include "boost/algorithm/string.hpp"
 //#include "Utils.h"
 #include "Task.h"
 #include "CCCallLambda.h"
 //#include "BoardControls.h"
 //#include "Board.h"
 //#include "PlayerControl.h"
+#include "RoundedRect.hpp"
 namespace PH
 {
     static const float kGemInterval = 0.5f;
@@ -106,7 +106,14 @@ namespace PH
         this->root = GemUtils::GetSprite(GemUtils::res(c));
         this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
-        
+		
+		_back = RoundedRect::create();
+		_back->setPosition(Vec2(-Gem::kGemWidthPixel / 2, -Gem::kGemHeightPixel / 2));
+		_back->setSizeAndColor(Vec2(500.f, 500.f), Color4F::BLACK);
+
+		//this->root->addChild(_back, -1);
+		this->root->addChild(_back);
+
         //this->attachCountdown();
         
         return true;

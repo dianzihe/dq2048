@@ -10,6 +10,7 @@
 #define HelloCpp_GemUtils_h
 
 #include <cocos2d.h>
+#include "Constants.h"
 //#include <gfx/vec2.h>
 //#include <boost/lexical_cast.hpp>
 
@@ -50,10 +51,8 @@ namespace PH
     
     inline Vec2 g2w_center(const Vec2 & p)
     {
-		//return Vec2(p.x * (skGemPixelWidth + 9) ,
-		//	p.y * (skGemPixelHeight + 9) );
-		return Vec2(p.x * (skGemPixelWidth + 9) + skGemPixelWidth/2,
-					p.y * (skGemPixelHeight + 9) + skGemPixelHeight/2);
+		return Vec2(Consts::CELL_OFFSET + p.x * (skGemPixelWidth + Consts::CELL_OFFSET) + skGemPixelWidth / 2,
+			Consts::CELL_OFFSET + p.y * (skGemPixelHeight + Consts::CELL_OFFSET) + skGemPixelHeight / 2);
     }
 
 	// Random number generators
@@ -71,12 +70,24 @@ namespace PH
 		return randf(max - min) + min;
 	}
 
+	inline int dqrandint(float min, float max)
+	{
+		return (int)randf(max - min) + min;
+	}
+
 	inline Vec2 randomUnitVec2()
 	{
 		Vec2 v(randf() - 0.5f, randf() - 0.5f);
+		v.normalize();
 		//unitize(v);
 		
 		return v;
+	}
+
+	inline Vec2 randomPosition(float min, float max)
+	{
+		Vec2 normal = randomUnitVec2();
+		return normal * randf(min, max);
 	}
 
 	inline Vec2 randomBand(float min, float max)
@@ -92,8 +103,7 @@ namespace PH
 	
     inline Vec2 w2g(const Vec2& p)
     {
-        return Vec2(floorf(p.x / skGemPixelWidth),
-                     floorf(p.y / skGemPixelHeight));
+        return Vec2(floorf(p.x / skGemPixelWidth), floorf(p.y / skGemPixelHeight));
     }
 	inline bool resourcePresentForLoading(const std::string& filename)
 	{

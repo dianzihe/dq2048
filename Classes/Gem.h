@@ -13,11 +13,10 @@
 #include "Task.h"
 #include "GemUtils.h"
 //#include "BoardControls.h"
-
+#include "RoundedRect.hpp"
 
 USING_NS_CC;
 using namespace std;
-
 
 struct GemUtils {  // tolua_export
 	// tolua_begin
@@ -63,9 +62,12 @@ namespace PH { // tolua_export
         static const size_t kGemWidthPixel, kGemHeightPixel;
         Sprite*           root;
         Vec2               position;
-        
+		
+		RoundedRect* _back = nullptr;
         // --- IObject ---
-        Gem() : root(NULL), mCountdown(NULL), mTurn(-1) {}
+        Gem() : root(NULL), mCountdown(NULL), mTurn(-1) 
+		{
+		}
         ~Gem();
         
         INITIALIZE_OBJECT();

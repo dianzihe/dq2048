@@ -4,7 +4,7 @@
 
 USING_NS_CC;
 
-NS_GAME_BEGIN
+//NS_GAME_BEGIN
 class RoundedRect: public DrawNode {
 
 public:
@@ -16,4 +16,4 @@ protected:
     void drawSolidRoundedRect(const Vec2 &origin, const Vec2 &destination,
                               float radius, unsigned int segments, const Color4F &color);
 };
-NS_GAME_END
+//NS_GAME_END

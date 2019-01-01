@@ -12,10 +12,12 @@
 //#include "SimpleAudioEngine.h"
 //#include "CCLuaEngine.h"
 //#include "network/PuzzleRPC.h"
-//#include "GenericCallLua.h"
+//#include "GenericCallLua.h"'
+#include "FieldBack.hpp"
 #include "AnimPreset.h"
 #include "Task.h"
 #include "GemUtils.h"
+#include "Colors.h"
 //#include "CCNative.h"
 
 #include <algorithm>
@@ -104,9 +106,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		listener->onTouchEnded = CC_CALLBACK_2(BoardLayer::onTouchEnded, this);
 
 		_eventDispatcher->addEventListenerWithFixedPriority(listener, 1);
-
 		_touchListener = listener;
-
 
 		{
 			std::string bgName = level.bg;
@@ -121,12 +121,21 @@ luacall("FreeGlobals", make_tuple(), error);
 			bg->setAnchorPoint(Vec2(0, 0));
 			this->addChild(bg, ORDER_BACKGROUND);
 			*/
+			// back
+			//auto size = Vec2(Consts::FIELD_WIDTH + Consts::CELL_OFFSET, Consts::FIELD_HEIGHT + Consts::CELL_OFFSET); 
+			auto size = this->getContentSize();
+			FieldBack* back = FieldBack::make(size, BOARD_WIDTH, BOARD_HEIGHT, 107, Colors::Back1, 1);
+			back->setAnchorPoint(Vec2(0, 0));
+			//back->setPosition(Vec2(-Consts::FIELD_WIDTH / 2 - Consts::CELL_OFFSET / 2,
+			//	-Consts::FIELD_HEIGHT / 2 - Consts::CELL_OFFSET / 2));
+
 			{
+				/*
 				SpriteBatchNode* bgBatch = SpriteBatchNode::create("battleMisc.png");
 				bgBatch->setAnchorPoint(Vec2(0, 0));
 				bgBatch->setPosition(Vec2(0, 0));
 				this->addChild(bgBatch, ORDER_BACKGROUND);
-
+				*/
 				// create board background
 				// assuming battleMisc.png has both qipan tile textures
 				for (int x = 0; x < BOARD_WIDTH; x++)
@@ -155,7 +164,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			mRoundBg->setAnchorPoint(Vec2(0.5, 0.0));
 			mRoundBg->setPosition(Vec2(1000, 730));
 			this->addChild(mRoundBg, ORDER_FLOAT);
-
+			
 			mElementGraph = GemUtils::GetSprite("ui/element_graph.png");
 			mElementGraph->setAnchorPoint(Vec2(1.0, 1.0));
 			mElementGraph->setPosition(Vec2(638, 956));
@@ -181,6 +190,8 @@ luacall("FreeGlobals", make_tuple(), error);
 			dropChest->setPosition(Vec2(8, 886));
 			this->addChild(dropChest);
 
+
+			addChild(back, -1);
 			/*
 			mDropCountLabel = LabelBMFont::create("0", "bmfont/Junegull_28_yellow.fnt");
 			mDropCountLabel->setAnchorPoint(Vec2(0, 0));
@@ -352,10 +363,11 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	bool BoardLayer::doLeft() {
 		log("BoardLayer::doLeft()");
-		BoardResultPtr mResult;
-		mTaskQueue.enqueue(mBoardControl->sweepBoard(/*mPlayer,*/ mResult));
+		BoardResultPtr mResult = BoardResultPtr(new BoardResult());
+		mTaskQueue.enqueue(mBoardControl->sweepLeftBoard(/*mPlayer,*/ mResult));
 		//mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
 		//判断有没有发生移动
+		/*
 		bool isMove = false;
 		for (int y = 0; y < dqHeight; y++) {
 			for (int x = 0; x < dqWidth; x++) {
@@ -379,8 +391,8 @@ luacall("FreeGlobals", make_tuple(), error);
 				}
 			}
 		}
-
-		return isMove;
+		*/
+		//return isMove;
 		return true;
 	}
 	bool BoardLayer::doRight() {
@@ -1533,6 +1545,7 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	GemUtils::GemColor BoardLayer::randGemWeighted()
 	{
+		return (GemUtils::GemColor)((int)floor(randf(0.0, 6.0)));
 		//生成 0 到 9 之间（包含）均匀分布的随机数
 		uniform_int_distribution<unsigned> u(0, 6);
 		default_random_engine e;    // 生成无符号随机整数

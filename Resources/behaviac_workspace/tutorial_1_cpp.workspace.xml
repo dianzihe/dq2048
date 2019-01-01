@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<workspace name="tutorial_1_cpp" metafilename="C:\Program Files (x86)\behaviac\tutorials\tutorial_1\workspace" folder="behaviors" export="..\exported" language="cpp" version="3">
+  <export>
+    <cpp>
+      <isexported>True</isexported>
+      <exportfilecount>1</exportfilecount>
+      <folder>../../../Classes/behaviac</folder>
+    </cpp>
+  </export>
+</workspace>

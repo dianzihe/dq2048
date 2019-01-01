@@ -3,8 +3,8 @@
 #include <string>
 #include <utility>
 
-#define NS_GAME_BEGIN    namespace Game {
-#define NS_GAME_END      }
+#define NS_GAME_BEGIN    //namespace Game {
+#define NS_GAME_END      //}
 
 namespace Consts {
     const int ROWS = 4;
@@ -17,7 +17,7 @@ namespace Consts {
 
     const int CELL_WIDTH  = 100;
     const int CELL_HEIGHT = CELL_WIDTH;
-    const int CELL_OFFSET = 10;
+    const int CELL_OFFSET = 9;
     const int FIELD_WIDTH = CELL_WIDTH * ROWS;
     const int FIELD_HEIGHT = CELL_HEIGHT * COLS;
     
