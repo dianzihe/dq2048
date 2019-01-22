@@ -144,14 +144,36 @@ namespace PH
             // Frst value MUST start from 0.
             // AllColor MUST immediately follow the last gem color.
             // Health must be the last among all actual gem colors.
-            Fire = 0,
-            Water = 1,
-            Wood = 2,
-            Dark = 3,
-            Light = 4,
-            Health = 5,
-            AllColor = 6,
-            GemColorMax = 7,
+			Fire = 0,
+			Water = 1,
+			Wood = 2,
+			Dark = 3,
+			Light = 4,
+			Health = 5,
+			Langren = 6,		//狼人
+			Langrenxiaohai = 7,	//狼人小孩
+			Langrenxianzhi = 8,	//狼人先知
+			LangTanshui = 9,	//贪睡狼
+
+			Lieren = 10,		//猎人
+			Cunmin = 11,		//村民
+			Shouwei = 12,		//守卫
+			Xianzhi = 13,		//先知
+			Gechangjia = 14,	//歌唱家
+			Wulai = 15,			//无赖
+			Xiaotou = 16,		//小偷
+			Xiaohai = 17,		//小孩
+			Jingzhang = 18,		//警长
+			Gaomizhe = 19,		//告密者
+			Pantu = 20,			//叛徒
+			Nvwu = 21,			//女巫
+			Yuyanjia = 22,		//预言家
+			Lingyi = 23,		//灵异侦探
+			Baichi = 24,		//白痴
+
+
+            AllColor = 25,
+            GemColorMax = 26,
         };
         // tolua_end
         
