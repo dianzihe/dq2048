@@ -86,6 +86,8 @@ luacall("FreeGlobals", make_tuple(), error);
 //--------------------
 // BoardLayer
 //--------------------
+	static bool moveStarted = false;
+
 	bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
 	{
 		if (!Layer::init())
@@ -363,53 +365,40 @@ luacall("FreeGlobals", make_tuple(), error);
 		return true;
 	}
 
-	bool BoardLayer::doLeft() {
-		log("BoardLayer::doLeft()");
-		BoardResultPtr mResult = BoardResultPtr(new BoardResult());
-		mTaskQueue.enqueue(mBoardControl->sweepLeftBoard(/*mPlayer,*/ mResult));
-		//mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
-		//判断有没有发生移动
-		/*
-		bool isMove = false;
-		for (int y = 0; y < dqHeight; y++) {
-			for (int x = 0; x < dqWidth; x++) {
-				for (int x1 = x + 1; x1 < dqWidth; x1++) {
-					if (cardArr[x1][y]->getNumber() > 0) {
-						if (cardArr[x][ y]->getNumber() <= 0) {
-							cardArr[x][y]->setNumber(cardArr[x1][y]->getNumber());
-							cardArr[x1][y]->setNumber(0);
-							x--;
-							isMove = true;
-						} else if (cardArr[x][y]->getNumber() == cardArr[x1][y]->getNumber()) {
-							cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
-							cardArr[x1][y]->setNumber(0);
+	void BoardLayer::endDrag()
+	{
+#if 1
+		this->clearArrowPath();
 
-							//改变分数
-							score += cardArr[x][y]->getNumber();
-							isMove = true;
-						}
-						break;
-					}
-				}
-			}
+		mCurrTouch = NULL;
+		moveStarted = false;
+		//mPlayer->stopTicking();
+
+		if (mDragGem != NULL) {
+			mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+			mDragGem->root->setPosition(g2w_center(mDragGem->position));
+			mDragGem.reset();
+
+			mShadowGem->removeFromParentAndCleanup(true);
 		}
-		*/
-		//return isMove;
-		return true;
-	}
-	bool BoardLayer::doRight() {
-		log("BoardLayer::doRight()");
-		return true;
-	}
-	bool BoardLayer::doUp() {
-		log("BoardLayer::doUp()");
-		return true;
-	}
-	bool BoardLayer::doDown() {
-		log("BoardLayer::doDown()");
-		return true;
-	}
 
+		// satisfies final board state constraint
+		if (finalStateConstraint.call(mBoardControl->getGrid())) {
+			return;
+		}
+		else {
+			// final state constraint is only valid before it's met first time.
+			// reset final state constraint
+			finalStateConstraint.call = [](GemGrid& g)->bool {return false; };
+		}
+
+		// must immediately disable UI on end of a drag events,
+		// to prevent from receiving incomplete touch began/end pair.
+		disableUI();
+
+		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
+#endif
+	}
 	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
 	{
 		/*
@@ -444,15 +433,13 @@ luacall("FreeGlobals", make_tuple(), error);
 		*/
 
 		mCurrTouch = NULL;
-		/*
+		
 		// TODO: merge this ugliness to endDrag
-		if (mDragGem)
-		{
+		if (mDragGem) {
 			// player started dragging but no swapping has happened yet
 			// do not count this as a move.
 			auto batch = TaskBatch::make();
-			if (!moveStarted || mPlayer->buffGroup.invokeBuff("disableSweep", batch))
-			{
+			if (!moveStarted /*|| mPlayer->buffGroup.invokeBuff("disableSweep", batch)*/) {
 				mTaskQueue.enqueue(batch);
 
 				mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -461,14 +448,11 @@ luacall("FreeGlobals", make_tuple(), error);
 
 				mShadowGem->removeFromParentAndCleanup(true);
 				return;
-			}
-			else
-			{
+			} else {
 				endDrag();
 			}
-		}
-		else
-		{
+		} else {
+			/*
 			//------------------------------------------------------
 			// When no gem is dragged, assuming this is a touch event
 			// in enemy area. Handle targeting on enemies.
@@ -494,8 +478,9 @@ luacall("FreeGlobals", make_tuple(), error);
 					break;
 				}
 			}
+			*/
 		}
-		*/
+		
 
 	}
 	void BoardLayer::onTouchMoved(Touch* touch, Event* ev)
@@ -2409,45 +2394,51 @@ luacall("FreeGlobals", make_tuple(), error);
 #endif
 	}
 
-	static bool moveStarted = false;
 
-	void BoardLayer::endDrag()
-	{
-#if 0
-		this->clearArrowPath();
+	bool BoardLayer::doLeft() {
+		log("BoardLayer::doLeft()");
+		BoardResultPtr mResult = BoardResultPtr(new BoardResult());
+		mTaskQueue.enqueue(mBoardControl->sweepLeftBoard(/*mPlayer,*/ mResult));
+		//mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
+		//判断有没有发生移动
+		/*
+		bool isMove = false;
+		for (int y = 0; y < dqHeight; y++) {
+		for (int x = 0; x < dqWidth; x++) {
+		for (int x1 = x + 1; x1 < dqWidth; x1++) {
+		if (cardArr[x1][y]->getNumber() > 0) {
+		if (cardArr[x][ y]->getNumber() <= 0) {
+		cardArr[x][y]->setNumber(cardArr[x1][y]->getNumber());
+		cardArr[x1][y]->setNumber(0);
+		x--;
+		isMove = true;
+		} else if (cardArr[x][y]->getNumber() == cardArr[x1][y]->getNumber()) {
+		cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
+		cardArr[x1][y]->setNumber(0);
 
-		mCurrTouch = NULL;
-		moveStarted = false;
-		mPlayer->stopTicking();
-
-		if (mDragGem != NULL)
-		{
-			mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
-			mDragGem->root->setPosition(g2w_center(mDragGem->position));
-			mDragGem.reset();
-
-			mShadowGem->removeFromParentAndCleanup(true);
+		//改变分数
+		score += cardArr[x][y]->getNumber();
+		isMove = true;
 		}
-
-		// satisfies final board state constraint
-		if (finalStateConstraint.call(mBoardControl->getGrid()))
-		{
-			return;
+		break;
 		}
-		else
-		{
-			// final state constraint is only valid before it's met first time.
-			// reset final state constraint
-			finalStateConstraint.call = [](GemGrid& g)->bool {return false; };
 		}
-
-		// must immediately disable UI on end of a drag events,
-		// to prevent from receiving incomplete touch began/end pair.
-		disableUI();
-
-		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
-#endif
+		}
+		}
+		*/
+		//return isMove;
+		return true;
 	}
-
-
+	bool BoardLayer::doRight() {
+		log("BoardLayer::doRight()");
+		return true;
+	}
+	bool BoardLayer::doUp() {
+		log("BoardLayer::doUp()");
+		return true;
+	}
+	bool BoardLayer::doDown() {
+		log("BoardLayer::doDown()");
+		return true;
+	}
 }

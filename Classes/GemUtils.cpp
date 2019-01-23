@@ -85,25 +85,25 @@ const char* GemUtils::res(GemColor c)
         case Light:		return "gem_light.png";
         case Health:	return "gem_health.png";
 
-		case Langren:		return "zhanwei_biankuang.png";
-		case Langrenxiaohai:return "zhanwei_biankuang.png";
-		case Langrenxianzhi:return "zhanwei_biankuang.png";
-		case LangTanshui:	return "zhanwei_biankuang.png";
-		case Lieren:		return "zhanwei_biankuang.png";
-		case Cunmin:		return "zhanwei_biankuang.png";
-		case Shouwei:		return "zhanwei_biankuang.png";
-		case Xianzhi:		return "zhanwei_biankuang.png";
-		case Gechangjia:	return "zhanwei_biankuang.png";
-		case Wulai:			return "zhanwei_biankuang.png";
-		case Xiaotou:		return "zhanwei_biankuang.png";
-		case Xiaohai:		return "zhanwei_biankuang.png";
-		case Jingzhang:		return "zhanwei_biankuang.png";
-		case Gaomizhe:		return "zhanwei_biankuang.png";
- 		case Pantu:			return "zhanwei_biankuang.png";
-		case Nvwu:			return "zhanwei_biankuang.png";
-		case Yuyanjia:		return "zhanwei_biankuang.png";
-		case Lingyi:		return "zhanwei_biankuang.png";
-		case Baichi:		return "zhanwei_biankuang.png";
+		case Langren:		return "xieshen/5_icon.png";
+		case Langrenxiaohai:return "xiexun/3_icon.png";
+		case Langrenxianzhi:return "xiyuansan/3_icon.png";
+		case LangTanshui:	return "xuedaolaozu/4_icon.png";
+		case Lieren:		return "xuemuhua/4_icon.png";
+		case Cunmin:		return "xuzhu/2_icon.png";
+		case Shouwei:		return "yangdingtian/3_icon.png";
+		case Xianzhi:		return "yangguo/2_icon.png";
+		case Gechangjia:	return "yanglianting/2_icon.png";
+		case Wulai:			return "yangxiao/3_icon.png";
+		case Xiaotou:		return "yaoguangfu/3_icon.png";
+		case Xiaohai:		return "yidengdashi/2_icon.png";
+		case Jingzhang:		return "yijinzhenjing/2_icon.png";
+		case Gaomizhe:		return "yilin/4_icon.png";
+ 		case Pantu:			return "yinsusu/3_icon.png";
+		case Nvwu:			return "yinzhiping/2_icon.png";
+		case Yuyanjia:		return "yuanchengzhi/2_icon.png";
+		case Lingyi:		return "yucanghai/3_icon.png";
+		case Baichi:		return "yuelingshan/5_icon.png";
 
         case AllColor:
         case GemColorMax:

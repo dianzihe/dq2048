@@ -102,8 +102,13 @@ namespace PH
     {
         mColor  = c;
         mTurn   = turn;
-    
-        this->root = GemUtils::GetSprite(GemUtils::res(c));
+		isOpen = false;
+
+		if (false == isOpen)
+			this->root = GemUtils::GetSprite("zhanwei_biankuang.png");
+		else
+			this->root = GemUtils::GetSprite(GemUtils::res(c));
+
         this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();
 		
