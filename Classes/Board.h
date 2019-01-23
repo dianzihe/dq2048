@@ -353,6 +353,7 @@ namespace PH { // tolua_export
         }
         */
         GemUtils::GemColor randGemWeighted();
+		GemUtils::GemColor randLangrenWeighted();
         
         void disableUI();
         void enableUI();

@@ -1,42 +1,22 @@
 #pragma once
 
 #include <cocos2d.h>
-//#include <gfx/vec2.h>
-
-//#include <extensions/utils.h>
-//#include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
-
-//#include "BuffGroup.h"
 
 #include "SerializationUtils.h"
 #include "Task.h"
 #include "GemUtils.h"
-//#include "BoardControls.h"
 #include "RoundedRect.hpp"
+
+//#include <gfx/vec2.h>
+//#include <extensions/utils.h>
+//#include <rapidjson/rapidjson.h>
+//#include "BuffGroup.h"
+//#include "BoardControls.h"
+
 
 USING_NS_CC;
 using namespace std;
-
-struct GemUtils {  // tolua_export
-	// tolua_begin
-	enum GemColor
-	{
-		// DO NOT change order of these values.
-		// Frst value MUST start from 0.
-		// AllColor MUST immediately follow the last gem color.
-		// Health must be the last among all actual gem colors.
-		Fire = 0,
-		Water = 1,
-		Wood = 2,
-		Dark = 3,
-		Light = 4,
-		Health = 5,
-		AllColor = 6,
-		GemColorMax = 7,
-	};
-	// tolua_end
-};
 
 namespace PH { // tolua_export
     
@@ -62,6 +42,8 @@ namespace PH { // tolua_export
         static const size_t kGemWidthPixel, kGemHeightPixel;
         Sprite*           root;
         Vec2               position;
+		bool isOpen;
+
 		
 		RoundedRect* _back = nullptr;
         // --- IObject ---

@@ -78,12 +78,33 @@ const char* GemUtils::res(GemColor c)
 {
     switch(c)
     {
-        case Fire: return "gem_fire.png";
-        case Water: return "gem_water.png";
-        case Wood: return "gem_wood.png";
-        case Dark: return "gem_dark.png";
-        case Light: return "gem_light.png";
-        case Health: return "gem_health.png";
+        case Fire:		return "gem_fire.png";
+        case Water:		return "gem_water.png";
+        case Wood:		return "gem_wood.png";
+        case Dark:		return "gem_dark.png";
+        case Light:		return "gem_light.png";
+        case Health:	return "gem_health.png";
+
+		case Langren:		return "zhanwei_biankuang.png";
+		case Langrenxiaohai:return "zhanwei_biankuang.png";
+		case Langrenxianzhi:return "zhanwei_biankuang.png";
+		case LangTanshui:	return "zhanwei_biankuang.png";
+		case Lieren:		return "zhanwei_biankuang.png";
+		case Cunmin:		return "zhanwei_biankuang.png";
+		case Shouwei:		return "zhanwei_biankuang.png";
+		case Xianzhi:		return "zhanwei_biankuang.png";
+		case Gechangjia:	return "zhanwei_biankuang.png";
+		case Wulai:			return "zhanwei_biankuang.png";
+		case Xiaotou:		return "zhanwei_biankuang.png";
+		case Xiaohai:		return "zhanwei_biankuang.png";
+		case Jingzhang:		return "zhanwei_biankuang.png";
+		case Gaomizhe:		return "zhanwei_biankuang.png";
+ 		case Pantu:			return "zhanwei_biankuang.png";
+		case Nvwu:			return "zhanwei_biankuang.png";
+		case Yuyanjia:		return "zhanwei_biankuang.png";
+		case Lingyi:		return "zhanwei_biankuang.png";
+		case Baichi:		return "zhanwei_biankuang.png";
+
         case AllColor:
         case GemColorMax:
             handleUnknownColor();

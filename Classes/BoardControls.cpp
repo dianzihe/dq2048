@@ -16,8 +16,8 @@
 
 #include "CCCallLambda.h"
 //#include "CCScale9Sprite.h"
-#include "behaviac\behaviac_generated\types\behaviac_types.h"
-#include "behaviac\behaviac_generated\types\internal\FirstAgent.h"
+//#include "behaviac\behaviac_generated\types\behaviac_types.h"
+//#include "behaviac\behaviac_generated\types\internal\FirstAgent.h"
 namespace PH
 {
     USING_NS_CC;
@@ -383,13 +383,14 @@ namespace PH
     }
 	TaskPtr BoardControl::sweepLeftBoard( BoardResultPtr result)
 	{
+		/*
 		FirstAgent* g_FirstAgent = NULL;
 		g_FirstAgent = behaviac::Agent::Create<FirstAgent>();
 
 		bool bRet = g_FirstAgent->btload("test");
 
 		g_FirstAgent->btsetcurrent("test");
-
+		*/
 		auto sweepBatch = TaskBatch::make();
 		GemComboList combos;
 

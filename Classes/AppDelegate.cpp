@@ -1,6 +1,6 @@
   #include "AppDelegate.h"
 #include "GameScene.h"
-#include "behaviac\behaviac.h"
+//#include "behaviac\behaviac.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -47,8 +47,8 @@ void AppDelegate::initGLContextAttrs()
 
     GLView::setGLContextAttrs(glContextAttrs);
 
-	behaviac::Workspace::GetInstance()->SetFilePath("./exported");
-	behaviac::Workspace::GetInstance()->SetFileFormat(behaviac::Workspace::EFF_xml);
+	//behaviac::Workspace::GetInstance()->SetFilePath("./exported");
+	//behaviac::Workspace::GetInstance()->SetFileFormat(behaviac::Workspace::EFF_xml);
 
 }
 

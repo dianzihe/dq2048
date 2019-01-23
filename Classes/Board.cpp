@@ -83,9 +83,9 @@ std::string error;
 luacall("FreeGlobals", make_tuple(), error);
 }
 */
-	//--------------------
-	// BoardLayer
-	//--------------------
+//--------------------
+// BoardLayer
+//--------------------
 	bool BoardLayer::init(/*const HeroList& team,*/ const LevelInfo& level)
 	{
 		if (!Layer::init())
@@ -164,7 +164,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			mRoundBg->setAnchorPoint(Vec2(0.5, 0.0));
 			mRoundBg->setPosition(Vec2(1000, 730));
 			this->addChild(mRoundBg, ORDER_FLOAT);
-			
+
 			mElementGraph = GemUtils::GetSprite("ui/element_graph.png");
 			mElementGraph->setAnchorPoint(Vec2(1.0, 1.0));
 			mElementGraph->setPosition(Vec2(638, 956));
@@ -201,116 +201,118 @@ luacall("FreeGlobals", make_tuple(), error);
 			*/
 		}
 
-	{
-		Menu* menu = Menu::create();
-		MenuItem* item = MenuItemSprite::create(GemUtils::GetSprite("ui/zanting.png"),
-			GemUtils::GetSprite("ui/zanting.png"));
-		item->setTarget(this, menu_selector(BoardLayer::promptForMenu));
-		item->setAnchorPoint(Vec2(0, 1));
-		item->setPosition(Vec2(5, 955));
-
-		menu->setPosition(Vec2(0, 0));
-		menu->addChild(item);
-
-		this->addChild(menu);
-
-		mExitMenu = menu;
-	}
-	mResult = BoardResultPtr(new BoardResult());
-#if 0
-	{
-		mPlayer = createPlayerFromTeam(team);
-		mResult = BoardResultPtr(new BoardResult(mPlayer->team));
-	}
-
-	{
-		// initialize level
-		mLevel = level;
-		mRoundIndex = 0;
-
-		this->mStats.maxComboPerLevel.resize(this->mLevel.roundList.size());
-		this->mStats.roundPerLevel.resize(this->mLevel.roundList.size());
-		//this->mStats.refCombo = this->mLevel.refCombo;
-
-		this->mStats.refAvgCombo = this->mLevel.avgCombo;
-		this->mStats.refMaxCombo = this->mLevel.maxCombo;
-		this->mStats.refRound = this->mLevel.refRound;
-	}
-#endif    
-	{
-		mTargetCross = GemUtils::GetSprite("ui/baxin.png");
-		mTargetCross->setOpacity(0);
-		mTargetCross->runAction(RepeatForever::create(RotateBy::create(2, 360)));
-		this->addChild(mTargetCross, ORDER_FLOAT);
-	}
-
-#if 0
-	// selected ban certain types of gem
-	{
-		// allow only three types of banned gems
-
-		// Disable certain gems for this level
-		for (int si = 0; si < level.avoidGems.size() && si < 3; si++)
 		{
-			std::string lower = level.avoidGems[si];
-			if (lower == "random") {
-			//algorithm::to_lower(lower);
-				// random color, including health
-				std::vector<int> allowed;
-				for (int i = 0; i < GemUtils::AllColor; i++)
-					if (mGemAllowed[i])
-						allowed.push_back(i);
+			Menu* menu = Menu::create();
+			MenuItem* item = MenuItemSprite::create(GemUtils::GetSprite("ui/zanting.png"),
+				GemUtils::GetSprite("ui/zanting.png"));
+			item->setTarget(this, menu_selector(BoardLayer::promptForMenu));
+			item->setAnchorPoint(Vec2(0, 1));
+			item->setPosition(Vec2(5, 955));
 
-				if (allowed.size()) {
-					int i = rand() % allowed.size();
-					mGemAllowed[allowed[i]] = false;
-				}
-			} else if (lower == "randomx") {
-				// random color, not including health
-				std::vector<int> allowed;
-				for (int i = 0; i < GemUtils::Health; i++)
-					if (mGemAllowed[i])
-						allowed.push_back(i);
+			menu->setPosition(Vec2(0, 0));
+			menu->addChild(item);
 
-				if (allowed.size()) {
-					int i = rand() % allowed.size();
-					mGemAllowed[allowed[i]] = false;
+			this->addChild(menu);
+
+			mExitMenu = menu;
+		}
+		mResult = BoardResultPtr(new BoardResult());
+#if 0
+		{
+			mPlayer = createPlayerFromTeam(team);
+			mResult = BoardResultPtr(new BoardResult(mPlayer->team));
+		}
+
+		{
+			// initialize level
+			mLevel = level;
+			mRoundIndex = 0;
+
+			this->mStats.maxComboPerLevel.resize(this->mLevel.roundList.size());
+			this->mStats.roundPerLevel.resize(this->mLevel.roundList.size());
+			//this->mStats.refCombo = this->mLevel.refCombo;
+
+			this->mStats.refAvgCombo = this->mLevel.avgCombo;
+			this->mStats.refMaxCombo = this->mLevel.maxCombo;
+			this->mStats.refRound = this->mLevel.refRound;
+		}
+#endif    
+		{
+			mTargetCross = GemUtils::GetSprite("ui/baxin.png");
+			mTargetCross->setOpacity(0);
+			mTargetCross->runAction(RepeatForever::create(RotateBy::create(2, 360)));
+			this->addChild(mTargetCross, ORDER_FLOAT);
+		}
+
+#if 0
+		// selected ban certain types of gem
+		{
+			// allow only three types of banned gems
+
+			// Disable certain gems for this level
+			for (int si = 0; si < level.avoidGems.size() && si < 3; si++)
+			{
+				std::string lower = level.avoidGems[si];
+				if (lower == "random") {
+					//algorithm::to_lower(lower);
+						// random color, including health
+					std::vector<int> allowed;
+					for (int i = 0; i < GemUtils::AllColor; i++)
+						if (mGemAllowed[i])
+							allowed.push_back(i);
+
+					if (allowed.size()) {
+						int i = rand() % allowed.size();
+						mGemAllowed[allowed[i]] = false;
+					}
 				}
-			} else {
-				mGemAllowed[GemUtils::strToColor(lower)] = false;
+				else if (lower == "randomx") {
+					// random color, not including health
+					std::vector<int> allowed;
+					for (int i = 0; i < GemUtils::Health; i++)
+						if (mGemAllowed[i])
+							allowed.push_back(i);
+
+					if (allowed.size()) {
+						int i = rand() % allowed.size();
+						mGemAllowed[allowed[i]] = false;
+					}
+				}
+				else {
+					mGemAllowed[GemUtils::strToColor(lower)] = false;
+				}
 			}
 		}
-	}
 #endif
-	// be the last thing
-	{
-		
-		mBoardControl = BoardControl::make([=](){ return randGemWeighted(); });
-		if (!mBoardControl)
-			return false;
+		// be the last thing
+		{
 
-		this->addChild(mBoardControl->root, ORDER_ABOVE_ICON);
-		
-	}
+			mBoardControl = BoardControl::make([=]() { return randLangrenWeighted(); });
+			if (!mBoardControl)
+				return false;
 
-	{
-		//LuaGlobal::init(this, &mBoardControl->getGrid(), mPlayer.get());
-		//LuaGlobal::printGlobalInfo();
-	}
+			this->addChild(mBoardControl->root, ORDER_ABOVE_ICON);
 
-	mShowDragHintInTurn = true;
-	showDragHintWithDelay(0.f);
-	//mTaskQueue.enqueue(this->showDragHint());
-	{
-		// load first round
-		mTaskQueue.enqueue(TaskLambda::make([=](){ this->disableUI(); }));
-		loadNextRoundIfDone();
-		mTaskQueue.enqueue(TaskLambda::make([=](){ this->enableUI(); }));
-	}
+		}
 
-	this->setKeypadEnabled(true);
+		{
+			//LuaGlobal::init(this, &mBoardControl->getGrid(), mPlayer.get());
+			//LuaGlobal::printGlobalInfo();
+		}
 
-	return true;
+		mShowDragHintInTurn = true;
+		showDragHintWithDelay(0.f);
+		//mTaskQueue.enqueue(this->showDragHint());
+		{
+			// load first round
+			mTaskQueue.enqueue(TaskLambda::make([=]() { this->disableUI(); }));
+			loadNextRoundIfDone();
+			mTaskQueue.enqueue(TaskLambda::make([=]() { this->enableUI(); }));
+		}
+
+		this->setKeypadEnabled(true);
+
+		return true;
 	}
 
 
@@ -320,9 +322,9 @@ luacall("FreeGlobals", make_tuple(), error);
 		log("BoardLayer::onTouchBegan");
 
 		//得到触摸时坐标
-		beginPostion = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
+		//beginPostion = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
 
-		return true;
+		//return true;
 
 
 		if (mCurrTouch)
@@ -407,8 +409,10 @@ luacall("FreeGlobals", make_tuple(), error);
 		log("BoardLayer::doDown()");
 		return true;
 	}
+
 	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
 	{
+		/*
 		//得到触摸结束时坐标
 		endPosition = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
 		//计算手指在X，Y移动的距离
@@ -419,11 +423,11 @@ luacall("FreeGlobals", make_tuple(), error);
 			if (endX + 5 > 0) {
 				//向左移动
 				doLeft();
-				/*
-				createCardNumber();
-				doCheck();
-				setScore(score);
-				*/
+
+				//createCardNumber();
+				//doCheck();
+				//setScore(score);
+
 			} else {
 				//向右移动
 				doRight();
@@ -437,60 +441,62 @@ luacall("FreeGlobals", make_tuple(), error);
 				doUp();
 			}
 		}
-		/*
+		*/
+
 		mCurrTouch = NULL;
-
+		/*
 		// TODO: merge this ugliness to endDrag
-		if(mDragGem)
+		if (mDragGem)
 		{
-		// player started dragging but no swapping has happened yet
-		// do not count this as a move.
-		auto batch = TaskBatch::make();
-		if(!moveStarted || mPlayer->buffGroup.invokeBuff("disableSweep", batch) )
-		{
-		mTaskQueue.enqueue(batch);
+			// player started dragging but no swapping has happened yet
+			// do not count this as a move.
+			auto batch = TaskBatch::make();
+			if (!moveStarted || mPlayer->buffGroup.invokeBuff("disableSweep", batch))
+			{
+				mTaskQueue.enqueue(batch);
 
-		mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
-		mDragGem->root->setPosition(g2w_center(mDragGem->position));
-		mDragGem.reset();
+				mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+				mDragGem->root->setPosition(g2w_center(mDragGem->position));
+				mDragGem.reset();
 
-		mShadowGem->removeFromParentAndCleanup(true);
-		return;
+				mShadowGem->removeFromParentAndCleanup(true);
+				return;
+			}
+			else
+			{
+				endDrag();
+			}
 		}
 		else
 		{
-		endDrag();
-		}
-		}
-		else
-		{
-		//------------------------------------------------------
-		// When no gem is dragged, assuming this is a touch event
-		// in enemy area. Handle targeting on enemies.
-		for(EnemyControlPtr ec : mEnemyList)
-		{
-		CCRect bound = ec->sprite->boundingBox();
+			//------------------------------------------------------
+			// When no gem is dragged, assuming this is a touch event
+			// in enemy area. Handle targeting on enemies.
+			for (EnemyControlPtr ec : mEnemyList)
+			{
+				CCRect bound = ec->sprite->boundingBox();
 
-		Vec2oint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
+				Vec2oint touchPointLocal = ec->root->convertTouchToNodeSpace(touch);
 
-		if(bound.containsPoint(touchPointLocal))
-		{
-		if(mManualTarget == ec)
-		{
-		mManualTarget.reset();
-		mTargetCross->setOpacity(0);
-		}
-		else
-		{
-		mManualTarget = ec;
-		mTargetCross->setPosition(ec->center());
-		mTargetCross->setOpacity(255);
-		}
-		break;
-		}
-		}
+				if (bound.containsPoint(touchPointLocal))
+				{
+					if (mManualTarget == ec)
+					{
+						mManualTarget.reset();
+						mTargetCross->setOpacity(0);
+					}
+					else
+					{
+						mManualTarget = ec;
+						mTargetCross->setPosition(ec->center());
+						mTargetCross->setOpacity(255);
+					}
+					break;
+				}
+			}
 		}
 		*/
+
 	}
 	void BoardLayer::onTouchMoved(Touch* touch, Event* ev)
 	{
@@ -583,23 +589,23 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		int health = 0;
 
-		for(int i=0; i<team.size(); i++)
+		for (int i = 0; i < team.size(); i++)
 		{
-			if(team[i] == NULL)
+			if (team[i] == NULL)
 				continue;
 
 			// make a copy of hero
 			Hero h = boostHeroStatsByRelations(*team[i], team);
 
-			float xbase = 1 + 106*i;
+			float xbase = 1 + 106 * i;
 			float ybase = 560;
-			Vec2oint p = Vec2(xbase+4, ybase+4);
+			Vec2oint p = Vec2(xbase + 4, ybase + 4);
 
 			HeroControl* hc = new HeroControl(h, p, false);
 			hc->setOnClick([=](HeroIconItem* item)
 			{
 				const SkillInfo& skill = AST(hc->info.profile->activeSkillId);
-				if(skill.sid != -1 && (hc->isSkillReady() || SKILL_NEED_NO_ENERGY))
+				if (skill.sid != -1 && (hc->isSkillReady() || SKILL_NEED_NO_ENERGY))
 				{
 					// tutorial callback
 					onAlertSkillCast();
@@ -609,8 +615,8 @@ luacall("FreeGlobals", make_tuple(), error);
 						skill.desc,
 						toStr(hc->maxEnergy),
 						Vec2oint(320, 300),
-						[=](){ castHeroSkill(item); },
-						[=](){ onAlertSkillCastCancelled(); } );
+						[=]() { castHeroSkill(item); },
+						[=]() { onAlertSkillCastCancelled(); });
 				}
 			});
 			player->menu->addChild(hc->icon);
@@ -624,14 +630,14 @@ luacall("FreeGlobals", make_tuple(), error);
 		this->addChild(player->healthBox->get());
 
 		// Load player passive skills
-		if(player->team.size() > 0)
+		if (player->team.size() > 0)
 		{
 			SkillContext::invokePassive(this,
 				player,
 				player->team.front());
 		}
 
-		if(player->team.size() > 1)
+		if (player->team.size() > 1)
 		{
 			SkillContext::invokePassive(this,
 				player,
@@ -639,7 +645,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 
 		// initialize skill chains
-		for(HeroControl* hc : player->team)
+		for (HeroControl* hc : player->team)
 		{
 			player->skillChain[hc->info.profile->activeSkillId].add(hc);
 		}
@@ -664,30 +670,30 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		float moveLeft = 65;
 		float screenWidth = 640;
-		float step = (screenWidth + moveLeft*2)/ (size+1);
+		float step = (screenWidth + moveLeft * 2) / (size + 1);
 
-		for(int i=0; i<size; i++)
+		for (int i = 0; i < size; i++)
 		{
 			EnemyInfo ei = round[i];
-			if(mPlayer->passiveExtraWaitForEnemy.isValid())
+			if (mPlayer->passiveExtraWaitForEnemy.isValid())
 			{
-				for(auto iter : mPlayer->passiveExtraWaitForEnemy.map())
+				for (auto iter : mPlayer->passiveExtraWaitForEnemy.map())
 				{
 					ei.maxTurn += iter.second;
 				}
 			}
 
-			bool isBoss = ( size <=2 && ei.star == 5 );
+			bool isBoss = (size <= 2 && ei.star == 5);
 			EnemyControlPtr e(new EnemyControl(ei, isBoss));
 
 			// root node
-			float leftx = step * (i+1) - moveLeft;
+			float leftx = step * (i + 1) - moveLeft;
 			e->root->setPosition(Vec2(leftx, 660));
 			e->root->setAnchorPoint(Vec2(0.5f, 0.0f));
 
 			this->addChild(e->root);
 
-			if(mPlayer->passiveBonusEnemyStartTurn.isValid()){
+			if (mPlayer->passiveBonusEnemyStartTurn.isValid()) {
 				int turn = e->getReadyInTurn() + sumPP(mPlayer->passiveBonusEnemyStartTurn);
 				batch << e->setReadyInTurnWithAnim(turn);
 			}
@@ -706,13 +712,13 @@ luacall("FreeGlobals", make_tuple(), error);
 		HeroControl* hc = ((HeroIconItem*)sender)->getHeroControl();
 
 		auto batch = TaskBatch::make();
-		if( hc->buffGroup.invokeBuff("active.blind", batch) )
+		if (hc->buffGroup.invokeBuff("active.blind", batch))
 		{
 			mTaskQueue.enqueue(batch);
 			return;
 		}
 
-		if(hc->isSkillReady() || SKILL_NEED_NO_ENERGY)
+		if (hc->isSkillReady() || SKILL_NEED_NO_ENERGY)
 		{
 			// WARNING: Only change this function if you know what you are doing.
 			// this->loadNextRoundIfDone is full of side effects. Be warned.
@@ -725,19 +731,20 @@ luacall("FreeGlobals", make_tuple(), error);
 
 			//if(this->mPlayer->reduceEnergyCost.has() &&
 			//   this->mPlayer->reduceEnergyCost.val().first > 0)
-			if( mPlayer->buffGroup.invokeBuff("reduceEnergyCost", energyBatch) )
+			if (mPlayer->buffGroup.invokeBuff("reduceEnergyCost", energyBatch))
 			{
 				auto buff = mPlayer->buffGroup.getBuffContent<FloatBuff>("reduceEnergyCost");
 				energy *= (std::min(buff->d1, 1.f));
 				mPlayer->buffGroup.updateBuff("reduceEnergyCost");
-			}else
+			}
+			else
 				energy = 0;
 			energyBatch << hc->setEnergy(energy);
 
 			seq << energyBatch;
 
 			// callback for tutorial mode
-			seq << TaskLambda::make( [=](){this->onSkillCast();} );
+			seq << TaskLambda::make([=]() {this->onSkillCast(); });
 
 			// no ui interaction duration skill cast animations
 			this->disableUI();
@@ -756,13 +763,13 @@ luacall("FreeGlobals", make_tuple(), error);
 			seq << removeDeadPlayer();
 			mTaskQueue.enqueue(seq);
 
-			if(this->isRoundDone())
+			if (this->isRoundDone())
 			{
 				this->startTurn();
 			}
 			else
 			{
-				mTaskQueue.enqueue(TaskLambda::make( [=](){this->enableUI();} ));
+				mTaskQueue.enqueue(TaskLambda::make([=]() {this->enableUI(); }));
 			}
 
 			//mTaskQueue.enqueue(removeDeadEnemies());
@@ -794,13 +801,13 @@ luacall("FreeGlobals", make_tuple(), error);
 		{
 			return !ec->isDead();
 		});
-		if(isArea)
+		if (isArea)
 			return validTargets;
 
-		if(mManualTarget.get() != NULL)
+		if (mManualTarget.get() != NULL)
 		{
 			auto pp = std::find(validTargets.begin(), validTargets.end(), mManualTarget);
-			if(pp != validTargets.end())
+			if (pp != validTargets.end())
 			{
 				EnemyControlList targetList;
 				targetList.push_back(mManualTarget);
@@ -831,7 +838,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		targetList.insert(targetList.end(), neutralTargets.begin(), neutralTargets.end());
 		targetList.insert(targetList.end(), weakTargets.begin(), weakTargets.end());
 
-		if(targetList.size() > 1)
+		if (targetList.size() > 1)
 			targetList.resize(1);
 
 		return targetList;
@@ -848,7 +855,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		//------------------------------------------------------
 		// spawn an orb from hero icon to enemy position
 		seq << createDelay(this, delay);
-		if(hc != NULL)
+		if (hc != NULL)
 			seq << createOrb(this, hc->center(), ec->center(), true);
 
 		//-------------------------------------------------------------------
@@ -856,7 +863,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		TaskBatchPtr group = TaskBatch::make();
 
 		// attack animation
-		if(attack > 0.f)
+		if (attack > 0.f)
 			group << createAttackAnim(this, ec->getAttackPoint(), heroColor);
 
 		seq << group;
@@ -869,10 +876,10 @@ luacall("FreeGlobals", make_tuple(), error);
 		// Hanle normal attack stuff
 		{
 			AttackTable attackTable(mPlayer->team);
-			mTaskQueue.enqueue( applyComboModWithAnim(result, attackTable) );
+			mTaskQueue.enqueue(applyComboModWithAnim(result, attackTable));
 
 			AttackTable finalTable(mPlayer->team);
-			mTaskQueue.enqueue( applySkillModWithAnim(attackTable, finalTable) );
+			mTaskQueue.enqueue(applySkillModWithAnim(attackTable, finalTable));
 
 			mTaskQueue.enqueue(attackWithAnim(finalTable, SKILL_FLAG_LEECH));
 
@@ -885,21 +892,21 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 
 		// Handle follow-up attacks
-		if(mPlayer->passiveFollowUpAttacks.isValid() && mEnemyList.size())
+		if (mPlayer->passiveFollowUpAttacks.isValid() && mEnemyList.size())
 		{
 			TaskBatchPtr numberBatch = TaskBatch::make();
 
 			AttackTable attackTable(mPlayer->team);
-			for(auto atk : mPlayer->passiveFollowUpAttacks.map())
+			for (auto atk : mPlayer->passiveFollowUpAttacks.map())
 			{
 				HeroControl* hc = atk.first;
 				float factor = atk.second.second;
 
-				if( hc->buffGroup.invokeBuff("active.blind", numberBatch) )
+				if (hc->buffGroup.invokeBuff("active.blind", numberBatch))
 					continue;
 
 				float attackFactor;
-				numberBatch << mPlayer->getAttackFactor(hc, attackFactor, [](){return rand();});
+				numberBatch << mPlayer->getAttackFactor(hc, attackFactor, []() {return rand(); });
 
 				attackTable(hc).attack = hc->attack * (factor * attackFactor);
 				attackTable(hc).isArea = atk.second.first;
@@ -911,24 +918,24 @@ luacall("FreeGlobals", make_tuple(), error);
 
 				numberBatch << TaskAnim::make(attackTable(hc).attackLabel,
 					CCSpawn::create(CCFadeIn::create(0.1f),
-					count,
-					NULL));
+						count,
+						NULL));
 			}
 			mTaskQueue.enqueue(numberBatch);
 
-			mTaskQueue.enqueue( attackWithAnim(attackTable) );
+			mTaskQueue.enqueue(attackWithAnim(attackTable));
 		}
 
-		if(mPlayer->passiveFollowUpAttackWithoutResistence.isValid() && mEnemyList.size())
+		if (mPlayer->passiveFollowUpAttackWithoutResistence.isValid() && mEnemyList.size())
 		{
 			TaskBatchPtr numberBatch = TaskBatch::make();
 
 			AttackTable attackTable(mPlayer->team);
-			for(auto atk : mPlayer->passiveFollowUpAttackWithoutResistence.map())
+			for (auto atk : mPlayer->passiveFollowUpAttackWithoutResistence.map())
 			{
 				HeroControl* hc = atk.first;
 
-				if( hc->buffGroup.invokeBuff("active.blind", numberBatch) )
+				if (hc->buffGroup.invokeBuff("active.blind", numberBatch))
 					continue;
 
 				attackTable(hc).attack = atk.second.second;
@@ -941,18 +948,18 @@ luacall("FreeGlobals", make_tuple(), error);
 
 				numberBatch << TaskAnim::make(attackTable(hc).attackLabel,
 					CCSpawn::create(CCFadeIn::create(0.1f),
-					count,
-					NULL));
+						count,
+						NULL));
 			}
-			mTaskQueue.enqueue( numberBatch );
-			mTaskQueue.enqueue( attackWithAnim(attackTable, SKILL_FLAG_NONE, true) );
+			mTaskQueue.enqueue(numberBatch);
+			mTaskQueue.enqueue(attackWithAnim(attackTable, SKILL_FLAG_NONE, true));
 		}
 	}
 
 	TaskPtr BoardLayer::applyComboModWithAnim(const BoardResult& result,
 		AttackTable& attackTable)
 	{
-		if(result.comboCount() == 0)
+		if (result.comboCount() == 0)
 			return TaskEmpty::make();
 
 		attackTable = result.baseAttack;
@@ -961,21 +968,21 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		// calculate combo bonus and play animations
 		// accordingly do not count combo 1
-		float delay = 0.f, acc = 0.f, comboFactor=0.25f;
+		float delay = 0.f, acc = 0.f, comboFactor = 0.25f;
 		batch << this->mPlayer->getComboFactor(comboFactor);
-		for(int i=1; i<mPlayer->minComboCount + result.comboCount(); i++)
+		for (int i = 1; i < mPlayer->minComboCount + result.comboCount(); i++)
 		{
 			auto seq = TaskSequence::make();
 			seq << createDelay(this, delay);
-			delay += 0.5f+acc;
+			delay += 0.5f + acc;
 			//acc += 0.25f;
 			//acc = std::min(0.25f, acc);
 
 			TaskBatchPtr numberBatch = TaskBatch::make();
-			for(HeroControl* hc : mPlayer->team)
+			for (HeroControl* hc : mPlayer->team)
 			{
 				// skip hero with base attack 0.
-				if(attackTable(hc).attack == 0.0f)
+				if (attackTable(hc).attack == 0.0f)
 					continue;
 
 				float prevAttack = attackTable(hc).attack;
@@ -989,7 +996,7 @@ luacall("FreeGlobals", make_tuple(), error);
 
 			}
 
-			if(result.baseAttack.heal > 0.0f && mPlayer->isHurt())
+			if (result.baseAttack.heal > 0.0f && mPlayer->isHurt())
 			{
 				float prevHeal = attackTable.heal;
 				attackTable.heal += result.baseAttack.heal * comboFactor;
@@ -1001,14 +1008,14 @@ luacall("FreeGlobals", make_tuple(), error);
 				seq << TaskAnim::make(attackTable.healLabel, count, false);
 			}
 
-			if(i >= mPlayer->minComboCount)
+			if (i >= mPlayer->minComboCount)
 			{
 				Sprite* comboText = result.comboTextList[i - mPlayer->minComboCount];
 				numberBatch << createComboTextFadeRemove(comboText, i);
 			}
 
 			// only play sound when we have an animation to play
-			if(numberBatch->size())
+			if (numberBatch->size())
 			{
 				numberBatch << TaskSound::make("sound/v/number_charge.mp3");
 				seq << numberBatch;
@@ -1018,12 +1025,12 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 
 		float forceArea = false;
-		if( mPlayer->buffGroup.invokeBuff("active.force.area.attack", batch) )
+		if (mPlayer->buffGroup.invokeBuff("active.force.area.attack", batch))
 			forceArea = true;
 
-		for(HeroControl* hc : mPlayer->team)
+		for (HeroControl* hc : mPlayer->team)
 		{
-			attackTable(hc).isArea = attackTable(hc).isArea || isAreaAttack(result, hc->getColor())|| forceArea;
+			attackTable(hc).isArea = attackTable(hc).isArea || isAreaAttack(result, hc->getColor()) || forceArea;
 		}
 
 		return batch;
@@ -1038,29 +1045,29 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		finalTable = baseTable;
 
-		for(HeroControl* hc : mPlayer->team)
+		for (HeroControl* hc : mPlayer->team)
 		{
 			// skip heroes who don't cause damage
-			if(baseTable(hc).attack == 0.0f)
+			if (baseTable(hc).attack == 0.0f)
 				continue;
 
 			finalTable(hc).isArea = baseTable(hc).isArea;
 
 			// apply the consolidated attack factor
 			float skillAttackFactor;
-			batch << mPlayer->getAttackFactor(hc, skillAttackFactor, [](){return rand();});
+			batch << mPlayer->getAttackFactor(hc, skillAttackFactor, []() {return rand(); });
 
 			// only used for normal attacks
-			if(mPlayer->passiveForceAreaAttackAndFactor.isValid())
+			if (mPlayer->passiveForceAreaAttackAndFactor.isValid())
 			{
 				finalTable(hc).isArea = true;
 				skillAttackFactor *= productPP(mPlayer->passiveForceAreaAttackAndFactor);
 			}
 
-			if(mPlayer->buffGroup.invokeBuff("skillAttackFactor", batch))
+			if (mPlayer->buffGroup.invokeBuff("skillAttackFactor", batch))
 				finalTable(hc).isArea = true;
 
-			if(skillAttackFactor != 1.0f)
+			if (skillAttackFactor != 1.0f)
 			{
 				finalTable(hc).attack = baseTable(hc).attack * skillAttackFactor;
 
@@ -1070,12 +1077,12 @@ luacall("FreeGlobals", make_tuple(), error);
 				CCFiniteTimeAction* count = createNumberAnimSeq(baseTable(hc).attack,
 					finalTable(hc).attack,
 					NUMBER_DURATION);
-				if(!finalTable(hc).attackLabel)
+				if (!finalTable(hc).attackLabel)
 				{
 					batch << TaskAnim::make(finalTable(hc).attackLabel,
 						CCSpawn::create(CCFadeTo::create(0.2, 255),
-						count,
-						NULL));
+							count,
+							NULL));
 				}
 				else
 				{
@@ -1085,7 +1092,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			}
 		}
 
-		if(doNumberCharge)
+		if (doNumberCharge)
 			batch << TaskSound::make("sound/v/number_charge.mp3");
 
 		return batch;
@@ -1097,9 +1104,9 @@ luacall("FreeGlobals", make_tuple(), error);
 		DamageTable damageTable(mEnemyList);
 
 		float delay = 0.0f;
-		for(HeroControl* hc : mPlayer->team)
+		for (HeroControl* hc : mPlayer->team)
 		{
-			if(attackTable(hc).attackLabel != NULL)
+			if (attackTable(hc).attackLabel != NULL)
 			{
 				// fade and remove attack counter
 				CCFiniteTimeAction* seq = CCSequence::create(CCDelayTime::create(0.8f),
@@ -1110,13 +1117,13 @@ luacall("FreeGlobals", make_tuple(), error);
 			}
 
 			// skip if player is dead
-			if(mPlayer->isDead()){
+			if (mPlayer->isDead()) {
 				attackTable.heal = 0.f;
 				continue;
 			}
 
 			// skip if no attack
-			if(attackTable(hc).attack == 0.0f)
+			if (attackTable(hc).attack == 0.0f)
 			{
 				phassert(attackTable(hc).attackLabel == NULL &&
 					"attackLabel exists but attack is 0, attackLabel is never cleaned up");
@@ -1130,36 +1137,36 @@ luacall("FreeGlobals", make_tuple(), error);
 			EnemyControlList targetList = getEnemiesInAttackOrder(hc->getColor(),
 				isArea);
 			// skip if no enemy
-			if(targetList.size() == 0)
+			if (targetList.size() == 0)
 				continue;
 
 			// skip if blinded
-			if( hc->buffGroup.invokeBuff("active.blind", batch) )
+			if (hc->buffGroup.invokeBuff("active.blind", batch))
 			{
 				delay += HERO_ATTACK_DELAY;
 				continue;
 			}
 
-		{
-			// hero icon jump
-			CCFiniteTimeAction* jump = createIconJumpSequence(hc->iconPositionFixed, delay);
-			batch << TaskAnim::make(hc->icon, jump);
-		}
+			{
+				// hero icon jump
+				CCFiniteTimeAction* jump = createIconJumpSequence(hc->iconPositionFixed, delay);
+				batch << TaskAnim::make(hc->icon, jump);
+			}
 
-		for(EnemyControlPtr ec : targetList)
-		{
-			float finalAttack = attackTable(hc).attack;
-			float finalDamage;
+			for (EnemyControlPtr ec : targetList)
+			{
+				float finalAttack = attackTable(hc).attack;
+				float finalDamage;
 
-			batch << calcDamageForTarget(finalAttack, hc->getColor(), ec, finalDamage, ignoreArmor, delay+0.5f);
-			batch << createAttackSequence(hc, ec, finalDamage, hc->getColor(), delay);
-			//float acDelay = -0.35f+delay+calOrbDelay(hc->center(), ec->center());
-			batch << dealDamageToOneWithAnim(finalDamage, ec, delay+0.5f);
-			damageTable(ec) += finalDamage;
-			delay += HERO_ATTACK_DELAY/2;
-		}
+				batch << calcDamageForTarget(finalAttack, hc->getColor(), ec, finalDamage, ignoreArmor, delay + 0.5f);
+				batch << createAttackSequence(hc, ec, finalDamage, hc->getColor(), delay);
+				//float acDelay = -0.35f+delay+calOrbDelay(hc->center(), ec->center());
+				batch << dealDamageToOneWithAnim(finalDamage, ec, delay + 0.5f);
+				damageTable(ec) += finalDamage;
+				delay += HERO_ATTACK_DELAY / 2;
+			}
 
-		delay += HERO_ATTACK_DELAY;
+			delay += HERO_ATTACK_DELAY;
 		}
 
 		// apply actual damages here as one animation
@@ -1191,25 +1198,25 @@ luacall("FreeGlobals", make_tuple(), error);
 			<< createDelay(this, delay)
 			<< ec->onHitCalculation(this, color, attack, reflectFactor, damageFactor, ignoreArmor)
 			<< createTwoPhaseFloatText(this,
-			prevDamage,
-			prevDamage*damageFactor,
-			ec->center(),
-			color,
-			0.f);
+				prevDamage,
+				prevDamage*damageFactor,
+				ec->center(),
+				color,
+				0.f);
 		//printf("%f->%f\n", prevDamage, prevDamage*damageFactor);
 
 		batch << seq;
 
-		if(reflectFactor > 0.f)
+		if (reflectFactor > 0.f)
 		{
 			auto seq = TaskSequence::make();
 			float reflect = reflectFactor * prevDamage;
-			seq << createDelay(this, delay+0.4f);
+			seq << createDelay(this, delay + 0.4f);
 
 			seq << createOrb(this, ec->center(), getHealthCenter(), false);
 			seq << createFloatText(this,
 				-reflect,
-				Vec2(320,540),
+				Vec2(320, 540),
 				GemUtils::Health,
 				0.f)
 				<< TaskSound::make("sound/v/player_hit.mp3")
@@ -1219,7 +1226,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 		reflectFactor = std::min(1.0f, reflectFactor);
 
-		damage = attack*damageFactor;
+		damage = attack * damageFactor;
 		return batch;
 	}
 
@@ -1229,13 +1236,13 @@ luacall("FreeGlobals", make_tuple(), error);
 		auto seq = TaskSequence::make();
 		auto batch = TaskBatch::make();
 
-		for(auto ec : mEnemyList)
+		for (auto ec : mEnemyList)
 		{
-			if(damageTable.contains(ec) && damageTable(ec) > 0.0f)
+			if (damageTable.contains(ec) && damageTable(ec) > 0.0f)
 				batch << dealDamageToOneWithAnim(damageTable(ec),
-				ec,
-				delay);
-			if(mPlayer->isDead())
+					ec,
+					delay);
+			if (mPlayer->isDead())
 				break;
 		}
 
@@ -1252,12 +1259,12 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		seq << createDelay(this, delay);
 
-		if(damage > .0f)
+		if (damage > .0f)
 		{
 			seq << ec->onHit(damage);
 			float leechFactor = 0.f;
 			seq << mPlayer->onAttack(this, damage, leechFactor);
-			if(this->mPlayer->isHurt() && !this->mPlayer->isDead() && leechFactor > 0.f)
+			if (this->mPlayer->isHurt() && !this->mPlayer->isDead() && leechFactor > 0.f)
 				seq << healWithAnim(this, this->mPlayer.get(), leechFactor * damage);
 		}
 
@@ -1266,7 +1273,7 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	TaskPtr BoardLayer::removeDeadEnemies()
 	{
-		if(mManualTarget && mManualTarget->isDead())
+		if (mManualTarget && mManualTarget->isDead())
 		{
 			mManualTarget.reset();
 			mTargetCross->setOpacity(0);
@@ -1275,17 +1282,17 @@ luacall("FreeGlobals", make_tuple(), error);
 		auto seq = TaskSequence::make();
 		auto batch = TaskBatch::make();
 
-		for(auto iter=this->mEnemyList.begin(); iter!=this->mEnemyList.end();)
+		for (auto iter = this->mEnemyList.begin(); iter != this->mEnemyList.end();)
 		{
 			auto ec = *iter;
 
-			if(ec->isDead())
+			if (ec->isDead())
 			{
 				batch << ec->reborn();
 			}
-			if(ec->isDead())
+			if (ec->isDead())
 			{
-				if(ec->info.drop)
+				if (ec->info.drop)
 				{
 					int star = ec->info.drop->profile->star;
 					std::string iconPath = std::string("heroes/diaoluo") + toStr(star) + "_body.png";
@@ -1305,11 +1312,11 @@ luacall("FreeGlobals", make_tuple(), error);
 					seq << TaskLambda::make([=]()
 					{
 						mTotalDropCount++;
-						mTotalHeroDropCount ++;
+						mTotalHeroDropCount++;
 						mDropCountLabel->setString(toStr(mTotalDropCount).c_str());
 					});
 				}
-				else if(ec->info.soulDrop)
+				else if (ec->info.soulDrop)
 				{
 					Sprite* drop = GemUtils::GetSprite("ui/hunpo.png");
 					drop->setAnchorPoint(Vec2(0.5, 0));
@@ -1332,8 +1339,9 @@ luacall("FreeGlobals", make_tuple(), error);
 				}
 
 				iter = this->mEnemyList.erase(iter);
-			}else
-				iter ++;
+			}
+			else
+				iter++;
 		}
 
 		return TaskBatch::make()
@@ -1344,13 +1352,13 @@ luacall("FreeGlobals", make_tuple(), error);
 	void BoardLayer::finishWithVictory()
 	{
 #if 0
-		if(this->mStartPromptForRevival)
+		if (this->mStartPromptForRevival)
 			return;
 
 		// disable battle UI
 		disableUI();
 
-		mTaskQueue.enqueue( createVictoryAnim(this, Vec2(320, 800)) );
+		mTaskQueue.enqueue(createVictoryAnim(this, Vec2(320, 800)));
 
 		mTaskQueue.enqueue(TaskLambda::make([=]()
 		{
@@ -1358,7 +1366,7 @@ luacall("FreeGlobals", make_tuple(), error);
 				randHint().c_str(),
 				[=]()
 			{
-				mTaskQueue.enqueue(TaskLambda::make([=]{ this->exitScene(true); }));
+				mTaskQueue.enqueue(TaskLambda::make([=] { this->exitScene(true); }));
 			});
 		}));
 #endif
@@ -1540,7 +1548,12 @@ luacall("FreeGlobals", make_tuple(), error);
 	}
 	void BoardLayer::returnToMainMenu()
 	{
-		mTaskQueue.enqueue(TaskLambda::make([=]{ this->exitScene(false); }));
+		mTaskQueue.enqueue(TaskLambda::make([=] { this->exitScene(false); }));
+	}
+
+	GemUtils::GemColor BoardLayer::randLangrenWeighted()
+	{
+		return (GemUtils::GemColor)((int)floor(randf(6.0, 24.0)));
 	}
 
 	GemUtils::GemColor BoardLayer::randGemWeighted()
@@ -1554,21 +1567,21 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		float gemWeights[GemUtils::AllColor];
 #if 0
-		for(int i=0; i<GemUtils::AllColor; i++)
+		for (int i = 0; i < GemUtils::AllColor; i++)
 		{
 			gemWeights[i] = mPlayer->mGemWeights[i];
 		}
 
-		if( mPlayer->buffGroup.invokeBuff("active.bonus.gem.weight", batch) )
+		if (mPlayer->buffGroup.invokeBuff("active.bonus.gem.weight", batch))
 		{
 			auto buff = mPlayer->buffGroup.getBuffContent<FloatBuff>("active.bonus.gem.weight");
 
 			int p = static_cast<int>(buff->getColor());
 			float t = 0.f, o = gemWeights[p];
-			for(int i=0; i<GemUtils::AllColor; i++) t += gemWeights[i];
+			for (int i = 0; i < GemUtils::AllColor; i++) t += gemWeights[i];
 
-			float bonus = (t*o*(1-buff->d1))/(buff->d1*o-t);
-			if(bonus >= 0)
+			float bonus = (t*o*(1 - buff->d1)) / (buff->d1*o - t);
+			if (bonus >= 0)
 			{
 				gemWeights[p] += bonus;
 				mTaskQueue.enqueue(batch);
@@ -1576,17 +1589,17 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 #endif
 		float sum = 0.0f;
-		for(int i = 0; i < GemUtils::AllColor; i++) {
-			if(mGemAllowed[i]) {
+		for (int i = 0; i < GemUtils::AllColor; i++) {
+			if (mGemAllowed[i]) {
 				sum += gemWeights[i];
 			}
 		}
 
 		float number = randf(sum);
 		log("GemUtils::GemColor BoardLayer::randGemWeighted()-randf->%.2f", number);
-		for(int i = 0; i < GemUtils::AllColor; i++) {
-			if(mGemAllowed[i]) {
-				if(number < gemWeights[i])
+		for (int i = 0; i < GemUtils::AllColor; i++) {
+			if (mGemAllowed[i]) {
+				if (number < gemWeights[i])
 					return (GemUtils::GemColor)i;
 				number -= gemWeights[i];
 			}
@@ -1607,11 +1620,11 @@ luacall("FreeGlobals", make_tuple(), error);
 	void BoardLayer::loadNextRoundIfDone()
 	{
 #if 0
-		if(!this->isRoundDone()) return;
+		if (!this->isRoundDone()) return;
 
 		onLoadNextRound();
 
-		if(mRoundIndex >= mLevel.roundList.size())
+		if (mRoundIndex >= mLevel.roundList.size())
 		{
 			finishWithVictory();
 			return;
@@ -1622,13 +1635,13 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		{
 			TaskBatchPtr hideDrops = TaskBatch::make();
-			for(Sprite* s : mDropList)
+			for (Sprite* s : mDropList)
 				hideDrops << TaskAnim::make(s, CCFadeOut::create(0.5f));
 			seq << hideDrops;
 
 			seq << TaskLambda::make([=]()
 			{
-				for(Sprite* s : mDropList)
+				for (Sprite* s : mDropList)
 					s->removeAllChildrenWithCleanup(true);
 				mDropList.clear();
 			});
@@ -1641,10 +1654,10 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		CCFiniteTimeAction* splashAction =
 			CCSequence::create(CCEaseElasticOut::create(CCMoveTo::create(0.6, Vec2(320, 730)), 0.8f),
-			CCEaseElasticIn::create(CCMoveTo::create(0.6, Vec2(-400, 730)), 0.8f),
-			NULL);
+				CCEaseElasticIn::create(CCMoveTo::create(0.6, Vec2(-400, 730)), 0.8f),
+				NULL);
 
-		if(mRoundIndex < mLevel.roundList.size())
+		if (mRoundIndex < mLevel.roundList.size())
 		{
 			mRoundBg->setPosition(Vec2(1000, 730));
 			std::string roundNum = toStr(mRoundIndex) + "/" + toStr(mLevel.roundList.size());
@@ -1656,12 +1669,12 @@ luacall("FreeGlobals", make_tuple(), error);
 		{
 			mBossRound->setVisible(true);
 			mBossRound->setPosition(Vec2(1000, 730));
-			seq << TaskLambda::make([](){ playBG("sound/bg/boss.mp3"); });
+			seq << TaskLambda::make([]() { playBG("sound/bg/boss.mp3"); });
 			seq << TaskAnim::make(mBossRound, splashAction);
 		}
 
 		TaskBatchPtr debutBatch = TaskBatch::make();
-		for(EnemyControlPtr enemy : mEnemyList)
+		for (EnemyControlPtr enemy : mEnemyList)
 		{
 			enemy->setOpacity(0);
 			debutBatch << enemy->fadeTo(0.3f, 255);
@@ -1836,165 +1849,165 @@ luacall("FreeGlobals", make_tuple(), error);
 	void BoardLayer::updateEnemyTurn(BoardResult& result)
 	{
 #if 0
-	{
-		auto batch = TaskBatch::make();
-		for(EnemyControlPtr ec : mEnemyList)
 		{
-			// update enemy turn and its label
-			batch << ec->updateReadyTurn(this, mTurn);
-		}
-
-		for(EnemyControlPtr ec : mEnemyList)
-		{
-			if( ec->buffGroup.invokeBuff("poison", batch) )
+			auto batch = TaskBatch::make();
+			for (EnemyControlPtr ec : mEnemyList)
 			{
-				auto buff = ec->buffGroup.getBuffContent<FloatBuff>("poison");
-				batch << createFloatText(this, buff->d1, ec->center(), GemUtils::Dark, 0.3f);
-				batch << dealDamageToOneWithAnim(buff->d1, ec, 0.0f);
+				// update enemy turn and its label
+				batch << ec->updateReadyTurn(this, mTurn);
 			}
-			batch << ec->updateStatusPreTurn(this);
+
+			for (EnemyControlPtr ec : mEnemyList)
+			{
+				if (ec->buffGroup.invokeBuff("poison", batch))
+				{
+					auto buff = ec->buffGroup.getBuffContent<FloatBuff>("poison");
+					batch << createFloatText(this, buff->d1, ec->center(), GemUtils::Dark, 0.3f);
+					batch << dealDamageToOneWithAnim(buff->d1, ec, 0.0f);
+				}
+				batch << ec->updateStatusPreTurn(this);
+			}
+
+			mTaskQueue.enqueue(batch);
+			mTaskQueue.enqueue(removeDeadEnemies());
 		}
 
-		mTaskQueue.enqueue(batch);
-		mTaskQueue.enqueue(removeDeadEnemies());
-	}
+		// enemy attack
+		TaskBatchPtr batch = TaskBatch::make();
 
-	// enemy attack
-	TaskBatchPtr batch = TaskBatch::make();
+		float totalDamage = 0.0f;
+		float delay = 0.0f;
 
-	float totalDamage = 0.0f;
-	float delay = 0.0f;
+		Vec2oint playerCenter = getHealthCenter();
 
-	Vec2oint playerCenter = getHealthCenter();
-
-	int enemyIndex = 0;
-	for(EnemyControlPtr ec : mEnemyList)
-	{
-		if(!ec->ready)
-			continue;
-		ec->ready = false;
-
-		//float prevHealth = mPlayer->getHealth();
-		auto seq = TaskSequence::make();
-		seq << createDelay(this, delay);
-		delay += 0.25;
-		enemyIndex++;
-
-		// check blind effect
-		if(ec->buffGroup.invokeBuff("blind", seq))
-			continue;
-
-		int doNormalAttack = 1;
-
-		auto damageBatch = TaskBatch::make();
-
-		seq << ec->invokeActiveSkill(this, enemyIndex-1, doNormalAttack);
-		seq << createOrb(this, ec->center(), playerCenter);
-
-		float damage = 0.f, damageFactor = 1.f, reflectFactor = 0.f;
-		GemUtils::GemColor refColor = GemUtils::AllColor;
-		if(doNormalAttack)
+		int enemyIndex = 0;
+		for (EnemyControlPtr ec : mEnemyList)
 		{
-			damageBatch << ec->getAttack(damage);
-			if (damage <= 0.f)  continue;
+			if (!ec->ready)
+				continue;
+			ec->ready = false;
 
-			damageBatch << mPlayer->onHitCalculation(this,
-				ec->getColor(),
-				damage,
-				damageFactor,
-				reflectFactor,
-				refColor,
-				[](){return rand();});
+			//float prevHealth = mPlayer->getHealth();
+			auto seq = TaskSequence::make();
+			seq << createDelay(this, delay);
+			delay += 0.25;
+			enemyIndex++;
 
-			// handle normal attack
-			float postDamage = damage * damageFactor;
-			damageBatch << ec->onAttack(this, postDamage);
+			// check blind effect
+			if (ec->buffGroup.invokeBuff("blind", seq))
+				continue;
 
-			//-----------------------
+			int doNormalAttack = 1;
+
+			auto damageBatch = TaskBatch::make();
+
+			seq << ec->invokeActiveSkill(this, enemyIndex - 1, doNormalAttack);
+			seq << createOrb(this, ec->center(), playerCenter);
+
+			float damage = 0.f, damageFactor = 1.f, reflectFactor = 0.f;
+			GemUtils::GemColor refColor = GemUtils::AllColor;
+			if (doNormalAttack)
+			{
+				damageBatch << ec->getAttack(damage);
+				if (damage <= 0.f)  continue;
+
+				damageBatch << mPlayer->onHitCalculation(this,
+					ec->getColor(),
+					damage,
+					damageFactor,
+					reflectFactor,
+					refColor,
+					[]() {return rand(); });
+
+				// handle normal attack
+				float postDamage = damage * damageFactor;
+				damageBatch << ec->onAttack(this, postDamage);
+
+				//-----------------------
 #if PH_DEBUG_BUILD == 1
-			if(this->mIsDebugMode)
-				postDamage = 1.f;
+				if (this->mIsDebugMode)
+					postDamage = 1.f;
 #endif
 
-			totalDamage += postDamage;
+				totalDamage += postDamage;
 
-			if( postDamage > 0.1f )
-			{
-				damageBatch << createFloatText(this,
-					-postDamage,
-					Vec2(320, 540),
-					GemUtils::Health,
-					0.15f);
-			}
-
-			damageBatch << TaskSound::make("sound/v/player_hit.mp3");
-			damageBatch << mPlayer->hit(postDamage, this);
-		}
-
-		seq << damageBatch;
-
-		// # handle reflect stuff
-		{
-			if(reflectFactor > 0.f)
-			{
-				float reflectDamage = damage * reflectFactor, finalDamage;
-				seq << createDelay(this, 0.1f);
-				seq << createOrb(this, playerCenter, ec->center(), false);
-				seq << createDelay(this, 0.1f);
-
-				auto localBatch = TaskBatch::make();
-				localBatch << calcDamageForTarget(reflectDamage, refColor, ec, finalDamage, false, .5f);
-
-				if(finalDamage > 0.f)
+				if (postDamage > 0.1f)
 				{
-					localBatch << createAttackSequence(NULL,
-						ec,
-						finalDamage,
-						refColor,
-						0.f);
-					localBatch << dealDamageToOneWithAnim(finalDamage, ec, 0.7f);
+					damageBatch << createFloatText(this,
+						-postDamage,
+						Vec2(320, 540),
+						GemUtils::Health,
+						0.15f);
 				}
 
-				seq << localBatch;
-				delay += 0.5f;
+				damageBatch << TaskSound::make("sound/v/player_hit.mp3");
+				damageBatch << mPlayer->hit(postDamage, this);
 			}
+
+			seq << damageBatch;
+
+			// # handle reflect stuff
+			{
+				if (reflectFactor > 0.f)
+				{
+					float reflectDamage = damage * reflectFactor, finalDamage;
+					seq << createDelay(this, 0.1f);
+					seq << createOrb(this, playerCenter, ec->center(), false);
+					seq << createDelay(this, 0.1f);
+
+					auto localBatch = TaskBatch::make();
+					localBatch << calcDamageForTarget(reflectDamage, refColor, ec, finalDamage, false, .5f);
+
+					if (finalDamage > 0.f)
+					{
+						localBatch << createAttackSequence(NULL,
+							ec,
+							finalDamage,
+							refColor,
+							0.f);
+						localBatch << dealDamageToOneWithAnim(finalDamage, ec, 0.7f);
+					}
+
+					seq << localBatch;
+					delay += 0.5f;
+				}
+			}
+
+			batch << seq;
+
+			if (mPlayer->isDead())
+				break;
 		}
 
-		batch << seq;
+		for (EnemyControlPtr ec : mEnemyList)
+			batch << ec->updateStatusPostTurn(this);
 
-		if(mPlayer->isDead())
-			break;
-	}
+		// clearup
+		for (auto entry : this->mEnemyList)
+		{
+			if (entry->ready)
+				entry->ready = false;
+		}
 
-	for(EnemyControlPtr ec : mEnemyList)
-		batch << ec->updateStatusPostTurn(this);
+		if (!mPlayer->isDead())
+		{
+			mTaskQueue.enqueue(batch);
+			mTaskQueue.enqueue(removeDeadEnemies());
+			this->loadNextRoundIfDone();
+		}
+		else if (mPlayer->isDead())
+		{
+			mTaskQueue.enqueue(batch);
+			mTaskQueue.enqueue(removeDeadEnemies());
+			mTaskQueue.enqueue(removeDeadPlayer());
+		}
 
-	// clearup
-	for(auto entry : this->mEnemyList)
-	{
-		if(entry->ready)
-			entry->ready = false;
-	}
-
-	if(!mPlayer->isDead())
-	{
-		mTaskQueue.enqueue(batch);
-		mTaskQueue.enqueue(removeDeadEnemies());
-		this->loadNextRoundIfDone();
-	}
-	else if(mPlayer->isDead())
-	{
-		mTaskQueue.enqueue(batch);
-		mTaskQueue.enqueue(removeDeadEnemies());
-		mTaskQueue.enqueue(removeDeadPlayer());
-	}
-
-	if(totalDamage > 0.0f)
-	{
-		mTaskQueue.enqueue(TaskLambda::make([=](){
-			this->afterEnemyAttack();
-		}));
-	}
+		if (totalDamage > 0.0f)
+		{
+			mTaskQueue.enqueue(TaskLambda::make([=]() {
+				this->afterEnemyAttack();
+			}));
+		}
 #endif
 	}
 
@@ -2002,13 +2015,13 @@ luacall("FreeGlobals", make_tuple(), error);
 	{
 		TaskSequencePtr seq = TaskSequence::make();
 #if 0
-		if(mPlayer->isDead())
+		if (mPlayer->isDead())
 		{
 			// special handling of player death?
-			if(onPlayerDeath())
+			if (onPlayerDeath())
 			{
 			}
-			else if(!mStartPromptForRevival)
+			else if (!mStartPromptForRevival)
 			{
 				mStartPromptForRevival = true;
 				// Player killed
@@ -2028,8 +2041,8 @@ luacall("FreeGlobals", make_tuple(), error);
 		auto batch = TaskBatch::make();
 #if 0
 		//if(mPlayer->poison.has() && mPlayer->isAlive())
-		if ( mPlayer->buffGroup.invokeBuffWhen("poison", batch,
-			[=](BuffPtr){ return mPlayer->isAlive(); }))
+		if (mPlayer->buffGroup.invokeBuffWhen("poison", batch,
+			[=](BuffPtr) { return mPlayer->isAlive(); }))
 		{
 			float damage = mPlayer->buffGroup.getBuffContent<FloatBuff>("poison")->d1;
 			damage = std::min(damage, mPlayer->getHealth() - 1); // leave player with 1 health
@@ -2044,8 +2057,8 @@ luacall("FreeGlobals", make_tuple(), error);
 		TaskSequencePtr seq = TaskSequence::make();
 #if 0 
 		//if(this->mPlayer->isAlive())
-		if( mPlayer->buffGroup.invokeBuffWhen("bloodSucker", seq,
-			[=](BuffPtr){ return mPlayer->isAlive(); }))
+		if (mPlayer->buffGroup.invokeBuffWhen("bloodSucker", seq,
+			[=](BuffPtr) { return mPlayer->isAlive(); }))
 		{
 			auto buff = mPlayer->buffGroup.getBuffContent<IntFloatBoolBuff>("bloodSucker");
 			auto hc = mPlayer->team[buff->d1];
@@ -2053,7 +2066,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			EnemyControlList targets = this->getEnemiesInAttackOrder(hc->getColor(),
 				buff->d3);
 			float delay = 0.0f, max = 0.f;
-			for(EnemyControlPtr ec : targets)
+			for (EnemyControlPtr ec : targets)
 			{
 				float finalDamage;
 				batch << this->calcDamageForTarget(buff->d2,
@@ -2069,7 +2082,7 @@ luacall("FreeGlobals", make_tuple(), error);
 					hc->getColor(),
 					delay);
 
-				float acDelay = -0.15f+delay+calOrbDelay(hc->center(), ec->center());
+				float acDelay = -0.15f + delay + calOrbDelay(hc->center(), ec->center());
 				TaskPtr hit = this->dealDamageToOneWithAnim(finalDamage, ec, acDelay);
 				batch << TaskSequence::make(createDelay(this, 0.5),
 					hit);
@@ -2092,7 +2105,7 @@ luacall("FreeGlobals", make_tuple(), error);
 	{
 		TaskSequencePtr seq = TaskSequence::make();
 #if 0
-		if(mPlayer->passiveBleeding.isValid() && mPlayer->isAlive())
+		if (mPlayer->passiveBleeding.isValid() && mPlayer->isAlive())
 		{
 			float damage = sumPP(mPlayer->passiveBleeding);
 			TaskBatchPtr batch = TaskBatch::make();
@@ -2101,31 +2114,31 @@ luacall("FreeGlobals", make_tuple(), error);
 			seq << batch;
 		}
 
-		if(mPlayer->isAlive())
+		if (mPlayer->isAlive())
 		{
 			TaskBatchPtr batch = TaskBatch::make();
-			for(HeroControl* hc : mPlayer->team)
+			for (HeroControl* hc : mPlayer->team)
 				batch << hc->updateCooldown();
 
 			float bonusEnergy = 0.f;
 			auto  bonusColor = GemUtils::AllColor;
-			if( mPlayer->buffGroup.invokeBuff("bonusEnergy", batch) )
+			if (mPlayer->buffGroup.invokeBuff("bonusEnergy", batch))
 			{
 				auto buff = mPlayer->buffGroup.getBuffContent<FloatBuff>("bonusEnergy");
 				bonusEnergy += buff->d1;
 				bonusColor = buff->getColor();
 			}
 
-			for(HeroControl* hc : mPlayer->team)
+			for (HeroControl* hc : mPlayer->team)
 			{
 				float minEnergy = std::max(mPlayer->mMinEnergy[hc->getColor()],
 					mPlayer->mMinEnergy[GemUtils::AllColor]);
-				if(hc->info.profile->color ==  bonusColor || bonusColor == GemUtils::AllColor)
+				if (hc->info.profile->color == bonusColor || bonusColor == GemUtils::AllColor)
 				{
 					minEnergy += bonusEnergy;
 				}
 
-				if(minEnergy != 0.0f)
+				if (minEnergy != 0.0f)
 					batch << hc->addEnergy(minEnergy);
 			}
 
@@ -2145,7 +2158,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		nodeMap.insert(root);
 
 		CCArray* children = root->getChildren();
-		for(int i=0; children && i<children->count(); i++)
+		for (int i = 0; children && i < children->count(); i++)
 		{
 			CCNode* node = (CCNode*)children->objectAtIndex(i);
 			_initRefMap(node);
@@ -2164,13 +2177,13 @@ luacall("FreeGlobals", make_tuple(), error);
 	static void compareRefMap(CCNode* root)
 	{
 #if PH_DEBUG_BUILD
-		if(!nodeMap.count(root))
+		if (!nodeMap.count(root))
 		{
 			printf("found new node %p\n", root);
 		}
 
 		CCArray* children = root->getChildren();
-		for(int i=0; children && i<children->count(); i++)
+		for (int i = 0; children && i < children->count(); i++)
 		{
 			CCNode* node = (CCNode*)children->objectAtIndex(i);
 			compareRefMap(node);
@@ -2194,7 +2207,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		{
 			alert->cancel();
 
-			if(e.get())
+			if (e.get())
 			{
 				char errorTitle[128];
 				sprintf(errorTitle, "连接失败: %s", e->toStr().c_str());
@@ -2231,24 +2244,24 @@ luacall("FreeGlobals", make_tuple(), error);
 	}
 #if 0
 	void BoardLayer::transitionToGameScene(bool isVictory, PlayerPtr newPlayer)
-	{   
-		for(auto& s : PlayerData::getInstance()->instanceStageList)
-			if(s->findLevelById(mLevel.id) != NULL && s->dailyQuota > 0)
+	{
+		for (auto& s : PlayerData::getInstance()->instanceStageList)
+			if (s->findLevelById(mLevel.id) != NULL && s->dailyQuota > 0)
 				s->dailyQuota--;
-		for(auto& s : PlayerData::getInstance()->normalStageList)
-			if(s->findLevelById(mLevel.id) != NULL && s->dailyQuota > 0)
+		for (auto& s : PlayerData::getInstance()->normalStageList)
+			if (s->findLevelById(mLevel.id) != NULL && s->dailyQuota > 0)
 				s->dailyQuota--;
 
-		for(auto& s : PlayerData::getInstance()->instanceStageList)
+		for (auto& s : PlayerData::getInstance()->instanceStageList)
 		{
-			if(s->findLevelById(mLevel.id) != NULL && s->dailyInstanceProgress != -1)
+			if (s->findLevelById(mLevel.id) != NULL && s->dailyInstanceProgress != -1)
 			{
 				bool flag = false;
-				for(auto l : s->levelList)
+				for (auto l : s->levelList)
 				{
-					if(!l.cleared) flag = true;
+					if (!l.cleared) flag = true;
 				}
-				if(!flag)
+				if (!flag)
 					PlayerData::getInstance()->removeDailyStageByLevelId(mLevel.id);
 			}
 		}
@@ -2276,7 +2289,7 @@ luacall("FreeGlobals", make_tuple(), error);
 				// load UI resources and recreate interface.
 				gameScene->recoverUI();
 
-				if(isVictory)
+				if (isVictory)
 				{
 					auto layer = VictoryLayer::create(statsCopy, levelCopy, playerCopy, newPlayer);
 					gameScene->pushLayerWithDefaultAnimation(layer);
@@ -2302,51 +2315,55 @@ luacall("FreeGlobals", make_tuple(), error);
 		TaskBatchPtr batch = TaskBatch::make();
 
 		this->clearArrowPath();
-		for(int i=0; i<path.size(); i++)
+		for (int i = 0; i < path.size(); i++)
 		{
 			Sprite * arrow = NULL;
 
-			if(i != path.size() -1 && i!=0 &&
-				path[i]-path[i-1] != path[i+1]-path[i])
+			if (i != path.size() - 1 && i != 0 &&
+				path[i] - path[i - 1] != path[i + 1] - path[i])
 			{
 				arrow = GemUtils::GetSprite("jiantou_2.png");
-				int d1 = path[i+1]-path[i];
-				int d2 = path[i]-path[i-1];
+				int d1 = path[i + 1] - path[i];
+				int d2 = path[i] - path[i - 1];
 
-				if((d1 == -1 && d2 == 6) || (d1 == -6 && d2 == 1))
+				if ((d1 == -1 && d2 == 6) || (d1 == -6 && d2 == 1))
 				{
 					arrow->setRotation(0);
-				}else if((d1 == -1 && d2 == -6) || (d1 == 6 && d2 == 1))
+				}
+				else if ((d1 == -1 && d2 == -6) || (d1 == 6 && d2 == 1))
 				{
 					arrow->setRotation(90);
-				}else if((d1 == 6 && d2 == -1) || (d1 == 1 && d2 == -6))
+				}
+				else if ((d1 == 6 && d2 == -1) || (d1 == 1 && d2 == -6))
 				{
 					arrow->setRotation(180);
-				}else if((d1 == 1 && d2 == 6) || (d1 == -6 && d2 == -1))
+				}
+				else if ((d1 == 1 && d2 == 6) || (d1 == -6 && d2 == -1))
 				{
 					arrow->setRotation(-90);
 				}
-			}else
+			}
+			else
 			{
-				if(i==0)
+				if (i == 0)
 					arrow = GemUtils::GetSprite("jiantou_3.png");
-				else if(i == path.size() - 1)
+				else if (i == path.size() - 1)
 					arrow = GemUtils::GetSprite("jiantou_1.png");
 				else
 					arrow = GemUtils::GetSprite("jiantou_4.png");
 				int delta;
-				if(i != path.size() -1)
-					delta = path[i+1] - path[i];
+				if (i != path.size() - 1)
+					delta = path[i + 1] - path[i];
 				else
-					delta = path[i] - path[i-1];
+					delta = path[i] - path[i - 1];
 
-				if(delta == 1) arrow->setRotation(180);
-				if(delta == skBoardWidth) arrow->setRotation(90);
-				if(delta == -skBoardWidth) arrow->setRotation(-90);
+				if (delta == 1) arrow->setRotation(180);
+				if (delta == skBoardWidth) arrow->setRotation(90);
+				if (delta == -skBoardWidth) arrow->setRotation(-90);
 			}
 
 			arrow->setAnchorPoint(Vec2(0.5f, 0.5f));
-			Vec2 pos(path[i]% skBoardWidth , path[i] / skBoardWidth);
+			Vec2 pos(path[i] % skBoardWidth, path[i] / skBoardWidth);
 			arrow->setPosition(g2w_center(pos));
 
 			mBoardControl->root->addChild(arrow, 9999999);
@@ -2365,7 +2382,7 @@ luacall("FreeGlobals", make_tuple(), error);
 	void BoardLayer::showDragHint()
 	{
 #if 0
-		if(!GameConfig::shared()->showDragHint || this->mIsTutorialMode || !this->mShowDragHintInTurn) return;
+		if (!GameConfig::shared()->showDragHint || this->mIsTutorialMode || !this->mShowDragHintInTurn) return;
 		std::vector<int> path = genReasonableFingerPath(mBoardControl->getGrid());
 		this->showArrowPath(path);
 #endif
@@ -2375,7 +2392,7 @@ luacall("FreeGlobals", make_tuple(), error);
 	{
 #if 0
 		TaskBatchPtr batch = TaskBatch::make();
-		for(auto & item : this->mDragHint)
+		for (auto & item : this->mDragHint)
 		{
 			TaskSequencePtr localSeq = TaskSequence::make();
 			localSeq << TaskAnim::make(item, CCFadeOut::create(0.3f), false);
@@ -2403,7 +2420,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		moveStarted = false;
 		mPlayer->stopTicking();
 
-		if(mDragGem != NULL)
+		if (mDragGem != NULL)
 		{
 			mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
 			mDragGem->root->setPosition(g2w_center(mDragGem->position));
@@ -2413,7 +2430,7 @@ luacall("FreeGlobals", make_tuple(), error);
 		}
 
 		// satisfies final board state constraint
-		if(finalStateConstraint.call(mBoardControl->getGrid()))
+		if (finalStateConstraint.call(mBoardControl->getGrid()))
 		{
 			return;
 		}
@@ -2421,14 +2438,14 @@ luacall("FreeGlobals", make_tuple(), error);
 		{
 			// final state constraint is only valid before it's met first time.
 			// reset final state constraint
-			finalStateConstraint.call = [](GemGrid& g)->bool{return false;};
+			finalStateConstraint.call = [](GemGrid& g)->bool {return false; };
 		}
 
 		// must immediately disable UI on end of a drag events,
 		// to prevent from receiving incomplete touch began/end pair.
 		disableUI();
 
-		mTaskQueue.enqueue(TaskLambda::make([=](){ this->onTurn();} ));
+		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
 #endif
 	}
 

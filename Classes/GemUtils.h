@@ -150,6 +150,7 @@ namespace PH
 			Dark = 3,
 			Light = 4,
 			Health = 5,
+
 			Langren = 6,		//狼人
 			Langrenxiaohai = 7,	//狼人小孩
 			Langrenxianzhi = 8,	//狼人先知
