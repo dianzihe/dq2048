@@ -30,7 +30,7 @@ namespace PH { // tolua_export
     
     class Gem : public enable_shared_from_this<Gem>, IObject
     {
-    protected:
+	public:
         GemUtils::GemColor  mColor;
         int                 mTurn;
         

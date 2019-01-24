@@ -338,19 +338,21 @@ luacall("FreeGlobals", make_tuple(), error);
 		mDragGem.reset();
 
 		if (mBoardControl->getGrid().isInside(gp)) {
+			log("BoardLayer::onTouchBegan->[%.0f, %.0f]", gp.x, gp.y);
 			mShowDragHintInTurn = false;
 			GemPtr pGem = mBoardControl->get(gp);
+			log("BoardLayer::onTouchBegan->[%.0f, %.0f]=%d", gp.x, gp.y, pGem->mColor);
 			if (pGem && pGem->isMoveable()) {
 				mDragGem = pGem;
-
+				pGem->open(2.f);
 				/*
 				Sprite* sprite = mDragGem->root;
 				sprite->setAnchorPoint(Vec2(0.5, 0.25));
-
+				
 				// force this sprite on top of all others
 				sprite->removeFromParentAndCleanup(false);
 				mBoardControl->root->addChild(sprite);
-
+				
 				mShadowGem = createShadowGem(mDragGem->color());
 				mShadowGem->setPosition(sprite->getPosition());
 				mBoardControl->root->addChild(mShadowGem, -1);
@@ -362,38 +364,6 @@ luacall("FreeGlobals", make_tuple(), error);
 		return true;
 	}
 
-	void BoardLayer::endDrag()
-	{
-		this->clearArrowPath();
-
-		mCurrTouch = NULL;
-		moveStarted = false;
-		//mPlayer->stopTicking();
-
-		if (mDragGem != NULL) {
-			mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
-			mDragGem->root->setPosition(g2w_center(mDragGem->position));
-			mDragGem.reset();
-
-			mShadowGem->removeFromParentAndCleanup(true);
-		}
-
-		// satisfies final board state constraint
-		if (finalStateConstraint.call(mBoardControl->getGrid())) {
-			return;
-		}
-		else {
-			// final state constraint is only valid before it's met first time.
-			// reset final state constraint
-			finalStateConstraint.call = [](GemGrid& g)->bool {return false; };
-		}
-
-		// must immediately disable UI on end of a drag events,
-		// to prevent from receiving incomplete touch began/end pair.
-		disableUI();
-
-		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
-	}
 
 	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
 	{
@@ -436,7 +406,7 @@ luacall("FreeGlobals", make_tuple(), error);
 			// do not count this as a move.
 			auto batch = TaskBatch::make();
 			if (!moveStarted ) {
-				mDragGem->open(1.f);
+				//mDragGem->open(1.f);
 				/*
 				mTaskQueue.enqueue(batch);
 
@@ -449,7 +419,7 @@ luacall("FreeGlobals", make_tuple(), error);
 				return;
 			} else {
 				//endDrag();
-				mDragGem->open(1.f);
+				//mDragGem->open(1.f);
 			}
 		} else {
 			/*
@@ -549,6 +519,40 @@ luacall("FreeGlobals", make_tuple(), error);
 		//mStats.gameTimeSinceLevelStart += dt;
 		mTaskQueue.update(dt);
 	}
+
+	void BoardLayer::endDrag()
+	{
+		this->clearArrowPath();
+
+		mCurrTouch = NULL;
+		moveStarted = false;
+		//mPlayer->stopTicking();
+
+		if (mDragGem != NULL) {
+			mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+			mDragGem->root->setPosition(g2w_center(mDragGem->position));
+			mDragGem.reset();
+
+			mShadowGem->removeFromParentAndCleanup(true);
+		}
+
+		// satisfies final board state constraint
+		if (finalStateConstraint.call(mBoardControl->getGrid())) {
+			return;
+		}
+		else {
+			// final state constraint is only valid before it's met first time.
+			// reset final state constraint
+			finalStateConstraint.call = [](GemGrid& g)->bool {return false; };
+		}
+
+		// must immediately disable UI on end of a drag events,
+		// to prevent from receiving incomplete touch began/end pair.
+		disableUI();
+
+		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
+	}
+
 	void BoardLayer::disableUI()
 	{
 		mExitMenu->setTouchEnabled(false);

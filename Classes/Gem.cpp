@@ -82,14 +82,18 @@ namespace PH
 		{
 			//m_pCardFront->stopAllActions();
 			//m_pCardBack->stopAllActions();
-
-			this->root->removeAllChildren();
+			if (this->root == NULL) return;
+			//this->root = new Sprite();
+			//this->root->removeAllChildren();
+			m_pCardFront = GemUtils::GetSprite("zhanwei_biankuang.png");
+			m_pCardBack = GemUtils::GetSprite(GemUtils::res(mColor));
+			this->root->addChild(m_pCardFront);
+			this->root->addChild(m_pCardBack);
 			// 把牌反转了
 			m_pCardFront->setFlipX(true);
 			//m_pCardFront->setPosition(ccp(visibleSize.width / 2 - 100, visibleSize.height / 2 + 100));
 			//m_pCardBack->setPosition(ccp(visibleSize.width / 2 - 100, visibleSize.height / 2 + 100));
-			this->root->addChild(m_pCardFront, 5);
-			this->root->addChild(m_pCardBack, 5);
+			
 
 			// 动画序列（延时，隐藏，延时，隐藏）
 			Sequence *pBackSeq = Sequence::create(DelayTime::create(0.5f), Hide::create(), DelayTime::create(0.5f), Hide::create(), NULL);
