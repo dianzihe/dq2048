@@ -75,6 +75,66 @@ namespace PH
         this->mCountdown->setScale(Director::getInstance()->getContentScaleFactor()*0.8f);
     }
     
+
+	void Gem::open(float duration) {
+
+		if (m_pCardFront && m_pCardBack)
+		{
+			//m_pCardFront->stopAllActions();
+			//m_pCardBack->stopAllActions();
+
+			this->root->removeAllChildren();
+			// 把牌反转了
+			m_pCardFront->setFlipX(true);
+			//m_pCardFront->setPosition(ccp(visibleSize.width / 2 - 100, visibleSize.height / 2 + 100));
+			//m_pCardBack->setPosition(ccp(visibleSize.width / 2 - 100, visibleSize.height / 2 + 100));
+			this->root->addChild(m_pCardFront, 5);
+			this->root->addChild(m_pCardBack, 5);
+
+			// 动画序列（延时，隐藏，延时，隐藏）
+			Sequence *pBackSeq = Sequence::create(DelayTime::create(0.5f), Hide::create(), DelayTime::create(0.5f), Hide::create(), NULL);
+			ScaleTo* pScaleBack = ScaleTo::create(1.2f, -1, 1);
+			Spawn* pSpawnBack = Spawn::create(pBackSeq, pScaleBack, NULL);
+			m_pCardBack->runAction(pSpawnBack);
+
+			// 动画序列（延时，显示，延时，显示）
+			Sequence *pFrontSeq = Sequence::create(DelayTime::create(0.5f), Show::create(), DelayTime::create(0.5f), Show::create(), NULL);
+			ScaleTo* pScaleFront = ScaleTo::create(1.2f, -1, 1);
+			Spawn* pSpawnFront = Spawn::create(pFrontSeq, pScaleFront, NULL);
+			m_pCardFront->runAction(pSpawnFront);
+
+			/*
+			// 正面z轴起始角度为90度（向左旋转90度），然后向右旋转90度
+			OrbitCamera* orbitFront = OrbitCamera::create(duration*0.5, 1, 0, 90, -90, 0, 0);
+			// 正面z轴起始角度为0度，然后向右旋转90度
+			OrbitCamera* orbitBack = OrbitCamera::create(duration*0.5, 1, 0, 0, -90, 0, 0);
+
+			m_pCardFront->setVisible(false);
+			// 背面向右旋转90度->正面向左旋转90度
+			m_pCardBack->runAction(Sequence::create(
+				Show::create(), orbitBack, CCHide::create(),
+				CCTargetedAction::create(front, CCSequence::create(CCShow::create(), orbitFront, NULL)), NULL));
+				*/
+		}
+		else {
+			CCLOG("[ERROR] PokerSprite front or back not init.");
+		}
+
+		if (0){
+			/*
+			BlendFunc cbl = { GL_DST_COLOR, GL_ONE };
+			m_animal->setBlendFunc(cbl);
+			m_animal->setColor(Color3B::RED);
+			m_animal->stopAllActions();
+			m_animal->runAction(Sequence::create(DelayTime::create(0.2f), CallFunc::create([this]() {
+				BlendFunc cbl = { GL_DST_COLOR, GL_ONE };
+				m_animal->setBlendFunc(cbl);
+				m_animal->setColor(Color3B::WHITE);
+			}), nullptr));
+			*/
+		}
+	}
+
     TaskPtr Gem::updateCountdown()
     {
         if(this->mCountdown == NULL ) return TaskIgnore::make();
@@ -108,6 +168,10 @@ namespace PH
 			this->root = GemUtils::GetSprite("zhanwei_biankuang.png");
 		else
 			this->root = GemUtils::GetSprite(GemUtils::res(c));
+
+		// 加载牌的正反两面
+		m_pCardFront = GemUtils::GetSprite("zhanwei_biankuang.png");
+		m_pCardBack = GemUtils::GetSprite(GemUtils::res(c));
 
         this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
         this->root->retain();

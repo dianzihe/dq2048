@@ -18,6 +18,13 @@ Scene* GameScene::createScene() {
 bool GameScene::init() {
     if (!Scene::init()) return false;
 
+	/*
+	auto sn = ShaderNode::shaderNodeWithVertex("", "efx_stream.fsh");
+	auto s = Director::getInstance()->getWinSize();
+	sn->setPosition(Vec2(s.width / 2, s.height / 2));
+	addChild(sn);
+	*/
+
 	loadPersistentTextureCache();
 	loadTextureCache();
 

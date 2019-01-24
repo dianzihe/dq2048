@@ -43,8 +43,10 @@ namespace PH { // tolua_export
         Sprite*           root;
         Vec2               position;
 		bool isOpen;
+		Sprite* m_pCardFront;
+		Sprite* m_pCardBack;
 
-		
+		void open(float duration);
 		RoundedRect* _back = nullptr;
         // --- IObject ---
         Gem() : root(NULL), mCountdown(NULL), mTurn(-1) 

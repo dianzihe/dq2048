@@ -325,9 +325,7 @@ luacall("FreeGlobals", make_tuple(), error);
 
 		//得到触摸时坐标
 		//beginPostion = touch->getLocation();  //获取OpenGL坐标，以左下角为原点
-
 		//return true;
-
 
 		if (mCurrTouch)
 			return false;
@@ -339,14 +337,13 @@ luacall("FreeGlobals", make_tuple(), error);
 		Vec2 gp = w2g(p);
 		mDragGem.reset();
 
-		if (mBoardControl->getGrid().isInside(gp))
-		{
+		if (mBoardControl->getGrid().isInside(gp)) {
 			mShowDragHintInTurn = false;
 			GemPtr pGem = mBoardControl->get(gp);
-			if (pGem && pGem->isMoveable())
-			{
+			if (pGem && pGem->isMoveable()) {
 				mDragGem = pGem;
 
+				/*
 				Sprite* sprite = mDragGem->root;
 				sprite->setAnchorPoint(Vec2(0.5, 0.25));
 
@@ -357,7 +354,7 @@ luacall("FreeGlobals", make_tuple(), error);
 				mShadowGem = createShadowGem(mDragGem->color());
 				mShadowGem->setPosition(sprite->getPosition());
 				mBoardControl->root->addChild(mShadowGem, -1);
-
+				*/
 				return true;
 			}
 		}
@@ -367,7 +364,6 @@ luacall("FreeGlobals", make_tuple(), error);
 
 	void BoardLayer::endDrag()
 	{
-#if 1
 		this->clearArrowPath();
 
 		mCurrTouch = NULL;
@@ -397,8 +393,8 @@ luacall("FreeGlobals", make_tuple(), error);
 		disableUI();
 
 		mTaskQueue.enqueue(TaskLambda::make([=]() { this->onTurn(); }));
-#endif
 	}
+
 	void BoardLayer::onTouchEnded(Touch* touch, Event* ev)
 	{
 		/*
@@ -439,7 +435,9 @@ luacall("FreeGlobals", make_tuple(), error);
 			// player started dragging but no swapping has happened yet
 			// do not count this as a move.
 			auto batch = TaskBatch::make();
-			if (!moveStarted /*|| mPlayer->buffGroup.invokeBuff("disableSweep", batch)*/) {
+			if (!moveStarted ) {
+				mDragGem->open(1.f);
+				/*
 				mTaskQueue.enqueue(batch);
 
 				mDragGem->root->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -447,9 +445,11 @@ luacall("FreeGlobals", make_tuple(), error);
 				mDragGem.reset();
 
 				mShadowGem->removeFromParentAndCleanup(true);
+				*/
 				return;
 			} else {
-				endDrag();
+				//endDrag();
+				mDragGem->open(1.f);
 			}
 		} else {
 			/*
