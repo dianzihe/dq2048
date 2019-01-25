@@ -20,6 +20,22 @@ using namespace std;
 
 namespace PH { // tolua_export
     
+	enum ACTORCHILD_TAG
+	{
+		ACTORCHILD_SHADOW = 1001,
+		ACTORCHILD_NAME,
+		ACTORCHILD_ICON,
+		ACTORCHILD_CLICK,
+		ACTORCHILD_SKILL,
+		ACTORCHILD_PICK,
+		ACTORCHILD_AOE,
+		ACTORCHILD_PKPROCTEDICON,
+		ACTORCHILD_VIPICON,
+		ACTORCHILD_TITLE,
+		ACTORCHILD_BUBBLE,
+		//ACTORCHILD_LEVEL,
+	};
+
     //class BoardControl;
 
     class Gem;
@@ -33,11 +49,15 @@ namespace PH { // tolua_export
 	public:
         GemUtils::GemColor  mColor;
         int                 mTurn;
-        
+		string m_name;
+		string m_nShowName;
         LabelBMFont*      mCountdown;
         virtual void        attachCountdown();
         virtual TaskPtr     updateCountdown();
-        
+
+		void				SetName(const string& name) { m_name = name; };
+		const string&		GetName()const { return m_name; };
+		void SetShowName(const string& name, const string& title);
     public:
         static const size_t kGemWidthPixel, kGemHeightPixel;
         Sprite*           root;

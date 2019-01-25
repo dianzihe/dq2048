@@ -136,7 +136,8 @@ namespace PH
 
     inline Vec2 roundToGrid(Vec2& p){  return g2w(w2g(p)); }
     
-    struct GemUtils {  // tolua_export
+    class GemUtils {  // tolua_export
+	public:
         // tolua_begin
         enum GemColor
         {
@@ -176,7 +177,11 @@ namespace PH
             AllColor = 25,
             GemColorMax = 26,
         };
+		GemUtils() {
+		}
         // tolua_end
+		//static std::vector<int> nVec(5, -1);
+		//static std::vector<std::pair<int, std::string>> ActorAndName( std::make_pair(1, ""));
         
         static inline bool isEqualColorOrAllColor(GemColor col, GemColor tarCol){
             if(col == tarCol || col == GemColor::AllColor) return true;
@@ -184,8 +189,7 @@ namespace PH
         }
 
         
-        static std::string getNameWithPatternAndColor(std::string patter,
-                                                      GemColor color);
+        static std::string getNameWithPatternAndColor(std::string patter, GemColor color);
         static const char* res(GemColor c);  // tolua_export
         static const char* frame(GemColor c);  // tolua_export
         static const char* name(GemColor c); // tolua_export

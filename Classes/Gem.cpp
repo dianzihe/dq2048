@@ -11,7 +11,10 @@ namespace PH
     static const float kGemInterval = 0.5f;
     const size_t Gem::kGemWidthPixel = 107;
     const size_t Gem::kGemHeightPixel = 107;
-    
+
+	#define		NPC_FONT_SCALE 1.3f
+	#define FONT_BMP_24					"fonts/arial.ttf"
+
 //    
 //    TaskPtr Gem::attachDarts(int turn,
 //                             GemHook onLastTurn, GemOnSweepHook onSweep)
@@ -74,7 +77,37 @@ namespace PH
         this->mCountdown->setOpacity(255);
         this->mCountdown->setScale(Director::getInstance()->getContentScaleFactor()*0.8f);
     }
-    
+
+
+	//Npc设置名字 称谓
+	void Gem::SetShowName(const string& name, const string& title)
+	{
+		if (!name.size())
+			return;
+		this->root->removeChildByTag(ACTORCHILD_NAME, true);
+		this->root->removeChildByTag(ACTORCHILD_TITLE, true);
+		string strTitle = "<";
+		strTitle += title + ">";
+		LabelBMFont *pName = LabelBMFont::create(name.c_str(), "bmfont/FGDC_28_darkblue.fnt");
+		pName->setScale(NPC_FONT_SCALE);
+		pName->setAnchorPoint(Vec2(0.5f, 0.0f));
+
+		LabelBMFont *pTitle = NULL;
+		if (title.size())
+		{
+			pTitle = LabelBMFont::create(strTitle.c_str(), "bmfont/FGDC_28_darkblue.fnt");
+			pTitle->setAnchorPoint(Vec2(0.5f, 1.0f));
+			pTitle->setScale(NPC_FONT_SCALE);
+			this->root->addChild(pTitle, 0, ACTORCHILD_TITLE);
+		}
+		//if (GetSprite() != NULL && GetSprite()->IsDataLoaded() == true)
+		{
+			pName->setPosition(Vec2(0, 20 + 10));
+			if (pTitle)
+				pTitle->setPosition(Vec2(0, 20 + 10));
+		}
+		this->root->addChild(pName, 0, ACTORCHILD_NAME);
+	}
 
 	void Gem::open(float duration) {
 
@@ -83,10 +116,12 @@ namespace PH
 			//m_pCardFront->stopAllActions();
 			//m_pCardBack->stopAllActions();
 			if (this->root == NULL) return;
-			//this->root = new Sprite();
-			//this->root->removeAllChildren();
-			m_pCardFront = GemUtils::GetSprite("zhanwei_biankuang.png");
-			m_pCardBack = GemUtils::GetSprite(GemUtils::res(mColor));
+
+			//m_pCardFront = GemUtils::GetSprite("zhanwei_biankuang.png");
+			//m_pCardBack = GemUtils::GetSprite(GemUtils::res(mColor));
+			
+			this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+
 			this->root->addChild(m_pCardFront);
 			this->root->addChild(m_pCardBack);
 			// 把牌反转了
@@ -158,8 +193,7 @@ namespace PH
 			stream << mTurn;
             this->mCountdown->setString(stream.str());
         });
-        return TaskAnim::make(this->mCountdown,
-                              Sequence::create(pre,rev,action,NULL), false);
+        return TaskAnim::make(this->mCountdown, Sequence::create(pre, rev,action, NULL), false);
     }
     
     bool Gem::init(GemUtils::GemColor c, int turn)
@@ -178,12 +212,14 @@ namespace PH
 		m_pCardBack = GemUtils::GetSprite(GemUtils::res(c));
 
         this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+		m_pCardFront->retain();
+		m_pCardBack->retain();
         this->root->retain();
 		
 		_back = RoundedRect::create();
 		_back->setPosition(Vec2(-Gem::kGemWidthPixel / 2, -Gem::kGemHeightPixel / 2));
 		_back->setSizeAndColor(Vec2(500.f, 500.f), Color4F::BLACK);
-
+		SetShowName("aa", "bb");
 		//this->root->addChild(_back, -1);
 		this->root->addChild(_back);
 
