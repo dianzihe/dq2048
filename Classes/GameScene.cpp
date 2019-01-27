@@ -95,7 +95,10 @@ void GameScene::loadTextureCache()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameuiQiuAnim.plist");
 }
 
-
+GameScene* GameScene::GetScene()
+{
+	return (GameScene*)(Director::getInstance()->getRunningScene());
+}
 void GameScene::initGui() {
     //auto background = LayerColor::create(Colors::MainBack);
     //this->addChild(background, -1);

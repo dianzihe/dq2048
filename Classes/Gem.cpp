@@ -90,16 +90,16 @@ namespace PH
 		strTitle += title + ">";
 		LabelBMFont *pName = LabelBMFont::create(name.c_str(), "bmfont/FGDC_28_darkblue.fnt");
 		pName->setScale(NPC_FONT_SCALE);
-		pName->setAnchorPoint(Vec2(0.5f, 0.0f));
+		pName->setAnchorPoint(Vec2(0.0f, 0.0f));
 
 		LabelBMFont *pTitle = NULL;
-		if (title.size())
-		{
+		if (title.size()) {
 			pTitle = LabelBMFont::create(strTitle.c_str(), "bmfont/FGDC_28_darkblue.fnt");
-			pTitle->setAnchorPoint(Vec2(0.5f, 1.0f));
+			pTitle->setAnchorPoint(Vec2(0.0f, 0.0f));
 			pTitle->setScale(NPC_FONT_SCALE);
 			this->root->addChild(pTitle, 0, ACTORCHILD_TITLE);
 		}
+
 		//if (GetSprite() != NULL && GetSprite()->IsDataLoaded() == true)
 		{
 			pName->setPosition(Vec2(0, 20 + 10));
@@ -111,16 +111,13 @@ namespace PH
 
 	void Gem::open(float duration) {
 
-		if (m_pCardFront && m_pCardBack)
-		{
-			//m_pCardFront->stopAllActions();
-			//m_pCardBack->stopAllActions();
+		if (m_pCardFront && m_pCardBack) {
+			m_pCardFront->stopAllActions();
+			m_pCardBack->stopAllActions();
+
 			if (this->root == NULL) return;
 
-			//m_pCardFront = GemUtils::GetSprite("zhanwei_biankuang.png");
-			//m_pCardBack = GemUtils::GetSprite(GemUtils::res(mColor));
-			
-			this->root->setAnchorPoint(Vec2(0.5f, 0.5f));
+			this->root->setAnchorPoint(Vec2(0.0f, 0.0f));
 
 			this->root->addChild(m_pCardFront);
 			this->root->addChild(m_pCardBack);
@@ -219,7 +216,7 @@ namespace PH
 		_back = RoundedRect::create();
 		_back->setPosition(Vec2(-Gem::kGemWidthPixel / 2, -Gem::kGemHeightPixel / 2));
 		_back->setSizeAndColor(Vec2(500.f, 500.f), Color4F::BLACK);
-		SetShowName("aa", "bb");
+		SetShowName("aa", "");
 		//this->root->addChild(_back, -1);
 		this->root->addChild(_back);
 

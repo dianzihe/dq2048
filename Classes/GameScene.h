@@ -11,8 +11,9 @@ class GameScene : public cocos2d::Scene
 public:
 	Sprite* background;
 	Size winSize;
-
+	Node*			m_uiNode;
     static cocos2d::Scene* createScene();
+	static GameScene* GetScene();
 	void loadPersistentTextureCache();
 	void loadTextureCache();
 	void initBG();
