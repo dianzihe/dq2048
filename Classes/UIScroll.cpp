@@ -1,4 +1,6 @@
 #include "UIScroll.h"
+#include "UIManager.h"
+
 #ifdef _MSC_VER
 	#pragma warning( disable: 4244 )
 #endif
@@ -26,14 +28,14 @@ void onScrollBarDrag(UI *ui, void *data)
 
 void onScrollBarDown(UI *ui, void *data)
 {
-	UIManager::Instance()->setOnlyMessage(ui);
+	UIManager::getInstance()->setOnlyMessage(ui);
 	UIScroll *pScroll = (UIScroll*)data;
 	pScroll->m_isDrag = false;
 }
 
 void onScrollBarUp(UI *ui, void *data)
 {
-	UIManager::Instance()->setOnlyMessage(NULL);
+	UIManager::getInstance()->setOnlyMessage(NULL);
 	UIScroll *pScroll = (UIScroll*)data;
 	pScroll->m_isDrag = false;
 }
@@ -227,7 +229,7 @@ void UIScroll::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform,
 void UIScroll::onBarDrag()
 {
 	m_isDrag = true;
-	CCTouch *touch = UIManager::Instance()->getCurTouch();
+	CCTouch *touch = UIManager::getInstance()->getCurTouch();
 	switch( m_ScrollType )
 	{
 	case SCROLL_TYPE_X:

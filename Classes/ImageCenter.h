@@ -3,8 +3,6 @@
 
 #include <cocos2d.h>
 #include "Singleton.h"
-//#include "CCSprite.h"
-//#include "CCTexture2D.h"
 #include "ImageResource.h"
 
 class UI;

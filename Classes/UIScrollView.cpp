@@ -1,9 +1,10 @@
 #include "UIScrollView.h"
+#include "UIManager.h"
+
 //#include "CCEGLView.h"
 //#include "UIBatchRenderer.h"
-#ifdef _MSC_VER
-	#pragma warning( disable: 4244 )
-#endif
+
+
 UIScrollView::UIScrollView(void)
 {
 	m_selectTag = -1;
@@ -113,7 +114,7 @@ void UIScrollView::OnEvent( TEventType msg, CCTouch* touch )
 	case EVENT_DOWN:
 		{
 			m_hasDrag = false;
-			UIManager::Instance()->setOnlyMessage(this);
+			UIManager::getInstance()->setOnlyMessage(this);
 			UI * p = UI::getTouchUI(m_startPos.x,m_startPos.y,touch);
 			if(p) 
 			{
@@ -127,7 +128,7 @@ void UIScrollView::OnEvent( TEventType msg, CCTouch* touch )
 		{
 			if(m_pSelectUI)
 				m_pSelectUI->m_down = false;
-			UIManager::Instance()->setOnlyMessage(NULL);
+			UIManager::getInstance()->setOnlyMessage(NULL);
 			if (m_hasDrag) 
 			{
 				m_hasDrag = false;
@@ -298,10 +299,10 @@ void UIScrollView::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& trans
 		myGLEnableScissorTest();
 		glScissor( rc.origin.x+m_space, rc.origin.y+m_space, (rc.size.width-m_space*2), (rc.size.height-m_space*2) );
 
-		UIManager::Instance()->m_nonceClipRect.origin.x = rc.origin.x+m_space;
-		UIManager::Instance()->m_nonceClipRect.origin.y = rc.origin.y+m_space;
-		UIManager::Instance()->m_nonceClipRect.size.width = (rc.size.width-m_space*2);
-		UIManager::Instance()->m_nonceClipRect.size.height = (rc.size.height-m_space*2);
+		UIManager::getInstance()->m_nonceClipRect.origin.x = rc.origin.x+m_space;
+		UIManager::getInstance()->m_nonceClipRect.origin.y = rc.origin.y+m_space;
+		UIManager::getInstance()->m_nonceClipRect.size.width = (rc.size.width-m_space*2);
+		UIManager::getInstance()->m_nonceClipRect.size.height = (rc.size.height-m_space*2);
 	}
 
 	//this->transform();
@@ -352,7 +353,7 @@ void UIScrollView::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& trans
 #endif // UI_BATCH_RENDERER
 		
 		kmGLTranslatef(m_startPos.x, m_startPos.y, 0);
-		UIManager::Instance()->m_TranslatefPos = m_startPos;
+		UIManager::getInstance()->m_TranslatefPos = m_startPos;
 
 		glScissor( rc.origin.x+m_space, rc.origin.y+m_space, (rc.size.width-m_space*2), (rc.size.height-m_space*2) );
 
@@ -390,7 +391,7 @@ void UIScrollView::visit(cocos2d::Renderer* renderer, const cocos2d::Mat4& trans
 
     }
 
-	 UIManager::Instance()->m_TranslatefPos = ccp(0,0);
+	 UIManager::getInstance()->m_TranslatefPos = Vec2(0,0);
 	 //glDisable( GL_SCISSOR_TEST);
 	 myGLDisableScissorTest();
 	kmGLPopMatrix();
@@ -447,7 +448,7 @@ void UIScrollView::GetScrollMax()
 void UIScrollView::setInitPos(cocos2d::CCPoint point)
 {
 	GetScrollMax();
-	CCPoint pt = point;
+	Vec2 pt = point;
 	if(point.x <= maxPt.x)
 		pt.x = maxPt.x;
 

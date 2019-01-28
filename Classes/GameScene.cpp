@@ -6,14 +6,21 @@
 #include "Colors.h"
 #include "Board.h"
 #include "GemUtils.h"
+//#include "UI.h"
+#include "UIManager.h"
+#include "ZhongGaoState.h"
 
 USING_NS_CC;
-
 NS_GAME_BEGIN
+
 Scene* GameScene::createScene() {
     return GameScene::create();
 }
 
+void GameScene::onEnter()
+{
+	ChangeState(GAME_STATE_ZHONGGAO);
+}
 
 bool GameScene::init() {
     if (!Scene::init()) return false;
@@ -32,17 +39,144 @@ bool GameScene::init() {
 
 	initBG();
 
+	m_uiNode = new Node();
+	addChild(m_uiNode, GAME_LAYER_UI);
 
     //_fieldGUI = FieldGUI::create();
     //_fieldGUI->setField(&_field);
     //_field.init(_fieldGUI);
     
-    initGui();
+    //initGui();
     //addGestureRecognizers();
 
     return true;
 }
 
+void GameScene::ChangeState(GAME_STATE eState)
+{
+	if (eState == m_eGameState)
+		return;
+
+	if (eState == GAME_STATE_CUTSCENE ) {
+		/*
+		if (UpdateTool::AppUpdater::isEnabled()) {
+			eState = GAME_STATE_UPDATE;
+		}
+		else {
+#if defined UPDATE_START
+			eState = GAME_STATE_UPDATE;
+#else
+			eState = GAME_STATE_LOGIN;
+#endif
+		}
+		*/
+	}
+
+	log("ChangeState m_eGameState:%d eState:%d", m_eGameState, eState);
+
+	m_eGameState = eState;
+	if (m_pRunState) {
+		removeChild(m_pRunState, true);
+	}
+
+	switch (eState)
+	{
+	case GAME_STATE_UPDATE:
+		if (0) {
+			//m_pRunState = new NewUpdateState();
+		} else {
+#ifdef UPDATE_START
+			if (m_cps == NULL)
+			{
+				m_pRunState = new CUpdateState();
+				m_cps = (CUpdateState*)m_pRunState;
+				m_pRunState->retain();
+			}
+			else {
+				m_pRunState = m_cps;
+				m_pRunState->retain();
+			}
+#endif
+		}
+		break;
+	case GAME_STATE_ZHONGGAO:
+		m_pRunState = new CZhongGaoState();
+		break;
+	case GAME_STATE_CUTSCENE:
+		//m_pRunState = new CCutSceneState();
+		break;
+	case GAME_STATE_LOGIN:
+		LoadTask();
+		//m_pRunState = new CLoginState();
+		break;
+	case GAME_STATE_GAMESERVERLIST:
+		//m_pRunState = new CGameServerListState();
+		break;
+	case GAME_STATE_CHARLOBBY:
+		//m_pRunState = new CCharLobbyState();
+		break;
+	case GAME_STATE_CREATEPLAYER:
+		//m_pRunState = new CCreatePlayerState();
+		break;
+
+	case GAME_STATE_GAME:
+		m_pRunState = new CGameState();
+		break;
+
+	case GAME_STATE_LOADING:
+		m_pRunState = new CLoadingState();
+		break;
+
+	case GAME_STATE_BRANCHUPDATE:
+		//m_pRunState = new CBranchUpdateState();
+		break;
+
+	case GAME_STATE_RECONNECT_LOGIN:
+	{
+		//m_pRunState = new CLoginState();
+		//m_eGameState = GAME_STATE_LOGIN;
+		break;
+	}
+
+	case GAME_STATE_DISCONNECTION_LOGIN:
+	{
+		/*
+		if (g_lastUserID == 0 || g_lastRandIdentity == "" || g_lastServerID == "" || g_lastPlayerID == 0)
+		{
+			//露脧脧脽脰脴脕卢脢媒戮脻虏禄脮媒脠路拢卢陆酶脠毛loginstate
+			LoadTask();
+			m_pRunState = new CLoginState();
+			m_eGameState = GAME_STATE_LOGIN;
+		}
+		else
+		{
+			//陆酶脠毛露脧脧脽脰脴脕卢state
+			m_pRunState = new CDisconnectionLoginState();
+		}
+		*/
+	}
+	break;
+	}
+
+	if (m_pRunState) {
+		m_pRunState->autorelease();
+		addChild(m_pRunState);
+		m_pRunState->EnterState();
+	}
+
+	switch (m_eGameState)
+	{
+	case GAME_STATE_LOGIN:
+	{
+		/*
+		if (!m_is_connect_login_server) {
+			m_is_connect_login_server = true;
+		}
+		*/
+	}
+	break;
+	}
+}
 void GameScene::initBG()
 {
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("battleMisc.plist");
@@ -50,14 +184,6 @@ void GameScene::initBG()
 	background = PH::GemUtils::GetSprite("gameui/background.jpg");
 	background->setPosition(winSize.width / 2, winSize.height / 2);
 	this->addChild(background);
-
-	//flowersDrop = FlowerDrop::create();
-	//flowersDrop->setPosition(ccp(-50, winSize.height + 50));
-	//this->addChild(flowersDrop);
-
-	//    CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-	//playBG("sound/bg/ui.mp3");
-
 }
 
 void GameScene::loadPersistentTextureCache()
@@ -208,7 +334,12 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
             break;
     }
 }
-
+void GameScene::update(float dt)
+{
+	{
+		UIManager::getInstance()->update(dt);
+	}
+}
 void GameScene::onSwipe(SwipeGestureRecognizer* recognizer) {
     auto stato = recognizer->getStatus();
     if (stato != GestureStatus::RECOGNIZED) return;

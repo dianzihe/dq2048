@@ -4,8 +4,6 @@
 #include <vector>
 #include <cocos2d.h>
 #include "Singleton.h"
-//#include "CCSprite.h"
-//#include "CCTexture2D.h"
 
 typedef int				BatchID;
 
@@ -99,9 +97,7 @@ public:
 	bool ReLoad( const char * resName, ResourceType resType = eResourceType_png_pvr );
 
 	inline int GetSquareSize() { return mSquareSize; }
-
 	inline int GetImageSizeX() { return mImageSizeX; }
-
 	inline int GetImageSizeY() { return mImageSizeY; }
 
 	TextureContainer& GetTextureContainer() { return mTextureContainer; }
@@ -109,7 +105,6 @@ public:
 	ResourceState GetResourceState() { return mResourceState; }
 
 	void Retain() { ++mReference; }
-
 	void Release() { --mReference; if( mReference <= 0 ) UnLoad(); }
 
 protected:

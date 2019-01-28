@@ -20,10 +20,10 @@
 */
 //#define DEBUG_DRAW
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#include "CCLabelBMFont.h"
+#include "LabelBMFont.h"
 #include "utf.h"
 #else
-//#include "../../label_nodes/CCLabelBMFont.h"
+//#include "../../label_nodes/LabelBMFont.h"
 //#include "../../support/utf.h"
 #endif
 
@@ -278,10 +278,10 @@ bool UIText::parseText(const std::string &strText)
 				if (strlen(tmp))
 				{
 					TextLine::TextNode node;
-					node.pLabel = CCLabelBMFont::create(tmp, m_strFontName.c_str());
+					node.pLabel = LabelBMFont::create(tmp, m_strFontName.c_str());
 					node.pLabel->setScale(getTextScale());
 					node.width = node.pLabel->getContentSize().width*getTextScale();
-					node.pLabel->setAnchorPoint(ccp(0,0));
+					node.pLabel->setAnchorPoint(Vec2(0,0));
 					if (vColor.size())
 						node.pLabel->setColor(vColor.back());
 					else
@@ -351,10 +351,10 @@ bool UIText::parseText(const std::string &strText)
 			if (strlen(tmp)) 
 			{
 				TextLine::TextNode node;
-				node.pLabel = CCLabelBMFont::create(tmp, m_strFontName.c_str());
+				node.pLabel = LabelBMFont::create(tmp, m_strFontName.c_str());
 				node.pLabel->setScale(getTextScale());
 				node.width = node.pLabel->getContentSize().width*getTextScale();
-				node.pLabel->setAnchorPoint(ccp(0,0));
+				node.pLabel->setAnchorPoint(Vec2(0,0));
 				if (vColor.size())
 					node.pLabel->setColor(vColor.back());
 				else
@@ -376,10 +376,10 @@ bool UIText::parseText(const std::string &strText)
 			if (strlen(tmp)) 
 			{
 				TextLine::TextNode node;
-				node.pLabel = CCLabelBMFont::create(tmp, m_strFontName.c_str());
+				node.pLabel = LabelBMFont::create(tmp, m_strFontName.c_str());
 				node.pLabel->setScale(getTextScale());
 				node.width = node.pLabel->getContentSize().width*getTextScale();
-				node.pLabel->setAnchorPoint(ccp(0,0));
+				node.pLabel->setAnchorPoint(Vec2(0,0));
 				if (vColor.size())
 					node.pLabel->setColor(vColor.back());
 				else
@@ -415,7 +415,7 @@ bool UIText::parseText(const std::string &strText)
 						HASH_FIND_INT(config->m_pFontDefDictionary, &key, element);
 						if (!element)
 						{
-							key = CCLabelBMFont::m_sUnknowSting[0];
+							key = LabelBMFont::m_sUnknowSting[0];
 							HASH_FIND_INT(config->m_pFontDefDictionary, &key, element);
 							if( !element ) 
 								continue;
@@ -442,10 +442,10 @@ bool UIText::parseText(const std::string &strText)
 					if (strlen(tmp)) 
 					{
 						TextLine::TextNode node;
-						node.pLabel = CCLabelBMFont::create(tmp, m_strFontName.c_str());
+						node.pLabel = LabelBMFont::create(tmp, m_strFontName.c_str());
 						node.pLabel->setScale(getTextScale());
 						node.width = node.pLabel->getContentSize().width*getTextScale();
-						node.pLabel->setAnchorPoint(ccp(0,0));
+						node.pLabel->setAnchorPoint(Vec2(0,0));
 						if (vColor.size())
 							node.pLabel->setColor(vColor.back());
 						else
@@ -563,7 +563,7 @@ bool UIText::parseText(const std::string &strText)
 		{
 			if (itNode->pLabel) 
 			{
-				itNode->pLabel->setPosition(ccp(posX, posY));
+				itNode->pLabel->setPosition(Vec2(posX, posY));
 				addChild(itNode->pLabel);
 				posX += itNode->width;
 			}
@@ -591,7 +591,7 @@ void UIText::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, u
 	UI::draw(renderer, transform, flags);
 
 #ifdef DEBUG_DRAW
-	CCPoint pos = getRealPos();
+	Vec2oint pos = getRealPos();
 	if( m_width > 0 && m_height >0 )
 		FillRect( CCRectMake( 0, 0, m_width, m_height), ccc4(255,255,255,255), true);
 #endif
@@ -599,12 +599,11 @@ void UIText::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, u
 
 void UIText::update(float t) 
 {
-	CCNode::update(t);
+	Node::update(t);
 }
 
 bool	UIText::isHaveUnKnowChar()
 {
-	CCObject* child;
 	auto& children = getChildren();
 	for (const auto &child : children) {
 
@@ -629,18 +628,17 @@ UIText * UIText::initUITextWithString(const std::string &strText,float fTextSize
 	return initUITextWithString(strText, fTextSize, Size::ZERO, tAlignCenterX | tAlignCenterY);
 }
 
-void UIText::setColor(ccColor4B color) 
+void UIText::setColor(Color4B color) 
 {
 	m_color = color;
 
-	ccColor3B c = ccc3(m_color.r, m_color.g, m_color.b);
+	Color3B c = ccc3(m_color.r, m_color.g, m_color.b);
 
 	if (m_color.a > 255)
 		m_color.a = 255;
 
 	m_color = color;
 
-	CCObject* child;
 	auto& children = getChildren();
 	for (const auto &child : children) {
 		UI* p = dynamic_cast<UI*>(child);
@@ -650,7 +648,7 @@ void UIText::setColor(ccColor4B color)
 		} 
 		else 
 		{
-			CCLabelBMFont *pLabel = dynamic_cast<CCLabelBMFont*>(child);
+			LabelBMFont *pLabel = dynamic_cast<LabelBMFont*>(child);
 			if (pLabel) 
 			{
 				pLabel->setOpacity(m_color.a);

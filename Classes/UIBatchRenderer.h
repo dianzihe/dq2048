@@ -29,7 +29,7 @@ public:
 
 	void flush();
 
-	void setShader(CCGLProgram* program);
+	void setShader(GLProgram* program);
 
 private:
 	void resizeCapicity(unsigned int capacity);
@@ -37,7 +37,7 @@ private:
 	//void setupVBOandVAO();
 
 private:
-	CCGLProgram*		m_pProgram;
+	GLProgram*		m_pProgram;
 	ccV3F_C4B_T2F_Quad* m_pQuads;
 	GLushort*           m_pIndices;
 	unsigned int		m_uTotalQuads;
