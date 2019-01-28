@@ -97,7 +97,7 @@ enum UCLoginResult
 //玩家被T下线的原因
 #define KickoutUser_Reson_ReLogin			0			//重复登录
 #define KickoutUser_Reson_GM				1			//GM
-#define KickoutUser_Reson_HeartBeat_Timeout		2	//心跳包超时
+#define KickoutUser_Reson_HeartBeat_Timeout	2	//心跳包超时
 
 class GameScene;
 class UIEditNew;

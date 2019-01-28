@@ -46,19 +46,25 @@ public:
 	GAME_STATE		m_eGameState;
 	CRunState*		m_pRunState;
 
-    static cocos2d::Scene* createScene();
+	GameScene(void);
+	~GameScene(void){};
+
+	static void create();
+    //static cocos2d::Scene* createScene();
 	static GameScene* GetScene();
 
 	virtual void onEnter();
-	
+	virtual void onExit();
+	virtual void update(float dt);
+
 	void loadPersistentTextureCache();
 	void loadTextureCache();
 	void initBG();
-    CREATE_FUNC(GameScene);
-	virtual void update(float dt);
+   // CREATE_FUNC(GameScene);
+	
 	void ChangeState(GAME_STATE eState);
 private:
-    virtual bool init();
+    //virtual bool init();
     
     void initGui();
     void addGestureRecognizers();

@@ -40,8 +40,7 @@ ImageResource* ImageCenter::_LoadResource( const char * resName )
 {
 	std::string filePath = resName;
 	ResourceType resType = eResourceType_png_pvr;
-	if(filePath.find(".wen") != -1)
-	{
+	if(filePath.find(".wen") != -1) {
 		resType = eResourceType_jpg;
 	}
 	filePath = filePath.substr(0, filePath.find("."));
@@ -55,21 +54,15 @@ ImageResource* ImageCenter::_LoadResource( const char * resName )
 		{
 			mResourceMap[fileName] = pImageRes;
 			retImageResource = pImageRes;
-		}
-		else
-		{
+		} else {
 #if defined _WIN32 | WIN32
-			log("%s can't found", resName);
-			//CCLog("%s can't found", resName);//找不到资源
+			log("%s can't found", resName);//找不到资源
 #endif
 			SAFE_DELETE(pImageRes);
 		}
-	}
-	else
-	{
+	} else {
 		retImageResource = it->second;
-		if (retImageResource->GetResourceState() == eResourceState_UnLoaded)
-		{
+		if (retImageResource->GetResourceState() == eResourceState_UnLoaded) {
 			retImageResource->ReLoad(filePath.c_str(), resType);
 		}
 	}

@@ -16,20 +16,19 @@ CZhongGaoState::~CZhongGaoState(void)
 #define		ShowAndHide_Time		0.5f
 void CZhongGaoState::EnterState()
 {
+	log("=========CZhongGaoState::EnterState");
 	ImageCenter::instance().LoadResource("Origin/zhonggao.png");
 	m_pMainUI = UIManager::getInstance()->loadUI("Zhonggao.ui");
-	if( !m_pMainUI )
-	{
+	if( !m_pMainUI ) {
 		GameScene::GetScene()->ChangeState(GAME_STATE_CUTSCENE);
 		return;
 	}
 
 	m_pMainUI->setVisible(true);
 	m_pMainUI->setColor(ccc4(255,255,255, 0 ));
-	m_fTime = ShowAndHide_Time*3;
+	m_fTime = ShowAndHide_Time * 3;
 
-	if( IsCHTOnly() )
-	{
+	if( IsCHTOnly() ) {
 		m_pMainUI->setVisible( false );
 		m_fTime = -1.0f;
 	}
@@ -37,35 +36,27 @@ void CZhongGaoState::EnterState()
 
 void CZhongGaoState::OnUpdate(float dt)
 {
-	if (dt > 1.0f/60.0f)
-	{
+	log("=========CZhongGaoState::OnUpdate");
+	if (dt > 1.0f/60.0f) {
 		dt = 1.0f/60.0f;
 	}
-	if( !m_pMainUI )
-	{
+
+	if( !m_pMainUI ) {
 		GameScene::GetScene()->ChangeState(GAME_STATE_CUTSCENE);
 		return;
 	}
 
-	if( IsCHTOnly() )
-	{
+	if( IsCHTOnly() ) {
 		m_fTime = -1.0f;
-	}
-
-	else if( m_fTime > 2*ShowAndHide_Time )
-	{
+	} else if( m_fTime > 2*ShowAndHide_Time ) {
 		m_pMainUI->setColor(ccc4(255,255,255, ( GLubyte )( (3*ShowAndHide_Time - m_fTime)/ShowAndHide_Time * 255 )));
-	}
-	else 
-	{
+	} else {
 		m_fTime = -1.0f;
 		//只支持繁体
-		if ( IsCHTOnly() )
-		{
+		if ( IsCHTOnly() ) {
 			ChangeLanguage( LT_CHT, true );
 			GameScene::GetScene()->ChangeState(GAME_STATE_CUTSCENE);
-		}
-		else if( /*IsCHSOnly()*/ true )	//临时修改，不显示语言选择界面，直接直接用简体
+		} else if( /*IsCHSOnly()*/ true )	//临时修改，不显示语言选择界面，直接直接用简体
 		{
 			ChangeLanguage( LT_CHS, true );
 			GameScene::GetScene()->ChangeState(GAME_STATE_CUTSCENE);
@@ -105,7 +96,7 @@ void CZhongGaoState::OnDestroy()
 	m_pMainUI = NULL;
 }
 
-void	OnSelectLanguageBtnUP( UI* ui, void* data )
+void OnSelectLanguageBtnUP( UI* ui, void* data )
 {
 	int type = (int)data;
 	Language ltType = LT_CHS;

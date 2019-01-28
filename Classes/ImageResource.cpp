@@ -133,9 +133,8 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
 	{
 		sprintf(filename, "%s.wen" ,resName );
 	}
-    CCTexture2D *newTex = CCTextureCache::sharedTextureCache()->addImage(filename);
-    if(newTex == NULL)
-    {
+    Texture2D *newTex = TextureCache::getInstance()->addImage(filename);
+    if(newTex == NULL) {
         
         int texIdx = 0;
         while(1)
@@ -153,14 +152,11 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
 				sprintf(filename, "%s_%d.wen", resName, texIdx++ );
 			}
             //CCTexture2D::setUSED_ANTI_ALIAS( false );
-            CCTexture2D* newTex = CCTextureCache::sharedTextureCache()->addImage(filename);
+            Texture2D* newTex = TextureCache::getInstance()->addImage(filename);
             //CCTexture2D::setUSED_ANTI_ALIAS( true );
-            if(newTex)
-            {
+            if(newTex) {
                 mTextureContainer.push_back(newTex);
-            }
-            else
-            {
+            } else {
                 break;
             }
         }
@@ -169,8 +165,7 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
     if( newTex == NULL && mTextureContainer.empty() )
         return false;
     
-    if(isLoadBui)
-    {
+    if(isLoadBui) {
 		int n = 0;
         RenderBatchMap::iterator it = mRenderBatchMap.begin();
         RenderBatchMap::iterator end = mRenderBatchMap.end();
@@ -191,9 +186,7 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
             ++it;
 			++n;
         }
-    }
-    else
-    {
+    } else {
         assert(mRenderBatchMap.empty());//应该没有元素
         RenderBatchData* pImageRes = new RenderBatchData;
         pImageRes->_BatchID = mHostImageCenter->GenerateNewBatchID();

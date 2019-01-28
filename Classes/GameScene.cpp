@@ -6,31 +6,53 @@
 #include "Colors.h"
 #include "Board.h"
 #include "GemUtils.h"
-//#include "UI.h"
+#include "UI.h"
+#include "UIBatchRenderer.h"
 #include "UIManager.h"
 #include "ZhongGaoState.h"
 
 USING_NS_CC;
 NS_GAME_BEGIN
 
-Scene* GameScene::createScene() {
-    return GameScene::create();
+GameScene::GameScene(void){
+	m_pRunState = NULL;
+	m_uiNode = new Node();
+	addChild(m_uiNode, GAME_LAYER_UI);
+	UIBatchRenderer::instance()->initilize();
 }
+void GameScene::create()
+{
+	GameScene* p = new GameScene();
 
+	if (p && p->init()) {
+		p->autorelease();
+		//TODO: CCDirector::sharedDirector()->replaceScene(p);
+		Director::getInstance()->runWithScene(p);
+	}
+	Director::getInstance()->setProjection(kCCDirectorProjection3D);
+}
+GameScene* GameScene::GetScene()
+{
+	return (GameScene*)(Director::getInstance()->getRunningScene());
+}
 void GameScene::onEnter()
 {
-	ChangeState(GAME_STATE_ZHONGGAO);
+	log("------------GameScene::onEnter");
+	//ChangeState(GAME_STATE_ZHONGGAO);
+	initBG();
 }
-
+void GameScene::onExit()
+{
+	if (m_pRunState)
+	{
+		removeChild(m_pRunState, true);
+	}
+}
+/*
 bool GameScene::init() {
-    if (!Scene::init()) return false;
 
-	/*
-	auto sn = ShaderNode::shaderNodeWithVertex("", "efx_stream.fsh");
-	auto s = Director::getInstance()->getWinSize();
-	sn->setPosition(Vec2(s.width / 2, s.height / 2));
-	addChild(sn);
-	*/
+	log("------------GameScene::init");
+    if (!Scene::init()) return false;
 
 	loadPersistentTextureCache();
 	loadTextureCache();
@@ -38,20 +60,17 @@ bool GameScene::init() {
 	winSize = Director::getInstance()->getVisibleSize();
 
 	initBG();
-
-	m_uiNode = new Node();
-	addChild(m_uiNode, GAME_LAYER_UI);
-
+	
     //_fieldGUI = FieldGUI::create();
     //_fieldGUI->setField(&_field);
     //_field.init(_fieldGUI);
     
-    //initGui();
+    initGui();
     //addGestureRecognizers();
 
     return true;
 }
-
+*/
 void GameScene::ChangeState(GAME_STATE eState)
 {
 	if (eState == m_eGameState)
@@ -182,6 +201,8 @@ void GameScene::initBG()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("battleMisc.plist");
 
 	background = PH::GemUtils::GetSprite("gameui/background.jpg");
+	//background = Sprite::createWithSpriteFrameName("gameui/background.jpg");
+	//	PH::GemUtils::GetSprite("gameui/background.jpg");
 	background->setPosition(winSize.width / 2, winSize.height / 2);
 	this->addChild(background);
 }
@@ -221,10 +242,7 @@ void GameScene::loadTextureCache()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("gameuiQiuAnim.plist");
 }
 
-GameScene* GameScene::GetScene()
-{
-	return (GameScene*)(Director::getInstance()->getRunningScene());
-}
+
 void GameScene::initGui() {
     //auto background = LayerColor::create(Colors::MainBack);
     //this->addChild(background, -1);

@@ -1088,38 +1088,31 @@ UI* UIManager::loadUI(const string& name, bool isTop, int zoder)
 	rt = group.createUI(zoder);
 
 	int x = SCREEN_SIZE.width / 2;
-	if ((group.align & ALIGN_LEFT) != 0)
-	{
+	if ((group.align & ALIGN_LEFT) != 0) {
 		x = 0;
 	}
-	if ((group.align & ALIGN_HCENTER) != 0)
-	{
+	if ((group.align & ALIGN_HCENTER) != 0) {
 		x = SCREEN_SIZE.width / 2;
 	}
-	if ((group.align & ALIGN_RIGHT) != 0)
-	{
+	if ((group.align & ALIGN_RIGHT) != 0) {
 		x = SCREEN_SIZE.width;
 	}
 
 	int y = SCREEN_SIZE.height / 2;
-	if ((group.align & ALIGN_TOP) != 0)
-	{
+	if ((group.align & ALIGN_TOP) != 0) {
 		y = SCREEN_SIZE.height;
 	}
-	if ((group.align & ALIGN_VCENTER) != 0)
-	{
+	if ((group.align & ALIGN_VCENTER) != 0) {
 		y = SCREEN_SIZE.height / 2;
 	}
-	if ((group.align & ALIGN_BOTTOM) != 0)
-	{
+	if ((group.align & ALIGN_BOTTOM) != 0) {
 		y = 0;
 	}
 	rt->setPosition(x, y);
 
 	m_uiMap[name] = rt;
 
-	if (isTop)
-	{
+	if (isTop) {
 		rt->m_bisRoot = true;
 		rt->Top();
 	}
