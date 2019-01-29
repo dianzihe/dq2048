@@ -122,7 +122,6 @@ bool gStopEven = false;
 #ifdef USED_JUMP
 int UIManager::m_draged = 0;
 #endif
-
 #ifdef _MSC_VER
 #pragma warning( disable: 4244 )
 #endif
@@ -145,7 +144,7 @@ void UIDataGroup::Load(const char* fileName)
 	READ_INT(g.count);
 	READ_INT(g.align);
 
-	log("--------------------------------------%s\n",fileName);
+	log("-------------------UIDataGroup::Load-------------------%s\n",fileName);
 
 	g.data = new UIData[g.count];
 
@@ -166,7 +165,12 @@ void UIDataGroup::Load(const char* fileName)
 
 		READ_STRING(g.data[i].picName);
 		READ_STRING(g.data[i].text);
-
+		log("name:%s x=%d, y=%d, width=%d, height=%d, type=%d", g.data[i].name.c_str(),
+			g.data[i].x,
+			g.data[i].y,
+			g.data[i].width,
+			g.data[i].height
+		);
 		if (!_GetLocalTextFile().empty()) {
 			// convert index to text here
 			bool succeeded = false;
@@ -225,13 +229,13 @@ UI* UIData::createUI()
 		p = new UI();
 	}
 	p->autorelease();
-	p->m_name = name;
+	p->m_name	= name;
 	p->setPosition(Vec2(x, -y - height));
-	p->m_type = (TUIType)type;
-	p->m_width = width;
+	p->m_type	= (TUIType)type;
+	p->m_width	= width;
 	p->m_height = height;
-	p->m_align = (1 << ((align / 3) + 3)) | (1 << (align % 3));
-	p->m_tag = tag;
+	p->m_align	= (1 << ((align / 3) + 3)) | (1 << (align % 3));
+	p->m_tag	= tag;
 	p->setImage(picName, !isSTensile);
 	// utf-8 text
 	if (_isTextUTF8(text.c_str(), text.length())) {
@@ -256,9 +260,10 @@ UI* UIData::createUI()
 UI* UIDataGroup::createUI(int zoder)
 {
 	UI* p = createUIBase();
+	GameScene::GetUI()->addChild(p, zoder);
 
-	GameScene* scene = GameScene::GetScene();
-	scene->m_uiNode->addChild(p, zoder);
+	//	GameScene* scene = GameScene::GetScene();
+//	scene->m_uiNode->addChild(p, zoder);
 
 	return p;
 }
@@ -361,18 +366,18 @@ m_pCreateDragFunc( NULL )
 
 	m_rect9 = NULL;
 
-	m_width = 0;
-	m_height = 0;
-	m_nParam64 = 0;
+	m_width			= 0;
+	m_height		= 0;
+	m_nParam64		= 0;
 
-	m_startLineX = 0;		//start point of line
-	m_startLineY = 0;
-	m_endLineX = 0;			//end point of line
-	m_endLineY = 0;
-	m_isReverseTex = false;
+	m_startLineX	= 0;		//start point of line
+	m_startLineY	= 0;
+	m_endLineX		= 0;		//end point of line
+	m_endLineY		= 0;
+	m_isReverseTex	= false;
 
-	m_isLine = false;
-	m_isTop = false;
+	m_isLine		= false;
+	m_isTop			= false;
 }
 
 UI::~UI()
@@ -818,7 +823,7 @@ void UI::setImage(const string& name, bool boundingWH)
 	sprintf(buf, "UI/LoadingRes/%s", name.c_str());
 
 	//CCTexture2D::setUSED_ANTI_ALIAS( false );
-	m_image.m_RenderBatch = ImageCenter::instance().GetRenderBatch(buf);
+ 	m_image.m_RenderBatch = ImageCenter::instance().GetRenderBatch(buf);
 
 	//Tyrzhao: Temp Use Two Different File
 	if (m_image.m_RenderBatch == NULL) {
@@ -858,7 +863,7 @@ void UI::setImage(const string& name, bool boundingWH)
 			UIRect9Data r9data;
 
 			ssize_t length;
-			unsigned char* pszBuffer = FileUtils::getInstance()->getFileData(buf, "rb", &length);
+ 			unsigned char* pszBuffer = FileUtils::getInstance()->getFileData(buf, "rb", &length);
 
 			if (length <= 0 || pszBuffer == NULL) {
 				r9data.isHave = false;

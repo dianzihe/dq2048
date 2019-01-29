@@ -366,7 +366,6 @@ void UIManager::onTouchEnded(CCTouch* touch, CCEvent* event)
 	m_bIsDrag = false;
 }
 
-
 void UIManager::PushEvent(UI* p, const EventFunData& data)
 {
 	UIEvent event;
@@ -436,7 +435,6 @@ void UIManager::RemoveOtherEvent(UI* p)
 	}
 }
 
-
 UI*	UIManager::getTouchUI(CCTouch* touch)
 {
 	GameScene* scene = GameScene::GetScene();
@@ -465,13 +463,12 @@ UI*	UIManager::getTouchUI(CCTouch* touch)
 	return NULL;
 }
 
-
-
 static bool sCanTouch = true;
 static unsigned long sFrontTouchTime = 0;
 
 void UIManager::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event  *event)
 {
+	log("UIManager::onTouchesBegan");
 	/*
 	cc_timeval now;
 	CCTime::gettimeofdayCocos2d(&now, NULL);
@@ -574,6 +571,7 @@ void UIManager::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, coco
 
 void UIManager::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event  *event)
 {
+	log("UIManager::onTouchesMoved");
 	/*
 	Vec2 location[2];
 	CCSetIterator iter = pTouches->begin();
@@ -736,7 +734,6 @@ UI*	UIManager::findUsingUI(const string& uiFileName, const string& uiNodeName)
 	return NULL;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////
 void UIManager::topUI(UI *ui)
 {
@@ -849,6 +846,7 @@ UI* UIManager::findUI(const string& name)
 
 	return NULL;
 }
+
 string	UIManager::findTopRootName(const string name)
 {
 	map<string, UI*>::iterator it1 = m_uiMap.find(name);
@@ -861,6 +859,7 @@ string	UIManager::findTopRootName(const string name)
 	}
 	return "";
 }
+
 UI*	UIManager::findUIByName(const string name)
 {
 	UI*	findTarget = findUI(name);
@@ -897,6 +896,7 @@ UI* UIManager::findUIInChildMap(const string& name)
 	}
 	return NULL;
 }
+
 //在使用loadchild时添加新节点到childmap表
 void UIManager::addItemToChildMap(const string name, UI* thisUi)
 {
@@ -924,6 +924,7 @@ void UIManager::addItemToChildMap(const string name, UI* thisUi)
 		m_mapChildLocatea[name] = locateItem;
 	}
 }
+
 //在删除节点时检测表中是否存在，存在则删除
 void UIManager::removeItemFromChildMap(const string name)
 {
@@ -933,12 +934,14 @@ void UIManager::removeItemFromChildMap(const string name)
 		m_mapChildLocatea.erase(it);
 	}
 }
+
 //清理整个节点表
 void UIManager::clearChildMap()
 {
 	m_mapChildLocatea.clear();
 
 }
+
 void UIManager::update(float dt)
 {
 	if (m_holdTime >= 0) m_holdTime += dt;
@@ -1074,8 +1077,6 @@ void UIManager::update(float dt)
 	m_otherEventList.clear();
 }
 
-
-
 UI* UIManager::loadUI(const string& name, bool isTop, int zoder)
 {
 	UI* rt = findUI(name);
@@ -1123,10 +1124,8 @@ UI* UIManager::loadUI(const string& name, bool isTop, int zoder)
 
 void UIManager::addUI(UI* pUI, bool isTop)
 {
-	if (pUI)
-	{
-		if (m_uiMap[pUI->m_name] != NULL)
-		{
+	if (pUI) {
+		if (m_uiMap[pUI->m_name] != NULL) {
 			return;
 		}
 		GameScene::GetScene()->m_uiNode->addChild(pUI, 10000);

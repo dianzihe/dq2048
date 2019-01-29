@@ -25,7 +25,7 @@ void CZhongGaoState::EnterState()
 	}
 
 	m_pMainUI->setVisible(true);
-	m_pMainUI->setColor(ccc4(255,255,255, 0 ));
+	m_pMainUI->setColor(Color4B(255,255,255, 0 ));
 	m_fTime = ShowAndHide_Time * 3;
 
 	if( IsCHTOnly() ) {
@@ -36,7 +36,7 @@ void CZhongGaoState::EnterState()
 
 void CZhongGaoState::OnUpdate(float dt)
 {
-	log("=========CZhongGaoState::OnUpdate");
+   	log("=========CZhongGaoState::OnUpdate");
 	if (dt > 1.0f/60.0f) {
 		dt = 1.0f/60.0f;
 	}

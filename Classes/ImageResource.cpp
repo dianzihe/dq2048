@@ -121,34 +121,26 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
 
 	// Load Texture
     // Reading Full Texture First
-	if(resType == eResourceType_png_pvr)
-	{
+	if(resType == eResourceType_png_pvr) {
 #if defined _WIN32 || defined WIN32
 		sprintf(filename, "%s.png" ,resName );
 #else
 		sprintf(filename, "%s.pvr.ccz" ,resName );
 #endif
-	}
-	else if(resType == eResourceType_jpg)
-	{
+	} else if(resType == eResourceType_jpg) {
 		sprintf(filename, "%s.wen" ,resName );
 	}
     Texture2D *newTex = TextureCache::getInstance()->addImage(filename);
     if(newTex == NULL) {
-        
         int texIdx = 0;
-        while(1)
-        {
-			if(resType == eResourceType_png_pvr)
-			{
+        while(1) {
+			if(resType == eResourceType_png_pvr) {
 #if defined _WIN32 | WIN32
 				sprintf(filename, "%s_%d.png", resName, texIdx++ );
 #else
 				sprintf(filename, "%s_%d.pvr.ccz", resName, texIdx++ );
 #endif
-			}
-			else if(resType == eResourceType_jpg)
-			{
+			} else if(resType == eResourceType_jpg) {
 				sprintf(filename, "%s_%d.wen", resName, texIdx++ );
 			}
             //CCTexture2D::setUSED_ANTI_ALIAS( false );
@@ -169,13 +161,10 @@ bool ImageResource::Load( const char * resName, ResourceType resType )
 		int n = 0;
         RenderBatchMap::iterator it = mRenderBatchMap.begin();
         RenderBatchMap::iterator end = mRenderBatchMap.end();
-        while (it != end)
-        {
+        while (it != end) {
             RenderBatchData* pRenderBatchData = *it;
-            if(pRenderBatchData)
-            {
-				if(newTex)
-				{
+            if(pRenderBatchData) {
+				if(newTex) {
 					pRenderBatchData->_FullTexture = newTex;
 					if (n != 0)
 						pRenderBatchData->_FullTexture->retain();

@@ -14,27 +14,36 @@
 USING_NS_CC;
 NS_GAME_BEGIN
 
+// Initialize static members;
+GameScene* GameScene::inst = NULL;
+
 GameScene::GameScene(void){
 	m_pRunState = NULL;
-	m_uiNode = new Node();
-	addChild(m_uiNode, GAME_LAYER_UI);
 	UIBatchRenderer::instance()->initilize();
+	schedule(schedule_selector(GameScene::update), .9f);
 }
-void GameScene::create()
+GameScene* GameScene::create()
 {
-	GameScene* p = new GameScene();
-
-	if (p && p->init()) {
-		p->autorelease();
-		//TODO: CCDirector::sharedDirector()->replaceScene(p);
-		Director::getInstance()->runWithScene(p);
+	assert(inst == NULL && "GameScene is already initialized.");
+	if (!inst) {
+		inst = new GameScene();
+		inst->init();
+		return inst;
 	}
-	Director::getInstance()->setProjection(kCCDirectorProjection3D);
+	assert(false && "game screen cannot be created");
+	CC_SAFE_DELETE(inst);
+	return NULL;
 }
 GameScene* GameScene::GetScene()
 {
-	return (GameScene*)(Director::getInstance()->getRunningScene());
+	if (!inst) {
+		assert(inst == NULL && "GameScene is not initialized.");
+		return NULL;
+	}
+
+	return inst;
 }
+/*
 void GameScene::onEnter()
 {
 	log("------------GameScene::onEnter");
@@ -48,7 +57,7 @@ void GameScene::onExit()
 		removeChild(m_pRunState, true);
 	}
 }
-/*
+*/
 bool GameScene::init() {
 
 	log("------------GameScene::init");
@@ -59,18 +68,28 @@ bool GameScene::init() {
 
 	winSize = Director::getInstance()->getVisibleSize();
 
-	initBG();
+	//initBG();
 	
     //_fieldGUI = FieldGUI::create();
     //_fieldGUI->setField(&_field);
     //_field.init(_fieldGUI);
     
-    initGui();
+    //initGui();
     //addGestureRecognizers();
+	m_uiNode = new Node();
+	this->addChild(m_uiNode, GAME_LAYER_UI);
 
+	//background = PH::GemUtils::GetSprite("gameui/background.jpg");
+	//background->setPosition(winSize.width / 2, winSize.height / 2);
+	//GetUI()->addChild(background);
+
+	ChangeState(GAME_STATE_ZHONGGAO);
     return true;
 }
-*/
+Node* GameScene::GetUI()
+{
+	return GameScene::GetScene()->m_uiNode;
+}
 void GameScene::ChangeState(GAME_STATE eState)
 {
 	if (eState == m_eGameState)
@@ -194,6 +213,15 @@ void GameScene::ChangeState(GAME_STATE eState)
 		*/
 	}
 	break;
+	}
+}
+void GameScene::update(float dt)
+{
+	if (m_pRunState) {
+		m_pRunState->OnUpdate(dt);
+	}
+	{
+		UIManager::getInstance()->update(dt);
 	}
 }
 void GameScene::initBG()
@@ -352,12 +380,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
             break;
     }
 }
-void GameScene::update(float dt)
-{
-	{
-		UIManager::getInstance()->update(dt);
-	}
-}
+
 void GameScene::onSwipe(SwipeGestureRecognizer* recognizer) {
     auto stato = recognizer->getStatus();
     if (stato != GestureStatus::RECOGNIZED) return;

@@ -62,8 +62,6 @@ public:
 
 	UI*			getTouchUI(Touch* touch);
 
-
-
 	Touch*			getCurTouch(void) { return m_curTouch; }
 	static void		PushEvent(UI* p, const EventFunData& data);
 	static void		RemoveEvent(UI* p);
