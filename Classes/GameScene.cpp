@@ -224,6 +224,26 @@ void GameScene::update(float dt)
 		UIManager::getInstance()->update(dt);
 	}
 }
+void GameScene::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags)
+{
+	if (m_pRunState)
+		m_pRunState->OnDraw();
+}
+void GameScene::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags)
+{
+	log("GameScene::visit()");
+	{
+		Scene::visit(renderer, parentTransform, parentFlags);
+	}
+
+#ifdef UI_BATCH_RENDERER
+	{
+		log("UIBatchRenderer::flush()");
+		UIBatchRenderer::instance()->flush();
+	}
+#endif // UI_BATCH_RENDERER
+	//SceneInstance::instance().RenderFrontUI();
+}
 void GameScene::initBG()
 {
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("battleMisc.plist");

@@ -61,6 +61,9 @@ public:
 	//virtual void onExit();
 	virtual void update(float dt);
 
+	virtual void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
+	virtual void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
+
 	void loadPersistentTextureCache();
 	void loadTextureCache();
 	void initBG();

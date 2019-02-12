@@ -6,6 +6,8 @@
 #include "UIDrawable.h"
 #include "UIScroll.h"
 #include "UIManager.h"
+#include "UIBatchRenderer.h"
+
 
 /*
 #include "GameMainUI.h"
@@ -14,7 +16,6 @@
 #include "MainUIMove.h"
 #include "../BaseModule/Guide/GuideModule.h"
 #include "CCEGLView.h"
-#include "UIBatchRenderer.h"
 #include "../../CocosDenshion/include/SimpleAudioEngine.h"
 #include "Map.h"
 #include "MainUIOpenCloseHandle.h"
@@ -378,6 +379,9 @@ m_pCreateDragFunc( NULL )
 
 	m_isLine		= false;
 	m_isTop			= false;
+
+	auto shaderState = GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR);
+	setGLProgramState(shaderState);
 }
 
 UI::~UI()
@@ -602,15 +606,6 @@ void UI::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint3
 		}
 	}
 
-	// 	Rect rect = this->getGlobalRect();
-	// 
-	// 	rect.origin = Vec2Zero;
-	// 	Vec2 rt = rect.origin;
-	// 	rt.x += rect.size.width;
-	// 	rt.y += rect.size.height;
-	// 
-	// 	ccDrawRect(rect.origin, rt);
-
 	if (nRenderBatch != NULL) {
 		GLProgram* p = NULL;
 		if (m_onlyUseVertexColor) {
@@ -619,46 +614,23 @@ void UI::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint3
 			p = ShaderCache::getInstance()->programForKey(GLProgram::SHADER_NAME_POSITION_TEXTURE_U_COLOR);
 		}
 
-		//UIBatchRenderer::instance()->setShader(p);
+		_customCommand.init(_globalZOrder, transform, flags);
+		_customCommand.func = CC_CALLBACK_0(UI::onDraw, this, transform, flags);
+		renderer->addCommand(&_customCommand);
 
+		//UIBatchRenderer::instance()->setShader(p);
+		/*
 		//add line flag
 		if (!m_isReverseTex) {
-			/*
 			if (m_rect9)
-				DrawImage9(nRenderBatch, 0, offY, m_width, m_height, m_color, *m_rect9);
+				//DrawImage9(nRenderBatch, 0, offY, m_width, m_height, m_color, *m_rect9);
 			else
 				DrawImage(nRenderBatch, 0, offY, m_width, m_height, m_color);
-				*/
 		} else {
 			//reverse texture.add by wcc.
-			//DrawImage_Reverse(nRenderBatch, 0, offY, m_width, m_height, m_color);
-			//calculate vertex and uv value
-			// 			float left,right,top,bottom;
-			// 			CCTexture2D *tex = m_image.m_IconTexture;
-			// 
-			// 			float width = tex->getContentSize().width;
-			// 			float height =  tex->getContentSize().height;
-			// 			float pixw =  tex->getPixelsWide();
-			// 			float pixh =  tex->getPixelsHigh();
-			// 
-			// 			left = (2 * 0.0f + 1) / (2 * pixw);
-			// 			right = left + (width * 2 - 2) /(2 * pixw);
-			// 			top = (2 * 0.0f + 1)/(2 * pixh);
-			// 			bottom = top+(height * 2 - 2) /(2 * pixh);
-			// 
-			// 			Vec2 dir(m_endLineX-m_startLineX, m_endLineY-m_startLineY);
-			// 			float len = sqrt(dir.x*dir.x + dir.y*dir.y);
-			// 			dir.x = dir.x / len;
-			// 			dir.y = dir.y / len;
-			// 
-			// 			//draw line part
-			// 			DrawImage2(m_image.m_IconTexture, 0.4f, bottom, 0.6f, top,m_startLineX, m_startLineY, m_endLineX, m_endLineY, m_color);
-			// 			//draw dot part
-			// 			DrawImage2(m_image.m_IconTexture, 0.6f, bottom, right, top,m_startLineX - dir.x * width / 2, m_startLineY - dir.y * height / 2, m_startLineX, m_startLineY, m_color);
-			// 			DrawImage2(m_image.m_IconTexture, left, bottom, 0.4f, top,m_endLineX, m_endLineY, m_endLineX + dir.x * width / 2, m_endLineY + dir.y * height / 2, m_color);
-
+			DrawImage_Reverse(nRenderBatch, 0, offY, m_width, m_height, m_color);
 		}
-
+		*/
 	}
 
 	if (m_image.m_IconTexture != NULL) {
@@ -679,11 +651,53 @@ void UI::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint3
 #endif
 }
 
+void UI::onDraw(const Mat4 &transform, uint32_t flags)
+{
+	GLProgram::SHADER_NAME_POSITION_COLOR;
+#if 1
+	//auto cache = Director::getInstance()->getTextureCache();
+	//_texture = cache->addImage("gem_fire.png");
+	_texture = Director::getInstance()->getTextureCache()->addImage("gems/gem_dark.png");
+	if (!_texture)
+		return;
+	getGLProgram()->use();                                                     
+	getGLProgram()->setUniformsForBuiltins(transform);
+
+	GL::blendFunc(_blendFunc.src, _blendFunc.dst);
+
+	GL::bindTexture2D(_texture->getName());
+	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
+
+#define kQuadSize sizeof(_quad.bl)
+	size_t offset = (size_t)&_quad;
+
+	// vertex
+	int diff = offsetof(V3F_C4B_T2F, vertices);
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, kQuadSize, (void*)(offset + diff));
+
+	// texCoords
+	diff = offsetof(V3F_C4B_T2F, texCoords);
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (void*)(offset + diff));
+
+	// color
+	diff = offsetof(V3F_C4B_T2F, colors);
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (void*)(offset + diff));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	//CHECK_GL_ERROR_DEBUG();
+	//CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, 4);
+#endif
+}
 
 void UI::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags)
 {
-	/*
-	//PROFILE("UI::visit");
+	
+	log("UI::visit");
+
+	auto director = Director::getInstance();
+	auto glview = director->getOpenGLView();
+
 	if (m_clipRect)
 	{
 #ifdef  UI_BATCH_RENDERER
@@ -694,54 +708,49 @@ void UI::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform
 
 		Vec2 realPos = getRealPos();
 
-		float xScale = CCEGLView::sharedOpenGLView()->getFrameSize().width / CCEGLView::sharedOpenGLView()->getDesignResolutionSize().width;
-		float yScale = CCEGLView::sharedOpenGLView()->getFrameSize().height / CCEGLView::sharedOpenGLView()->getDesignResolutionSize().height;
-
-		UIManager::Instance()->m_nonceClipRect.origin.x = (realPos.x + m_clipRect->origin.x) * xScale;
-		UIManager::Instance()->m_nonceClipRect.origin.y = (realPos.y + m_clipRect->origin.y) * yScale;
-		UIManager::Instance()->m_nonceClipRect.size.width = m_clipRect->size.width * xScale;
-		UIManager::Instance()->m_nonceClipRect.size.height = m_clipRect->size.height * yScale;
+		float xScale = glview->getFrameSize().width / glview->getDesignResolutionSize().width;
+		float yScale = glview->getFrameSize().height / glview->getDesignResolutionSize().height;
+		
+		UIManager::getInstance()->m_nonceClipRect.origin.x = (realPos.x + m_clipRect->origin.x) * xScale;
+		UIManager::getInstance()->m_nonceClipRect.origin.y = (realPos.y + m_clipRect->origin.y) * yScale;
+		UIManager::getInstance()->m_nonceClipRect.size.width = m_clipRect->size.width * xScale;
+		UIManager::getInstance()->m_nonceClipRect.size.height = m_clipRect->size.height * yScale;
 
 		glScissor((realPos.x + m_clipRect->origin.x) * xScale, (realPos.y + m_clipRect->origin.y) * yScale, m_clipRect->size.width * xScale, m_clipRect->size.height * yScale);
 	}
 
 	if ( myIsScissorTestEnabled())
 	{
-		float xScale = CCEGLView::sharedOpenGLView()->getFrameSize().width / CCEGLView::sharedOpenGLView()->getDesignResolutionSize().width;
-		float yScale = CCEGLView::sharedOpenGLView()->getFrameSize().height / CCEGLView::sharedOpenGLView()->getDesignResolutionSize().height;
+		float xScale = glview->getFrameSize().width / glview->getDesignResolutionSize().width;
+		float yScale = glview->getFrameSize().height / glview->getDesignResolutionSize().height;
 		Rect rc, rc2;
 		rc.origin = convertToWorldSpaceAR(ccp(0, 0));
-		rc.origin.x += UIManager::Instance()->m_TranslatefPos.x;
-		rc.origin.y += UIManager::Instance()->m_TranslatefPos.y;
+		rc.origin.x += UIManager::getInstance()->m_TranslatefPos.x;
+		rc.origin.y += UIManager::getInstance()->m_TranslatefPos.y;
 		rc.origin.x *= xScale;
 		rc.origin.y *= yScale;
 		rc.size.width = m_width * xScale;
 		rc.size.height = m_height * yScale;
 
-		rc2 = UIManager::Instance()->m_nonceClipRect;
-		if (rc.size.width == 0 || rc.size.height == 0 || Rect::RectIntersectsRect(rc, rc2))
-		{
-			setIsDraw(true);
+		rc2 = UIManager::getInstance()->m_nonceClipRect;
+		/*
+		if (rc.size.width == 0 || rc.size.height == 0 || Rect::RectIntersectsRect(rc, rc2)) {
+			//setIsDraw(true);
+		} else {
+			//setIsDraw(false);
 		}
-		else
-		{
-			setIsDraw(false);
-		}
-	}
-	else
-	{
-		setIsDraw(true);
+		*/
+	} else {
+		//setIsDraw(true);
 	}
 
-	Node::visit();
+	Node::visit(renderer, parentTransform, parentFlags);
 
-
-	if (m_clipRect)
-	{
+	if (m_clipRect) {
 		UIBatchRenderer::instance()->flush();
 		myGLDisableScissorTest();
 	}
-	*/
+	
 }
 
 void UI::setColor(Color4B color)

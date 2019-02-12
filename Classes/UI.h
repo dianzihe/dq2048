@@ -188,8 +188,16 @@ typedef bool (*UIScrollView_updat)(UIScrollView* ui, float t);
 typedef void (*UIDragFunc)( UI * selfUI, UI * srcUI, void * data );
 typedef UI* (*CreateDragUIFunc)( UI * srcUI );
 
-class UI : public Node
+class UI : public Sprite
 {
+protected:
+	CustomCommand _customCommand;
+protected:
+	cocos2d::Texture2D* _texture;
+	cocos2d::GLProgramState* _programState;
+	cocos2d::Primitive* _primitive;
+
+	cocos2d::PrimitiveCommand _primitiveCommand;
 public:
 	UI();
 	virtual ~UI();
@@ -210,6 +218,7 @@ public:
 
 	void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
 	void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
+	void onDraw(const Mat4 &transform, uint32_t flags);
 
 	//ÖØÐ´ÒÆ³ýchildº¯Êý
 	void				removeChild(UI* child, bool cleanup);				
